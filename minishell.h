@@ -6,7 +6,7 @@
 /*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/10/13 21:27:22 by rms35            ###   ########.fr       */
+/*   Updated: 2025/11/02 17:45:11 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@
 # define PATH_MAX 4096
 # endif
 
+//solo por la compatibilidad con mac, luego se elimina
+#ifndef rl_clear_history
+# define rl_clear_history() clear_history()
+#endif
+
 extern volatile sig_atomic_t	g_sig_rec;
 
 typedef	struct s_shenv
@@ -71,6 +76,12 @@ typedef	struct s_shenv
 	char	*var;
 	struct s_shenv	*next;
 }	t_shenv;
+
+typedef	struct	s_builtin
+{
+	char *name;
+	int(*func)(char **args, t_shenv **);
+}	t_builtin;
 
 typedef struct s_cli
 {
@@ -110,11 +121,11 @@ char	*ft_escape_quotes(char *line);
 char	*ft_trim_delim(char *token, int *option);
 char	*ft_expand_heredoc(int option, t_cli *cli);
 char    *ft_cmd_path(char *env_path, char *cmd);
-char 	*ft_getenv(t_shenv *env, const char *key);
+char 	*ft_getenv(t_shenv *env, char *key);
 char	*ft_expand_exit_status(int status, char *line, int i);
 int 	ft_export(char **args, t_shenv **env);
 int 	ft_unset(char **args, t_shenv **env);
-int 	ft_unsetenv(t_shenv **env, const char *key);
+int 	ft_unsetenv(t_shenv **env, char *key);
 int		ft_init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after);
 int		ft_equal(size_t *j, size_t *i);
 int		ft_j_s(size_t *j_s, size_t *i_a, size_t *i, size_t *j);
@@ -122,12 +133,12 @@ int		ft_match_wildcard(char *str, char *wildcard);
 int		ft_parse(char **tokens, t_cli *cli);
 int		ft_check_prnts(char *line);
 int		ft_check_errors(char **token, int len);
-int 	ft_pwd(char **args);
-int 	ft_echo(char **args);
-int 	ft_env(char **env);
-int 	ft_exit(void);
+int 	ft_pwd(char **args, t_shenv **env);
+int 	ft_echo(char **args, t_shenv **env);
+int 	ft_env(char **args, t_shenv **env);
+int 	ft_exit(char **args, t_shenv **env);
 int 	ft_cd(char **args, t_shenv **env);
-int		ft_setenv(t_shenv **env, const char *key, const char *value);
+int		ft_setenv(t_shenv **env, char *key, char *value);
 int 	execute_command(t_cli *cli);
 int 	execute_builtin(t_cli *cmd);
 int 	ft_execute(t_cli *cli);
@@ -148,6 +159,7 @@ int		ft_outfile(char *token, t_cli *cli);
 int		ft_cmd(char	*token, t_cli *cli);
 int		ft_args(char *token, t_cli *cli, int pos);
 int		ft_shenv_len(t_shenv *env);
+int		(*get_builtin(char *cmd))(char **, t_shenv **);
 void	ft_set_sig(int option);
 void	ft_sig_parent(int signal);
 void	ft_free_list(t_cli **cli);
@@ -162,5 +174,10 @@ t_cli	*ft_parse_op(char *token, t_cli *cli);
 t_shenv	*ft_load_env(char **envp);
 void	ft_print_list(t_cli *cli);
 char	*ft_trim_spaces(char *line);
+
+#ifdef _APPLE_
+int	rl_catch_signals = 0;
+//solo para aple, después eliminar
+#endif
 
 #endif

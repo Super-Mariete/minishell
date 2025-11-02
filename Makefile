@@ -12,12 +12,18 @@ SRC = minishell.c\
 	parsing/shenv.c\
 	parsing/wildcards.c\
 	parsing/wc_utils.c\
-	exec/builtins.c\
-	exec/exec.c\
-	exec/exec_pipe.c\
-	exec/ft_cd.c\
-	exec/ft_export.c\
-	exec/ft_unset.c\
+	exec/ft_execute.c\
+	exec/builtins/ft_echo.c\
+	exec/builtins/ft_cd.c\
+	exec/builtins/ft_pwd.c\
+	exec/builtins/ft_env.c\
+	exec/builtins/ft_getenv.c\
+	exec/builtins/ft_setenv.c\
+	exec/builtins/ft_unsetenv.c\
+	exec/builtins/ft_export.c\
+	exec/builtins/ft_unset.c\
+	exec/builtins/ft_exit.c\
+	exec/mac_stub.c\
 
 OBJ = $(SRC:.c=.o)
 CFLAGS += -g -Ilibft #-Wall -Wextra -Werror 
