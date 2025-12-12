@@ -15,6 +15,16 @@ The project adheres to the 42 Norm, a strict set of coding standards for C proje
 Failure to comply with these standards will result in a penalty during evaluation.
 
 ## Git Workflow
+We follow the Conventional Commits specification for commit messages. This helps in generating changelogs and understanding the purpose of each commit. Please use the following types:
+
+*   **feat:** A new feature (e.g., `feat: implement pipes`)
+*   **fix:** A bug fix (e.g., `fix: correct redirection parsing`)
+*   **refactor:** A code change that neither fixes a bug nor adds a feature (e.g., `refactor: restructure lexer`)
+*   **docs:** Documentation only changes (e.g., `docs: update README`)
+*   **test:** Adding missing tests or correcting existing tests (e.g., `test: add unit tests for builtins`)
+*   **chore:** Other changes that don't modify src or test files (e.g., `chore: update Makefile`)
+
+Each commit message should start with a type, followed by a scope (optional, in parentheses), a colon, and a subject. For example: `feat(parser): add support for single quotes`.
 
 ## Error Handling
 
