@@ -18,7 +18,7 @@ There are many disadvantages: more complexity in development of the project, the
 ## Memory Pools
 
 
-We use two static memory pools, one for the input line and another one for tokens, expanded tokens and command environment. They both have a semi-arbitrary size, given that there are no bottlenecks in other places of the program that limit the functionality of the shell. For example, there’s no limit for the number of redirections of a command, so in principle you can redirect until you fill the RAM.
+We use two static memory pools, one for the input line and another one for the Abstract Syntax Tree, local and environment variables lists and command environment. They both have a semi-arbitrary size, given that there are no bottlenecks in other places of the program that limit the functionality of the shell. For example, there’s no limit for the number of redirections of a command, so in principle you can redirect until you fill the RAM.
 
 
 There are, nonetheless, some bottlenecks that when considered, can give us an approximation of a size that makes sense. For example, execve just accepts a total of ~2MB of  arguments (args + envp), there’s a limit to the opened file descriptors at the same time (for the mandatory part, that implies a limit of commands), 
@@ -33,7 +33,9 @@ We use two separate arrays of structs, each containing two strings: one for key 
 ### Tokens and Expanded Tokens
 
 
-For the unexpanded tokens we simply separate each token 
+For tokenization we create an Abstract syntax tree in the next form:
+
+![AST](./Screenshot_20251215_120314.png)
 
 
 ### Command Environment
