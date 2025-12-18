@@ -6,7 +6,7 @@
 /*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/11/02 17:45:11 by made-ped         ###   ########.fr       */
+/*   Updated: 2025/12/18 12:34:03 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,10 @@ t_cli	*ft_parse_op(char *token, t_cli *cli);
 t_shenv	*ft_load_env(char **envp);
 void	ft_print_list(t_cli *cli);
 char	*ft_trim_spaces(char *line);
+
+int	has_pipe(t_cli *cli);
+int	apply_redirs(t_cli *cli);
+int	exec_builtin(t_cli * cli);
 
 #ifdef _APPLE_
 int	rl_catch_signals = 0;

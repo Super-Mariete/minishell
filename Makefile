@@ -24,6 +24,9 @@ SRC = minishell.c\
 	exec/builtins/ft_unset.c\
 	exec/builtins/ft_exit.c\
 	exec/mac_stub.c\
+	exec/aux_exec/apply_redirs.c\
+	exec/aux_exec/has_pipe.c\
+	exec/aux_exec/exec_builtin.c\
 
 OBJ = $(SRC:.c=.o)
 CFLAGS += -g -Ilibft #-Wall -Wextra -Werror 

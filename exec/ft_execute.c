@@ -6,7 +6,7 @@
 /*   By: made-ped <made-ped@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 19:03:35 by made-ped          #+#    #+#             */
-/*   Updated: 2025/10/30 19:03:42 by made-ped         ###   ########.fr       */
+/*   Updated: 2025/12/18 12:26:59 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,33 @@ int (*get_builtin(char *cmd))(char **, t_shenv **)
 
 int	ft_execute(t_cli *cli)
 {
-	int (*builtin)(char **, t_shenv **); // ← ahora tiene punto y coma y tipo correcto
+	int	stdin_save;
+	int	stdout_save;
+	int	status;
+//	int (*builtin)(char **, t_shenv **); // ← ahora tiene punto y coma y tipo correcto
 
 	if (!cli || !cli->cmd)
 		return (0);
 
-	builtin = get_builtin(cli->cmd);
+/*	builtin = get_builtin(cli->cmd);
 	if (builtin)
-		return (builtin(cli->args, cli->env));
+		return (builtin(cli->args, cli->env));*/
+	if (get_builtin(cli->cmd) && !has_pipe(cli))
+	{
+		stdin_save = dup(STDIN_FILENO);
+		stdout_save = dup(STDOUT_FILENO);
 
-	// TODO: ejecución de comandos externos, pipes y redirecciones
+		if (apply_redirs(cli))
+			return(1);
+		status = exec_builtin(cli);
+		dup2(stdin_save, STDIN_FILENO);
+		dup2(stdout_save, STDOUT_FILENO);
+		close (stdin_save);
+		close(stdout_save);
+		cli->last_status = status;
+		return(status);
+	}
+	//TODO enteros y pipes;
 	return (0);
 }
 
