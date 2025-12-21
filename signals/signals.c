@@ -1,11 +1,13 @@
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
-void	ft_sig_int_parent(int signal)
+sig_atomic_t g_signal;
+
+static void	ft_sig_int_parent(int signal)
 {
 	char	nl;
 
 	nl = '\n';
-	g_sig_rec = 1;
+	g_signal = 1;
 	if (signal == SIGINT)
 	{
 		write(1, "^C", 2);
