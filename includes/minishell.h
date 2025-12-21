@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/21 12:53:32 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/21 23:31:04 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@
 // # include <stdbool.h>
 # include <errno.h>
 # include <termios.h>
+# include "msh_limits.h"
 
 # define IFS " \t\n"
 # define METACHARS " \t\n|&;()<>"
 # define CONTROL_OP "<>&|"
 # define PROMPT "\e[32mminishell\e[0m $ "
 // Max size in bytes of char **argv + char **envp for execve
-# define ARG_MAX 10//2097152
 
 // Set up signal handling status
 # define PARENT 0
@@ -68,6 +68,16 @@ typedef struct s_env
     struct s_env *next;
 }	t_env;
 
+/* signals */
+
 void	ft_set_sig(int option);
+
+/* init */
+
+int	ft_init_var_pool(t_env *pool);
+
+/* readline */
+
+/* parse */
 
 #endif

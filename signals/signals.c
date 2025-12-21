@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-sig_atomic_t g_signal;
+extern sig_atomic_t g_signal;
 
 static void	ft_sig_int_parent(int signal)
 {

@@ -1,0 +1,15 @@
+(ls)
+(ls && echo)
+(ls && (echo h o l a | wc -l))
+sleep 1 | ls | (wc -l && echo hola)
+((ls))
+((qeqewqwe))
+(ls && qweqwe)
+(qweqwe | ls)
+(qweqew | qweqwe)
+(ls) > text.txt
+(ls && echo) > text.txt
+(ls && (echo h o l a | wc -l) > text.txt) > text2.txt
+sleep 1 | ls | (wc -l && echo hola) > text.txt
+((ls)> text.txt)
+((ls)> text.txt) > text2.txt
