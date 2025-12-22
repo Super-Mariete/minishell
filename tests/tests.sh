@@ -54,37 +54,6 @@ ft_mk_log_dir()
 	mkdir -p $DEBUG_DIR
 }
 
-# Run unit tests
-# ft_test_init_env()
-# {
-# 	local	test_status=0
-# 	local	DEBUG_LOG="$LOG_DIR/debug_logs/init_env"
-# 	local	VAL_LOG="$LOG_DIR/val_logs/init_env"
-# 	local	arg
-# 	TESTFILE="$TESTS_DIR/init_env_tests.txt"
-
-# 	# Bucle de lectura
-# 	if [ -f "$TESTFILE" ]; then
-# 		echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
-# 		local i=1
-# 		while read -r arg || [ -n "$arg" ]; do
-# 			ft_make "$arg"
-# 			./unit-tests > "$LOG_DIR/init_env_log$i.txt" 2>&1
-# 			ft_print_status "$?" "$i" "| normal |  " "$arg"
-# 			./dmsh > "$DEBUG_LOG$i.txt" 2>&1
-# 			ft_print_status "$?" "$i" "| debug |   " "$arg"
-# 			valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG$i.txt" 2>&1
-# 			ft_print_status "$?" "$i" "| valgrind |" "$arg"
-# 			make fclean
-# 			((i++));
-# 			echo
-# 		done < "$TESTFILE"
-# 	else
-# 		echo "No $TESTFILE found"
-# 	fi
-# 	make fclean
-# }
-
 ft_test_load_env()
 {
 	local	test_status=0
@@ -97,17 +66,20 @@ ft_test_load_env()
 	local	DEBUG_LOG="$DEBUG_DIR/load_env.txt"
 	local	VAL_LOG="$VAL_DIR/load_env.txt"
 	echo -e "${BLUE}---- Running load_env unit tests ----${RESET}"
-	ft_make "test_load_env.c"
+	ft_make "$1"
 	if [ -f "$TESTFILE" ]; then
+		local	i = 0;
 		while read -r arg || [ -n "$arg" ]; do
-			./unit-tests > "$NORMAL_DIR/load_env_log.txt" 2>&1
-			ft_print_status "$?" "$i" "| normal |  "
+			$arg ./unit-tests > "$NORMAL_DIR/load_env_log.txt" 2>&1
+			ft_print_status "$?" "$i" "|  normal  |"
 			./dmsh > "$DEBUG_LOG" 2>&1
-			ft_print_status "$?" "$i" "| debug |   "
+			ft_print_status "$?" "$i" "|  debug   |"
 			valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
 			ft_print_status "$?" "$i" "| valgrind |"
 			make fclean
+			MAIN="$1" make clean
 			echo
+			(($i++));
 		done < "$TESTFILE"
 	else
 		echo "No $TESTFILE found"
@@ -125,18 +97,19 @@ ft_test_init_env()
 	local	DEBUG_LOG="$DEBUG_DIR/init_env.txt"
 	local	VAL_LOG="$VAL_DIR/init_env.txt"
 	echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
-	ft_make "test_init_env.c"
+	ft_make "$1"
 	./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
-	ft_print_status "$?" "$i" "| normal |  "
+	ft_print_status "$?" "" "|  normal  |"
 	./dmsh > "$DEBUG_LOG" 2>&1
-	ft_print_status "$?" "$i" "| debug |   "
+	ft_print_status "$?" "" "|  debug   |"
 	valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
-	ft_print_status "$?" "$i" "| valgrind |"
+	ft_print_status "$?" "" "| valgrind |"
 	make fclean
+	MAIN="$1" make clean
 	echo
 }
 
-
+echo
 echo -e "${BLUE}---- Running static analisys ----${RESET}"
 make check
 echo
@@ -150,5 +123,5 @@ else
 	echo -e  "${GREEN}Norminette passed${RESET}"
 fi
 echo
-ft_test_init_env
-ft_test_load_env
+ft_test_init_env "test_init_env.c"
+ft_test_load_env "test_load_env.c"

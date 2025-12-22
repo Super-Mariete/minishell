@@ -8,7 +8,6 @@ HEADERS = ../includes/minishell.h\
 
 # Files
 MAIN ?= ../main.c
-ARMAX ?= 10
 SRC = $(MAIN)\
 	../signals/signals.c\
 	../init/init_env.c

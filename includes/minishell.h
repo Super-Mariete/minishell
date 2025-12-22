@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/22 13:44:50 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/22 15:13:38 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@
 # define METACHARS " \t\n|&;()<>"
 # define CONTROL_OP "<>&|"
 # define PROMPT "\e[32mminishell\e[0m $ "
-// Max size in bytes of char **argv + char **envp for execve
-
+// If PATH not in environment (predetermined PATH)
+# define PATH "/bin:/sbin/:local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
 // Set up signal handling status
 # define PARENT 0
 # define CHILD 1
