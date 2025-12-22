@@ -25,9 +25,9 @@ static void	ft_print_list(t_env *env)
 
 int	main()
 {
-	static t_env	env[ARG_MAX];
+	static t_env	env[VAR_MAX];
 
-	if (ft_init_var_pool(env))
+	if (ft_init_var_list(env))
 		return (1);
 	ft_print_list(env);
 }
