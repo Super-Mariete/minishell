@@ -1,0 +1,9 @@
+echo -n &&
+$(env)
+0
+FOO=BAR
+FOO=BAR $(env)
+0
+FOO=$(quijote.pdf)
+minishell: E2BIG: reached memory pool limit
+1

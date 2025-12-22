@@ -36,10 +36,10 @@ ft_make()
 
 ft_print_status()
 {
-	if [ $1 -ne 0 ]; then
-		echo -e "${RED}Test $3 #$2 init_env $4: failed${RESET}"
+	if [ $1 -ne $2 ]; then
+		echo -e "${RED}Test $4 #$3 init_env $5: failed with status $1${RESET}"
 	else
-		echo -e "${GREEN}Test $3 #$2 init_env $4: passed${RESET}"
+		echo -e "${GREEN}Test $3 #$2 init_env $4: passed with status $1 ${RESET}"
 	fi
 }
 
@@ -54,11 +54,37 @@ ft_mk_log_dir()
 	mkdir -p $DEBUG_DIR
 }
 
+ft_get_status()
+{
+	local	status=0
+
+	read -r status <$1
+	if [ $2 -eq $status ]; then
+		echo "OK"
+	else
+		echo "$2"
+	fi
+}
+
+ft_get_output()
+{
+	local	output=0
+
+	read -r output <$1
+	if [ $2 -eq $output ]; then
+		echo "0"
+	else
+		echo "1"
+	fi
+}
+
 ft_test_load_env()
 {
 	local	test_status=0
 	local	DIR="load_env"
 	local	arg=0
+	local	output
+	local	status
 	TESTFILE="$TESTS_DIR/load_env_tests.txt"
 
 
@@ -70,12 +96,18 @@ ft_test_load_env()
 	if [ -f "$TESTFILE" ]; then
 		local	i = 0;
 		while read -r arg || [ -n "$arg" ]; do
-			$arg ./unit-tests > "$NORMAL_DIR/load_env_log.txt" 2>&1
-			ft_print_status "$?" "$i" "|  normal  |"
-			./dmsh > "$DEBUG_LOG" 2>&1
-			ft_print_status "$?" "$i" "|  debug   |"
-			valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
-			ft_print_status "$?" "$i" "| valgrind |"
+			$output=$($arg ./unit-tests 2>&1)
+			$status=$($arg ./unit-tests > /dev/null 2>&1 && echo $?)
+			echo "$output" > "$NORMAL_DIR/load_env_log.txt"
+			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "|  normal  |"
+			$output=$($arg ./dmsh)
+			$status=$($arg ./dmsh >/dev/null && echo $?)
+			echo $output > "$DEBUG_LOG" 2>&1
+			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "|  debug   |"
+			$output=$(valgrind -s --track-origins=yes ./valmsh 2>&1)
+			$status=$(valgrind -s --track-origins=yes ./valmsh > /dev/null 2>&1)
+			echo $output > "$VAL_LOG"
+			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "| valgrind |"
 			make fclean
 			MAIN="$1" make clean
 			echo
@@ -96,14 +128,15 @@ ft_test_init_env()
 	ft_mk_log_dir $DIR
 	local	DEBUG_LOG="$DEBUG_DIR/init_env.txt"
 	local	VAL_LOG="$VAL_DIR/init_env.txt"
+	local	expected=0
 	echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
 	ft_make "$1"
 	./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
-	ft_print_status "$?" "" "|  normal  |"
+	ft_print_status "$?" $expected "" "|  normal  |"
 	./dmsh > "$DEBUG_LOG" 2>&1
-	ft_print_status "$?" "" "|  debug   |"
+	ft_print_status "$?" $expected "" "|  debug   |"
 	valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
-	ft_print_status "$?" "" "| valgrind |"
+	ft_print_status "$?" $expected "" "| valgrind |"
 	make fclean
 	MAIN="$1" make clean
 	echo
