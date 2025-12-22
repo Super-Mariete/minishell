@@ -4,6 +4,36 @@ $(env)
 FOO=BAR
 FOO=BAR $(env)
 0
-FOO=$(quijote.pdf)
-minishell: E2BIG: reached memory pool limit
+FOO=$(cat quijote.pdf)
+minishell: reached variables memory pool limit
 1
+$(cat quijote.pdf)=BAR
+minishell: reached variables memory pool limit
+1
+FOO=BAR=VAR 
+FOO=BAR=VAR
+0
+FOO="BAR" 
+FOO=BAR
+0
+FOO=$SHLVL 
+FOO=1
+0
+FOO="$SHLVL" 
+FOO=1
+0
+FOO==BAR
+FOO==BAR
+0
+FOO="|BAR"
+FOO='|BAR'
+0
+FOO='|BAR'"VAR"
+FOO='|BARVAR'
+0
+FOO='|BAR'VAR
+FOO='|BARVAR'
+0
+FOO===BAR
+FOO===BAR
+0

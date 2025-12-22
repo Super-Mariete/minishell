@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/22 17:01:10 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/22 19:49:31 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_env
 	char			*key;
 	char			*value;
 	int				is_exported;
+	char			*pool_head;
 	struct s_env	*next;
 }	t_env;
 

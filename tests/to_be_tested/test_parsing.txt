@@ -1,0 +1,10 @@
+"F00="BAR
+minishell: F00=BAR: command not found
+"FOO="=BAR
+minishell: FOO==BAR: command not found
+FOO"=BAR" 
+minishell: FOO=BAR: command not found
+FOO"=BAR"=VAR
+minishell: FOO=BAR=VAR: command not found
+"FOO=$SHLVL" 
+minishell: FOO=1: command not found

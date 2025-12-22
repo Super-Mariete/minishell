@@ -6,18 +6,36 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:42:03 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/22 17:03:25 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/22 21:01:04 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// int	ft_load_env(t_env *env, char **envp)
-// {
-// 	if (!env)
-// 		env->key = "PATH";
-// 		env->
-// }
+int	ft_load_env(t_env *env, char *var_pool, char **envp)
+{
+	char	*head;
+	t_env	*node;
+	char	*len;
+	int		i;
+	
+	head = var_pool;
+	if (!env)
+	{
+		env->key = ft_strlcpy(var_pool, "PATH", 5);
+		env->value = ft_strlcpy(var_pool, PATH, ft_strlen(PATH) + 1);
+		head += 5 + ft_strlen(PATH) + 1;
+		env->pool_head = head;
+		return (0);
+	}
+	node = env;
+	i = 0;
+	while (envp[i])
+	{
+		len = ft_strchr(envp[i], "=") - envp[i];
+		
+	}
+}
 
 int	ft_init_var_list(t_env *pool)
 {
