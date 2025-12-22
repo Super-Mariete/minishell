@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/21 23:31:04 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/22 13:44:50 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@
 # define IGNORE 2
 
 // Only allowed variable, to catch signals
-extern sig_atomic_t g_signal;
+extern sig_atomic_t	g_signal;
 
 // Terminal relevant data for readline
-typedef struct	s_term
+typedef struct s_term
 {
 	struct termios	canon_mode;
 	struct termios	raw_mode;
@@ -62,10 +62,10 @@ typedef struct	s_term
 // List of local and environment (if exported) variables
 typedef struct s_env
 {
-    char    *key;
-    char    *value;
-    int     is_exported;
-    struct s_env *next;
+	char			*key;
+	char			*value;
+	int				is_exported;
+	struct s_env	*next;
 }	t_env;
 
 /* signals */
@@ -74,7 +74,7 @@ void	ft_set_sig(int option);
 
 /* init */
 
-int	ft_init_var_pool(t_env *pool);
+int		ft_init_var_pool(t_env *pool);
 
 /* readline */
 

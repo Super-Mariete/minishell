@@ -1,17 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/22 13:32:37 by rafael            #+#    #+#             */
+/*   Updated: 2025/12/22 13:40:47 by rafael           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/minishell.h"
 
-sig_atomic_t g_signal;
+sig_atomic_t	g_signal;
 
-int    main()
+int	main(void)
 {
 	static t_env	env[ARG_MAX];
-	// t_env			*free_nodes;
 
- 	ft_set_sig(PARENT);
+	ft_set_sig(PARENT);
 	if (ft_init_var_pool(env))
 		return (1);
 	// free_nodes = NULL;
-    // 2.- Get local variables
-    // 3.- Get environment variables
-    // 4.- Show prompt
+	// 2.- Get local variables
+	// 3.- Get environment variables
+	// 4.- Show prompt
 }

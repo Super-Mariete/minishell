@@ -26,7 +26,7 @@ ft_make()
 	((test_status += $?))
 	make
 	((test_status += $?))
-	make -s clean
+	make clean
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
 		make fclean
@@ -85,6 +85,35 @@ ft_mk_log_dir()
 # 	make fclean
 # }
 
+ft_test_load_env()
+{
+	local	test_status=0
+	local	DIR="load_env"
+	local	arg=0
+	TESTFILE="$TESTS_DIR/load_env_tests.txt"
+
+
+	ft_mk_log_dir $DIR
+	local	DEBUG_LOG="$DEBUG_DIR/load_env.txt"
+	local	VAL_LOG="$VAL_DIR/load_env.txt"
+	echo -e "${BLUE}---- Running load_env unit tests ----${RESET}"
+	ft_make "test_load_env.c"
+	if [ -f "$TESTFILE" ]; then
+		while read -r arg || [ -n "$arg" ]; do
+			./unit-tests > "$NORMAL_DIR/load_env_log.txt" 2>&1
+			ft_print_status "$?" "$i" "| normal |  "
+			./dmsh > "$DEBUG_LOG" 2>&1
+			ft_print_status "$?" "$i" "| debug |   "
+			valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
+			ft_print_status "$?" "$i" "| valgrind |"
+			make fclean
+			echo
+		done < "$TESTFILE"
+	else
+		echo "No $TESTFILE found"
+	fi
+}
+
 ft_test_init_env()
 {
 	local	test_status=0
@@ -95,24 +124,31 @@ ft_test_init_env()
 	ft_mk_log_dir $DIR
 	local	DEBUG_LOG="$DEBUG_DIR/init_env.txt"
 	local	VAL_LOG="$VAL_DIR/init_env.txt"
-	if [ -f "$TESTFILE" ]; then
-		echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
-		ft_make "test_init_env.c"
-		./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
-		ft_print_status "$?" "$i" "| normal |  "
-		./dmsh > "$DEBUG_LOG" 2>&1
-		ft_print_status "$?" "$i" "| debug |   "
-		valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
-		ft_print_status "$?" "$i" "| valgrind |"
-		make fclean
-		echo
-	else
-		echo "No $TESTFILE found"
-	fi
+	echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
+	ft_make "test_init_env.c"
+	./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
+	ft_print_status "$?" "$i" "| normal |  "
+	./dmsh > "$DEBUG_LOG" 2>&1
+	ft_print_status "$?" "$i" "| debug |   "
+	valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
+	ft_print_status "$?" "$i" "| valgrind |"
+	make fclean
+	echo
 }
 
 
-# Static analisys
+echo -e "${BLUE}---- Running static analisys ----${RESET}"
 make check
-
+echo
+echo -e "${BLUE}---- Running norminette ----${RESET}"
+norminette ../main.c ../libft/ ../parse/ ../signals/ ../init/ ../readline/ \
+../includes/ > $LOG_DIR/norm_log.txt 2>&1
+cat $LOG_DIR/norm_log.txt | grep Error
+if [ $? -eq 0 ]; then
+	echo -e  "${RED}Norminette not passed${RESET}"
+else
+	echo -e  "${GREEN}Norminette passed${RESET}"
+fi
+echo
 ft_test_init_env
+ft_test_load_env

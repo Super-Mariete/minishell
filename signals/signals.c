@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/22 13:32:41 by rafael            #+#    #+#             */
+/*   Updated: 2025/12/22 13:41:37 by rafael           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-extern sig_atomic_t g_signal;
+extern sig_atomic_t	g_signal;
 
 static void	ft_sig_int_parent(int signal)
 {
@@ -25,7 +37,7 @@ void	ft_set_sig(int option)
 		sa.sa_handler = ft_sig_int_parent;
 		sigaction(SIGINT, &sa, NULL);
 		sa.sa_handler = SIG_IGN;
-	sigaction(SIGQUIT, &sa, NULL);
+		sigaction(SIGQUIT, &sa, NULL);
 	}
 	if (option == CHILD)
 	{

@@ -45,7 +45,6 @@ debug: $(DEBUG_OBJ) $(LIBFT_A)
 
 val: fclean $(VAL_OBJ) $(LIBFT_A)
 	@cc $(CFLAGS) -g3 $(VAL_OBJ) $(LIBFT_A) -lreadline -o $(VAL_NAME)
-# 	@valgrind -s --track-origins=yes ./$(VAL_NAME)
 
 # Static analisys
 check:
