@@ -105,7 +105,7 @@ ft_test_load_env()
 			echo $output > "$DEBUG_LOG" 2>&1
 			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "|  debug   |"
 			$output=$(valgrind -s --track-origins=yes ./valmsh 2>&1)
-			$status=$(valgrind -s --track-origins=yes ./valmsh > /dev/null 2>&1)
+			$status=$(valgrind -s --track-origins=yes --error-exitcode=-1 ./valmsh > /dev/null 2>&1)
 			echo $output > "$VAL_LOG"
 			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "| valgrind |"
 			make fclean
@@ -135,7 +135,7 @@ ft_test_init_env()
 	ft_print_status "$?" $expected "" "|  normal  |"
 	./dmsh > "$DEBUG_LOG" 2>&1
 	ft_print_status "$?" $expected "" "|  debug   |"
-	valgrind -s --track-origins=yes ./valmsh > "$VAL_LOG" 2>&1
+	valgrind -s --track-origins=yes --error-exitcode=-1 ./valmsh > "$VAL_LOG" 2>&1
 	ft_print_status "$?" $expected "" "| valgrind |"
 	make fclean
 	MAIN="$1" make clean
