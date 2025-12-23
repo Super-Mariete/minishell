@@ -6,7 +6,7 @@
 /*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/18 12:34:03 by made-ped         ###   ########.fr       */
+/*   Updated: 2025/12/23 13:48:04 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,10 @@
 # define PARENT 1
 # define CHILD 0
 # define READ 2
+# define PIPE_READ 0
 # define APPEND 1
 # define WRITE 0
+# define PIPE_WRITE 1
 # define SEP_STR " \n\t<>|&()"
 # define SEP_STR2 " \n\t<>|\"\'"
 # define OP_STR "&|()"

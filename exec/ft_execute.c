@@ -6,7 +6,7 @@
 /*   By: made-ped <made-ped@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 19:03:35 by made-ped          #+#    #+#             */
-/*   Updated: 2025/12/18 12:26:59 by made-ped         ###   ########.fr       */
+/*   Updated: 2025/12/23 18:27:24 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int (*get_builtin(char *cmd))(char **, t_shenv **)
 	}
 	return (NULL);
 }
-
+/*
 int	ft_execute(t_cli *cli)
 {
 	int	stdin_save;
@@ -45,11 +45,11 @@ int	ft_execute(t_cli *cli)
 //	int (*builtin)(char **, t_shenv **); // ← ahora tiene punto y coma y tipo correcto
 
 	if (!cli || !cli->cmd)
-		return (0);
+		return (cli->last_status);
 
-/*	builtin = get_builtin(cli->cmd);
-	if (builtin)
-		return (builtin(cli->args, cli->env));*/
+//	builtin = get_builtin(cli->cmd);
+//	if (builtin)
+//		return (builtin(cli->args, cli->env));
 	if (get_builtin(cli->cmd) && !has_pipe(cli))
 	{
 		stdin_save = dup(STDIN_FILENO);
@@ -68,4 +68,133 @@ int	ft_execute(t_cli *cli)
 	//TODO enteros y pipes;
 	return (0);
 }
+*/
 
+int	ft_execute(t_cli *cli)
+{
+	if(!cli || !cli->cmd)
+		return (cli->last_status);
+	if(get_builtin(cli->cmd) && !has_pipe(cli))
+		return (execute_builtin(cli));
+	if(has_pipe(cli))
+		return (execute_pipeline(cli));
+	return (execute_command(cli));
+}
+
+int	execute_builtin(t_cli *cli)
+{
+	int stdin_save;
+	int stdout_save;
+	int status;
+
+	stdin_save = dup(STDIN_FILENO);
+	stdout_save = dup(STDOUT_FILENO);
+	if(apply_redirs(cli))
+		return (1);
+	status = exec_builtin(cli);
+	dup2(stdin_save, STDIN_FILENO);
+	dup2(stdout_save, STDOUT_FILENO);
+	close(stdin_save);
+	close(stdout_save);
+	cli->last_status = status;
+	return (status);
+}
+
+int	exec_builtin_child(t_cli *cli)
+{
+	int (*builtin)(char **, t_shenv **);
+
+	builtin = get_builtin(cli->cmd);
+	if (!builtin)
+		return (1);
+	return (builtin(cli->args, cli->env));
+}
+
+int	execute_command(t_cli *cli)
+{
+	pid_t pid;
+	int status;
+	char *path;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork");
+		return(1);
+	}
+	if (pid == CHILD)
+	{
+		ft_set_sig(CHILD);
+		if (apply_redirs(cli))
+			exit(1);
+		path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
+		if (!path)
+		{
+			ft_perror(cli->cmd, CMD_ERR);
+			exit(127);
+		}
+		execve(path, cli->args, ft_getshenv(*cli->env));
+		perror("execve");
+		exit(126);
+	}
+	ft_set_sig(PARENT);
+	waitpid(pid, &status, 0);
+	cli->last_status = WEXITSTATUS(status);
+	return (cli->last_status);
+}
+
+int	execute_pipeline(t_cli *cli)
+{
+	int fd[2];
+	int prev_fd = -1;
+	pid_t pid;
+	int status;
+	char *path;
+
+	while (cli)
+	{
+		if (cli->next && pipe(fd) < 0)
+			return (perror("pipe"), 1);
+		pid = fork();
+		if (pid == 0)
+		{
+			ft_set_sig(CHILD);
+			if (prev_fd != -1)
+			{
+				dup2(prev_fd, STDIN_FILENO);
+				close(prev_fd);
+			}
+			if (cli->next)
+			{
+				dup2(fd[PIPE_WRITE], STDOUT_FILENO);
+				close(fd[PIPE_READ]);
+				close(fd[PIPE_WRITE]);
+			}
+			if (apply_redirs(cli))
+				exit(1);
+			if (get_builtin(cli->cmd))
+				exit(exec_builtin_child(cli));
+			path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
+			if (!path)
+			{
+				ft_perror(cli->cmd, CMD_ERR);
+				exit (127);
+			}
+			printf("EXEC PATH: [%s]\n", path);
+			execve(path, cli->args, ft_getshenv(*cli->env));
+			perror("execve");
+			exit(127);
+		}
+		if (prev_fd != -1)
+			close (prev_fd);
+		if (cli->next)
+		{
+			close(fd[WRITE]);
+			prev_fd = fd[PIPE_READ];
+		}
+		cli = cli->next;
+	}
+	while (wait(&status) > 0)
+		;
+	return (WEXITSTATUS(status));
+}
