@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:37 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/22 19:43:44 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/23 00:04:40 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,19 @@
 
 sig_atomic_t	g_signal;
 
-int	main(void)
+int	main(int argc, char **argv, char *envp)
 {
 	static t_env	env[VAR_MAX];
-	static char		var_pool[ARG_MAX];
-	
+	static char		var_arena[ARG_MAX];
+	t_msh			msh;
+
+	msh.env_arena = var_arena;
+	msh.env = env;
+	msh.env_cursor = var_arena;
 	ft_set_sig(PARENT);
 	if (ft_init_var_list(env))
+		return (1);
+	if (ft_load_env(&msh, envp))
 		return (1);
 	// free_nodes = NULL;
 	// 2.- Get local variables

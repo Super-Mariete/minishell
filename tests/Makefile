@@ -10,7 +10,8 @@ HEADERS = ../includes/minishell.h\
 MAIN ?= ../main.c
 SRC = $(MAIN)\
 	../signals/signals.c\
-	../init/init_env.c
+	../init/init_env.c\
+	../utils.c
 OBJ = $(SRC:.c=.o)
 DEBUG_OBJ = $(SRC:.c=.debug.o)
 VAL_OBJ = $(SRC:.c=.val.o)

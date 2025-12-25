@@ -2,8 +2,9 @@ NAME = minishell
 LIBFT_A = libft/libft.a
 
 SRC = main.c\
-	signals/signals.c
-	init/init_env.c
+	signals/signals.c\
+	init/init_env.c\
+	utils.c
 OBJ = $(SRC:.c=.o)
 
 CFLAGS = -I libft -I includes -Wall -Wextra -Werror -pedantic-errors

@@ -21,25 +21,54 @@ ft_make()
 	local	test_status=0
 
 	MAIN=$1 make val
-	((test_status += $?))
-	MAIN=$1 make debug
-	((test_status += $?))
-	make
-	((test_status += $?))
-	make clean
+	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
 		make fclean
 		exit 1
 	fi
+	MAIN=$1 make debug
+	test_status=$?
+	if [ $test_status -ne 0 ]; then
+		echo "Failed to make targets"
+		make fclean
+		exit 1
+	fi
+	MAIN=$1 make
+	test_status=$
+	if [ $test_status -ne 0 ]; then
+		echo "Failed to make targets"
+		make fclean
+		exit 1
+	fi
+	make clean
+}
+
+ft_check_output()
+{
+	local	output
+	local	expected_output
+	local	i=1
+	local ret=0
+
+	while IFS= read -r output && IFS= read -r expected_output <&3; do
+        if [ "$output" != "$expected_output" ]; then
+            echo "----------- Error en línea $i -----------"
+            echo -e "${BLUE}Output real:      '$output'${RESET}"
+            echo -e "Output esperado:  '$expected_output'"
+			((ret++))
+        fi
+        ((i++))
+    done <<< "$1" 3<<< "$2"
+	return $ret
 }
 
 ft_print_status()
 {
 	if [ $1 -ne $2 ]; then
-		echo -e "${RED}Test $4 #$3 init_env $5: failed with status $1${RESET}"
+		echo -e "${RED}Test $3 $4: failed with status $1 (expected $2)${RESET}"
 	else
-		echo -e "${GREEN}Test $3 #$2 init_env $4: passed with status $1 ${RESET}"
+		echo -e "${GREEN}Test $3 $4: passed with status $1${RESET}"
 	fi
 }
 
@@ -54,68 +83,60 @@ ft_mk_log_dir()
 	mkdir -p $DEBUG_DIR
 }
 
-ft_get_status()
-{
-	local	status=0
-
-	read -r status <$1
-	if [ $2 -eq $status ]; then
-		echo "OK"
-	else
-		echo "$2"
-	fi
-}
-
-ft_get_output()
-{
-	local	output=0
-
-	read -r output <$1
-	if [ $2 -eq $output ]; then
-		echo "0"
-	else
-		echo "1"
-	fi
-}
-
 ft_test_load_env()
 {
-	local	test_status=0
+	local	exec_status
 	local	DIR="load_env"
-	local	arg=0
+	local	arg
+	local	arg2
 	local	output
 	local	status
+	local	expected_output
+	local	expected_status
 	TESTFILE="$TESTS_DIR/load_env_tests.txt"
 
 
 	ft_mk_log_dir $DIR
-	local	DEBUG_LOG="$DEBUG_DIR/load_env.txt"
-	local	VAL_LOG="$VAL_DIR/load_env.txt"
+	local	DEBUG_LOG="$DEBUG_DIR/load_env"
+	local	VAL_LOG="$VAL_DIR/load_env"
 	echo -e "${BLUE}---- Running load_env unit tests ----${RESET}"
 	ft_make "$1"
 	if [ -f "$TESTFILE" ]; then
-		local	i = 0;
-		while read -r arg || [ -n "$arg" ]; do
-			$output=$($arg ./unit-tests 2>&1)
-			$status=$($arg ./unit-tests > /dev/null 2>&1 && echo $?)
-			echo "$output" > "$NORMAL_DIR/load_env_log.txt"
-			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "|  normal  |"
-			$output=$($arg ./dmsh)
-			$status=$($arg ./dmsh >/dev/null && echo $?)
-			echo $output > "$DEBUG_LOG" 2>&1
-			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "|  debug   |"
-			$output=$(valgrind -s --track-origins=yes ./valmsh 2>&1)
-			$status=$(valgrind -s --track-origins=yes --error-exitcode=-1 ./valmsh > /dev/null 2>&1)
-			echo $output > "$VAL_LOG"
-			ft_print_status "$status" "$(ft_get_status "$TESTFILE")" "$i" "| valgrind |"
-			make fclean
-			MAIN="$1" make clean
-			echo
-			(($i++));
+	local i=1;
+
+		# Leemos 3 líneas por cada iteración (arg, output esperado, status esperado)
+		while read -r arg && read -r expected_output && read -r expected_status; do
+
+    		output=$(eval "export $arg &&  ./unit-tests 2>&1")
+    		# expected_output=$(eval "export $arg && ./unit-tests 2>&1")
+    		status=$?
+    		echo "$output" > "$NORMAL_DIR/load_env_log$i.txt"
+        	ft_check_output "$output" "$expected_output"
+    		((final_status = exec_status + output_status))
+    		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
+
+    		output=$(eval "export $arg && ./dmsh 2>&1")
+    		expected_output=$(eval "export $arg && ./dmsh 2>&1")
+    		status=$?
+    		echo "$output" > "$DEBUG_LOG$i.txt"
+    		ft_check_output "$output" "$expected_output"
+    		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
+
+    		output=$(eval "export $arg &&  valgrind -q --leak-check=full --error-exitcode=255 ./valmsh 2>&1")
+			status=$?
+    		echo "$output" > "$VAL_LOG$i.txt" 
+    		ft_check_output "$output" "$expected_output"
+    		ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
+    
+    		echo "------------------------------------------------"
+    		((i++))
+
 		done < "$TESTFILE"
 	else
 		echo "No $TESTFILE found"
 	fi
+	make fclean
+	MAIN="$1" make clean
 }
 
 ft_test_init_env()
@@ -131,12 +152,16 @@ ft_test_init_env()
 	local	expected=0
 	echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
 	ft_make "$1"
+
 	./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
 	ft_print_status "$?" $expected "" "|  normal  |"
+
 	./dmsh > "$DEBUG_LOG" 2>&1
 	ft_print_status "$?" $expected "" "|  debug   |"
+
 	valgrind -s --track-origins=yes --error-exitcode=-1 ./valmsh > "$VAL_LOG" 2>&1
 	ft_print_status "$?" $expected "" "| valgrind |"
+	
 	make fclean
 	MAIN="$1" make clean
 	echo

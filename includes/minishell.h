@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/22 19:49:31 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/22 23:23:03 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@
 # define PARENT 0
 # define CHILD 1
 # define IGNORE 2
-
+// Error messages
+# define MEMOUT "minishell: buffer out of memory\n"
 // Only allowed variable, to catch signals
 extern sig_atomic_t	g_signal;
 
@@ -65,9 +66,33 @@ typedef struct s_env
 	char			*key;
 	char			*value;
 	int				is_exported;
-	char			*pool_head;
 	struct s_env	*next;
 }	t_env;
+
+// Struct with references to the most used structures in the program
+typedef struct s_msh
+{
+	t_term	*term; // Maybe not necessary
+	t_env	*env;
+	char	*env_arena;
+	char	*env_cursor;
+	char	*buffer;
+	char	*buf_cursor;
+	char	*cmd_env;
+	char	*cmd_cursor;
+}	t_msh;
+
+// Linked list for the commands environment
+typedef struct s_cmd
+{
+	t_msh	*msh;
+	char	*cmd;
+	char	**argv;
+	char	*heredoc;
+	char	*input;
+	char	*output;
+	int		mode;
+}	t_cmd;
 
 /* signals */
 
@@ -76,9 +101,13 @@ void	ft_set_sig(int option);
 /* init */
 
 int		ft_init_var_list(t_env *pool);
+int		ft_load_env(t_msh *msh, char **envp);
 
 /* readline */
 
 /* parse */
+
+/* utils */
+size_t	ft_buffercpy(char *src, char *dest, size_t size);
 
 #endif

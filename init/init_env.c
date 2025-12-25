@@ -6,35 +6,38 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:42:03 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/22 21:01:04 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/23 02:59:38 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_load_env(t_env *env, char *var_pool, char **envp)
+int	ft_load_env(t_msh *msh, char **envp)
 {
-	char	*head;
 	t_env	*node;
-	char	*len;
+	size_t	value_size;
 	int		i;
-	
-	head = var_pool;
-	if (!env)
-	{
-		env->key = ft_strlcpy(var_pool, "PATH", 5);
-		env->value = ft_strlcpy(var_pool, PATH, ft_strlen(PATH) + 1);
-		head += 5 + ft_strlen(PATH) + 1;
-		env->pool_head = head;
+
+	if (!envp || !*envp)
 		return (0);
-	}
-	node = env;
+	node = msh->env;
 	i = 0;
-	while (envp[i])
+	while (envp[i] && node)
 	{
-		len = ft_strchr(envp[i], "=") - envp[i];
-		
+		value_size = ft_strchr(envp[i], '=') - envp[i];
+		if (ft_buffercpy(envp[i], msh->env_cursor, value_size + 1) )
+			return (1);
+		node->key = msh->env_cursor;
+		msh->env_cursor += value_size + 1;
+		value_size = ft_strlen(envp[i] + value_size);
+		if (ft_buffercpy(envp[i] + value_size + 1, msh->env_cursor, value_size + 1))
+			return (1);
+		node->value = msh->env_cursor;
+		msh->env_cursor += value_size + 1;
+		i++;
+		node = node->next;
 	}
+	return (0);
 }
 
 int	ft_init_var_list(t_env *pool)

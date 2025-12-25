@@ -8,3 +8,30 @@ FOO"=BAR"=VAR
 minishell: FOO=BAR=VAR: command not found
 "FOO=$SHLVL" 
 minishell: FOO=1: command not found
+FOO=BAR=VAR 
+FOO=BAR=VAR $(env)
+0
+FOO="BAR" 
+FOO=BAR $(env)
+0
+FOO=$SHLVL 
+FOO=1 $(env)
+0
+FOO="$SHLVL" 
+FOO=1 $(env)
+0
+FOO==BAR 
+FOO==BAR $(env)
+0
+FOO="|BAR" 
+FOO='|BAR' $(env)
+0
+FOO='|BAR'"VAR" 
+FOO='|BARVAR' $(env)
+0
+FOO='|BAR'VAR 
+FOO='|BARVAR' $(env)
+0
+FOO===BAR
+FOO===BAR $(env)
+0
