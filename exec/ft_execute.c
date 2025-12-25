@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_execute.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: made-ped <made-ped@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 19:03:35 by made-ped          #+#    #+#             */
-/*   Updated: 2025/12/23 18:27:24 by made-ped         ###   ########.fr       */
+/*   Updated: 2025/12/25 20:39:44 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	execute_command(t_cli *cli)
 {
 	pid_t pid;
 	int status;
-	char *path;
+	// char *path;
 
 	pid = fork();
 	if (pid < 0)
@@ -127,13 +127,19 @@ int	execute_command(t_cli *cli)
 		ft_set_sig(CHILD);
 		if (apply_redirs(cli))
 			exit(1);
-		path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
-		if (!path)
+		// path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
+		// if (!path)
+		// {
+		// 	// printf("HOLA\n");
+		// 	ft_perror_token(cli->cmd, CMD_ERR);
+		// 	exit(127);
+		// }
+		if (access(cli->cmd, X_OK))
 		{
-			ft_perror(cli->cmd, CMD_ERR);
+		ft_perror_msh(cli->cmd, "command not found\n");
 			exit(127);
 		}
-		execve(path, cli->args, ft_getshenv(*cli->env));
+		execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
 		perror("execve");
 		exit(126);
 	}
@@ -149,7 +155,7 @@ int	execute_pipeline(t_cli *cli)
 	int prev_fd = -1;
 	pid_t pid;
 	int status;
-	char *path;
+	// char *path;
 
 	while (cli)
 	{
@@ -174,14 +180,20 @@ int	execute_pipeline(t_cli *cli)
 				exit(1);
 			if (get_builtin(cli->cmd))
 				exit(exec_builtin_child(cli));
-			path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
-			if (!path)
+			
+			// path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
+			// if (!path)
+			// {
+			// 	ft_perror_token(cli->cmd, CMD_ERR);
+			// 	exit (127);
+			// }
+			// printf("EXEC PATH: [%s]\n", path);
+			if (access(cli->cmd, X_OK))
 			{
-				ft_perror(cli->cmd, CMD_ERR);
-				exit (127);
+				ft_perror_msh(cli->cmd, "command not found\n");
+				exit(127);
 			}
-			printf("EXEC PATH: [%s]\n", path);
-			execve(path, cli->args, ft_getshenv(*cli->env));
+			execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
 			perror("execve");
 			exit(127);
 		}

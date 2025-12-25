@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:54 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/09/20 13:40:36 by rms35            ###   ########.fr       */
+/*   Updated: 2025/12/25 20:38:37 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,26 @@ void	ft_print_list(t_cli *cli)
 	}
 }
 
-void	ft_perror(char *token, char *msg)
+void	ft_perror_msh(char *problem, char *mssg)
+{
+	write(2, "minishell: ", 11);
+	if (problem)
+		write(2, problem,ft_strlen(problem));
+	write(2, ": ", 2);
+	if (mssg)
+		write(2, mssg, ft_strlen(mssg));
+	return ;
+}
+
+void	ft_perror_token(char *token, char *msg)
 {
 	char	*t;
 	char	*err;
 
 	t = ft_strjoin(msg, token);
 	err = ft_strjoin(t, "'\n");
-	write(2, err, ft_strlen(err));
+	if (err)
+		write(2, err, ft_strlen(err));
 	free(t);
 	free(err);
 }

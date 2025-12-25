@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:18:55 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/09/20 19:21:07 by rms35            ###   ########.fr       */
+/*   Updated: 2025/12/25 20:33:56 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ int	ft_check_redirs(char **token, int i)
 	if (token[i] && ft_strchr(REDIR_S, token[i][0]) && (!token[i][1] || (token[i][1] == token[i][0] && !token[i][2])))
 	{
 		if (!token[i + 1])
-			return (ft_perror("newline", SYN_ERR), 1);
+			return (ft_perror_token("newline", SYN_ERR), 1);
 		s = ft_strndup(token[i], 3);
-		ft_perror(s, SYN_ERR);
+		ft_perror_token(s, SYN_ERR);
 		free(s);
 		return (1);
 	}
@@ -35,23 +35,23 @@ int	ft_check_errors(char **token, int len)
 	if (!token)
 		return (1);
 	if (token[0] && ft_strchr(OP_STR2, token[0][0]))
-		return (printf("1\n"), ft_perror(token[0], SYN_ERR), 1);
+		return (printf("1\n"), ft_perror_token(token[0], SYN_ERR), 1);
 	i = 0;
 	while (i < len)
 	{
 		// printf("token[%d] = %s\n", i, token[i]);
 		if (token[i] && ft_strchr(OP_STR2, token[i][0]) && (token[i + 1] && ft_strchr(OP_STR2, token[i + 1][0])))
-			return (printf("2\n"), ft_perror(token[i + 1], SYN_ERR), 1);
+			return (printf("2\n"), ft_perror_token(token[i + 1], SYN_ERR), 1);
 		else if (token[i] && token[i][0] == ')' && (token[i + 1] && !ft_strchr(OP_STR, token[i + 1][0])))
-			return (printf("3\n"), ft_perror(token[i + 1], SYN_ERR), 1);
+			return (printf("3\n"), ft_perror_token(token[i + 1], SYN_ERR), 1);
 		else if (token[i] && token[i][0] == '(' && i > 0 && (!ft_strchr(OP_STR, token[i - 1][0])))
-			return (printf("4\n"), ft_perror(token[i + 1], SYN_ERR), 1);
+			return (printf("4\n"), ft_perror_token(token[i + 1], SYN_ERR), 1);
 		else if (token[i] && token[i][0] == '(' && token[i + 1] && token[i + 1][0] == ')')
-			return (printf("5\n"), ft_perror(token[i + 1], SYN_ERR), 1);
+			return (printf("5\n"), ft_perror_token(token[i + 1], SYN_ERR), 1);
 		else if (token[i] && ft_strchr(OP_STR, token[i][0]) && !token[i + 1])
-			return (printf("6\n"), ft_perror(token[i], SYN_ERR), 1);
+			return (printf("6\n"), ft_perror_token(token[i], SYN_ERR), 1);
 		else if (token[i] && ft_strchr(SEP_STR, token[i][0]) && token[i + 1] && ft_strchr(SEP_STR, token[i + 1][0]))
-			return (printf("7\n"), ft_perror(token[i + 1], SYN_ERR), 1);
+			return (printf("7\n"), ft_perror_token(token[i + 1], SYN_ERR), 1);
 		i++;
 	}
 	return (0);

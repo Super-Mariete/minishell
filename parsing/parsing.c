@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:42 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/09/20 19:21:34 by rms35            ###   ########.fr       */
+/*   Updated: 2025/12/25 20:33:56 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_append(char *token, t_cli *cli)
 	int	i;
 
 	if (!token)
-		return (ft_perror(">>", SYN_ERR), 0);
+		return (ft_perror_token(">>", SYN_ERR), 0);
 	if (!cli)
 		return (0);
 	i = 0;
@@ -37,7 +37,7 @@ int	ft_outfile(char *token, t_cli *cli)
 	int	i;
 
 	if (!token)
-		return (ft_perror(">", SYN_ERR), 0);
+		return (ft_perror_token(">", SYN_ERR), 0);
 	if (!cli)
 		return (0);
 	i = 0;
@@ -61,7 +61,7 @@ int	ft_infile(char *token, t_cli *cli)
 		return (0);
 	i = 0;
 	if (!token)
-		return (ft_perror("<", SYN_ERR), 0);
+		return (ft_perror_token("<", SYN_ERR), 0);
 	free(cli->infile);
 	free(cli->heredoc);
 	cli->heredoc = NULL;

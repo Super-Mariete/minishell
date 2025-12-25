@@ -3,123 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:16 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/09/20 17:43:13 by rms35            ###   ########.fr       */
+/*   Updated: 2025/12/25 20:17:18 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t	g_sig_rec = 0;
-
-// char	*get_pwd(char *cwd)
-// {
-// 	char	*home;
-// 	char	*pwd;
-// 	char	*t;
-
-// 	if (!cwd)
-// 		return (NULL);
-// 	home = ft_strtrim(getenv("HOME"), "HOME=");
-// 	if (!home)
-// 		return (NULL);
-// 	if (!ft_strncmp(home, cwd, ft_strlen(home)))
-// 	{
-// 		t = ft_strtrim(cwd, home);
-// 		pwd = ft_strjoin("~/", t);
-// 		return (free(home), free(t), pwd);
-// 	}
-// 	pwd = ft_strdup(cwd);
-// 	return (free(home), pwd);
-// }
-
-// char	*get_hostname(void)
-// {
-// 	char	*r;
-// 	char	*buffer;
-// 	char	*t;
-// 	int		fd;
-
-// 	r = NULL;
-// 	fd = open("/etc/hostname", O_RDONLY);
-// 	buffer = ft_calloc(2, sizeof(char));
-// 	if (fd == -1 || ! buffer)
-// 		return (free(buffer), NULL);
-// 	read(fd, buffer, 1);
-// 	while (buffer[0] != '\n' && buffer[0] != EOF)
-// 	{
-// 		t = r;
-// 		r = ft_strjoin(r, buffer);
-// 		read(fd, buffer, 1);
-// 		free(t);
-// 	}
-// 	return (free(buffer), close(fd), r);
-// }
-
-// char	*ft_prompt(char **envp)
-// {
-// 	char	*user;
-// 	char	*pwd;
-// 	char	*prompt;
-// 	char	*t;
-
-// 	if (!envp)
-// 		return (NULL);
-// 	user = ft_strtrim(getenv("USER"), "USER=");
-// 	t = (char *)ft_calloc(4096, sizeof(char));
-// 	if (!t || ! user)
-// 		return (perror("malloc: "), NULL);
-// 	pwd = get_pwd(getcwd(t, 4096));
-// 	free(t);
-// 	prompt = ft_strjoin(user, "@");
-// 	free(user);
-// 	user = get_hostname();
-// 	t = ft_strjoin(prompt, user);
-// 	free(user);
-// 	free(prompt);
-// 	prompt = ft_strjoin(t, ":");
-// 	free(t);
-// 	t = ft_strjoin(prompt, pwd);
-// 	free(prompt);
-// 	prompt = ft_strjoin(t, "$ ");
-// 	return (free(t), free(pwd), prompt);
-// }
-// char	*ft_here_prnts(char *line)
-// {
-// 	char	*new_line;
-// 	char	*t;
-// 	int		i;
-// 	int	end;
-
-// 	if (!line)
-// 		return (NULL);
-// 	new_line = NULL;
-// 	end = 0;
-// 	while (1)
-// 	{
-// 		i = 0;
-// 		free(new_line);
-// 		new_line = readline("> ");
-// 		if (g_sig_rec)
-// 			return (free(new_line), g_sig_rec = 0, line);
-// 		if (!new_line)
-// 			return (free(line), line = NULL, write(2, UNEX_EOF, 49), NULL);
-// 		while (new_line && ft_isspace(new_line[i]))
-// 			i++;
-// 		if (!new_line[i] || new_line[i] == '\n')
-// 			continue ;
-// 		if (ft_strchr(new_line, ')'))
-// 			end = 1;
-// 		t = ft_strjoin(line, new_line);
-// 		free(line);
-// 		line = t;
-// 		if (end)
-// 			break ;
-// 	}
-// 	return (free(new_line), line);
-// }
 
 int	ft_check_prnts(char *line)
 {

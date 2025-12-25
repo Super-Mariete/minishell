@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/09/20 19:05:34 by rms35            ###   ########.fr       */
+/*   Updated: 2025/12/25 20:33:56 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ int	ft_heredoc(char *token, t_cli *cli)
 		return (printf("!cli\n"), 2);
 	ft_free_prev(cli);
 	if (!token)
-		return (ft_perror("<<", SYN_ERR), 2);
+		return (ft_perror_token("<<", SYN_ERR), 2);
 	delim = ft_trim_delim(token, &option);
 	if (!delim)
 		return (cli->status = 2, 2);

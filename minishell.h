@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/23 13:48:04 by made-ped         ###   ########.fr       */
+/*   Updated: 2025/12/25 20:38:33 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,8 @@ void	ft_free_list(t_cli **cli);
 void	ft_free_node(t_cli *cli);
 void	ft_here_error(char *delim);
 void	ft_free_tokens(char **tokens, int n);
-void	ft_perror(char *token, char *msg);
+void	ft_perror_token(char *token, char *msg);
+void	ft_perror_msh(char *problem, char *mssg);
 void	ft_free_env(t_shenv **env);
 void	ft_reset_list(t_cli *cli);
 t_cli	*ft_init_node(int len, t_shenv **envp, int op);
