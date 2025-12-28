@@ -35,7 +35,7 @@ ft_make()
 		exit 1
 	fi
 	MAIN=$1 make
-	test_status=$
+	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
 		make fclean
@@ -83,6 +83,35 @@ ft_mk_log_dir()
 	mkdir -p $DEBUG_DIR
 }
 
+ft_not_so_long_var()
+{
+	local	ARG_MAX=$((2048))
+	local	i=0
+	echo -n > not_so_long_var.txt
+	while [ $i -le $ARG_MAX ]; do
+		echo "FOO$i=1" >> not_so_long_var.txt
+		((i++))
+	done
+}
+
+ft_many_vars()
+{
+	i=0
+	while [ $i -le 204801 ]; do
+		export "FOO$i=1"
+		((i++))
+	done
+}
+
+ft_clean_vars()
+{
+	i=0
+	while [ $i -le 204801 ]; do
+		unset "FOO$i=1"
+		((i++))
+	done
+}
+
 ft_test_load_env()
 {
 	local	exec_status
@@ -101,13 +130,18 @@ ft_test_load_env()
 	local	VAL_LOG="$VAL_DIR/load_env"
 	echo -e "${BLUE}---- Running load_env unit tests ----${RESET}"
 	ft_make "$1"
+	ft_not_so_long_var
 	if [ -f "$TESTFILE" ]; then
 	local i=1;
 
-		# Leemos 3 líneas por cada iteración (arg, output esperado, status esperado)
-		while read -r arg && read -r expected_output && read -r expected_status; do
+		while read -r arg && read -r expected_cmd && read -r expected_status; do
 
-    		output=$(eval "export $arg &&  ./unit-tests 2>&1")
+			expected_output=$(eval "{ export $arg && $expected_cmd; } 2>&1")
+			# if [ expected_output ==  ]; then
+			# 	ft_many_vars
+			# fi
+
+    		output=$(eval "{ export $arg && ./unit-tests; } 2>&1")
     		# expected_output=$(eval "export $arg && ./unit-tests 2>&1")
     		status=$?
     		echo "$output" > "$NORMAL_DIR/load_env_log$i.txt"
@@ -115,14 +149,14 @@ ft_test_load_env()
     		((final_status = exec_status + output_status))
     		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
 
-    		output=$(eval "export $arg && ./dmsh 2>&1")
-    		expected_output=$(eval "export $arg && ./dmsh 2>&1")
+    		output=$(eval "{ export $arg && ./dmsh; } 2>&1")
+    		# expected_output=$(eval "export $arg && ./dmsh 2>&
     		status=$?
     		echo "$output" > "$DEBUG_LOG$i.txt"
     		ft_check_output "$output" "$expected_output"
     		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
 
-    		output=$(eval "export $arg &&  valgrind -q --leak-check=full --error-exitcode=255 ./valmsh 2>&1")
+    		output=$(eval "{ export $arg &&  valgrind -q --leak-check=full --error-exitcode=255 ./valmsh; } 2>&1")
 			status=$?
     		echo "$output" > "$VAL_LOG$i.txt" 
     		ft_check_output "$output" "$expected_output"

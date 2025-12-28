@@ -1,0 +1,86 @@
+
+[34m---- Running static analisys ----[0m
+Checking ../main.c ...
+1/4 files checked 28% done
+Checking ../signals/signals.c ...
+2/4 files checked 56% done
+Checking ../init/init_env.c ...
+../init/init_env.c:18:9: style: The scope of the variable 'value_size' can be reduced. [variableScope]
+ size_t value_size;
+        ^
+../init/init_env.c:19:9: style: The scope of the variable 'key_size' can be reduced. [variableScope]
+ size_t key_size;
+        ^
+3/4 files checked 95% done
+Checking ../utils.c ...
+../utils.c:3:27: style: Parameter 'src' can be declared as pointer to const [constParameterPointer]
+size_t ft_buffercpy(char *src, char *dest, size_t size)
+                          ^
+4/4 files checked 100% done
+nofile:0:0: information: Active checkers: 117/966 (use --checkers-report=<filename> to see details) [checkersReport]
+
+
+[34m---- Running norminette ----[0m
+main.c: Error!
+Error: MISALIGNED_VAR_DECL  (line:  20, col:   9):	Misaligned variable declaration
+Error: WRONG_SCOPE_COMMENT  (line:  51, col:   5):	[95mComment is invalid in this scope[0m
+Error: WRONG_SCOPE_COMMENT  (line:  52, col:   5):	[95mComment is invalid in this scope[0m
+Error: WRONG_SCOPE_COMMENT  (line:  53, col:   5):	[95mComment is invalid in this scope[0m
+Error: WRONG_SCOPE_COMMENT  (line:  54, col:   5):	[95mComment is invalid in this scope[0m
+init_env.c: Error!
+Error: NO_SPC_AFR_PAR       (line:  33, col:  60):	[94mExtra space after parenthesis (brace/bracket)[0m
+Error: NO_SPC_BFR_PAR       (line:  33, col:  62):	[94mExtra space before parenthesis (brace/bracket)[0m
+Error: TOO_MANY_LINES       (line:  48, col:   1):	Function has more than 25 lines
+Error: WRONG_SCOPE_COMMENT  (line:  56, col:   5):	[95mComment is invalid in this scope[0m
+Error: WRONG_SCOPE_COMMENT  (line:  57, col:   5):	[95mComment is invalid in this scope[0m
+[31mNorminette not passed[0m
+
+[34m---- Running init_env unit tests ----[0m
+[32mTest  |  normal  |: passed with status 0[0m
+[32mTest  |  debug   |: passed with status 0[0m
+[32mTest  | valgrind |: passed with status 0[0m
+
+[34m---- Running load_env unit tests ----[0m
+----------- Error en línea 78 -----------
+[34mOutput real:      '_=./unit-tests'[0m
+Output esperado:  '_=/usr/bin/env'
+[32mTest 1 |  normal  |: passed with status 0[0m
+----------- Error en línea 78 -----------
+[34mOutput real:      '_=./dmsh'[0m
+Output esperado:  '_=/usr/bin/env'
+[32mTest 1 |  debug   |: passed with status 0[0m
+----------- Error en línea 78 -----------
+[34mOutput real:      '_=/usr/bin/valgrind'[0m
+Output esperado:  '_=/usr/bin/env'
+[32mTest 1 | valgrind |: passed with status 0[0m
+------------------------------------------------
+----------- Error en línea 1 -----------
+[34mOutput real:      'SHELL=/bin/bash'[0m
+Output esperado:  'minishell: Argument list too long'
+[31mTest 2 |  normal  |: failed with status 0 (expected 126)[0m
+----------- Error en línea 1 -----------
+[34mOutput real:      'SHELL=/bin/bash'[0m
+Output esperado:  'minishell: Argument list too long'
+[31mTest 2 |  debug   |: failed with status 0 (expected 126)[0m
+----------- Error en línea 1 -----------
+[34mOutput real:      'SHELL=/bin/bash'[0m
+Output esperado:  'minishell: Argument list too long'
+[31mTest 2 | valgrind |: failed with status 0 (expected 126)[0m
+------------------------------------------------
+----------- Error en línea 1 -----------
+[34mOutput real:      'SHELL=/bin/bash'[0m
+Output esperado:  'minishell: Argument list too long'
+[31mTest 3 |  normal  |: failed with status 0 (expected 126)[0m
+----------- Error en línea 1 -----------
+[34mOutput real:      'SHELL=/bin/bash'[0m
+Output esperado:  'minishell: Argument list too long'
+[31mTest 3 |  debug   |: failed with status 0 (expected 126)[0m
+----------- Error en línea 1 -----------
+[34mOutput real:      'SHELL=/bin/bash'[0m
+Output esperado:  'minishell: Argument list too long'
+[31mTest 3 | valgrind |: failed with status 0 (expected 126)[0m
+------------------------------------------------
+[32mTest 4 |  normal  |: passed with status 126[0m
+[32mTest 4 |  debug   |: passed with status 126[0m
+[32mTest 4 | valgrind |: passed with status 126[0m
+------------------------------------------------

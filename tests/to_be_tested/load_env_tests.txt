@@ -1,9 +1,12 @@
-echo -n &&
-$(env)
+export TEST=1
+env
 0
-FOO="$(cat quijote.txt) $(env)"
-minishell: buffer out of memory
-1
-"$(cat quijote.txt)=BAR $(env)"
-minishell: buffer out of memory
-1
+FOO="$(cat not_so_long_var.txt) $(env)"
+echo "minishell: Argument list too long"
+126
+"$(cat not_so_long_var.txt)=BAR $(env)"
+echo "minishell: Argument list too long"
+126
+$(for i in {0..150}; do echo -n "FOO$i=1 "; done)
+echo "minishell: Argument list too long"
+126

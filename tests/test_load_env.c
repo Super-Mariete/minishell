@@ -13,7 +13,8 @@ static void	ft_print_list(t_env *env)
 	i = 0;
 	while (node)
 	{
-		printf("%s=%s\n", node->key, node->value);
+		if (node->key && node->value)
+			printf("%s=%s\n", node->key, node->value);
 		node = node->next;
 		i++;
 	}
@@ -31,10 +32,9 @@ int	main(int argc, char **argv, char **envp)
 	msh.env = env;
 	msh.env_cursor = var_arena;
 	// ft_set_sig(PARENT);
-	if (ft_init_var_list(env))
-		return (1);
+	ft_init_var_list(env);
 	if (ft_load_env(&msh, envp))
-		return (1);
+		return (126);
 	ft_print_list(env);
 	return (0);
 }

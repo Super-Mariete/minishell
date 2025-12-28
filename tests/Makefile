@@ -4,7 +4,8 @@ DEBUG_NAME = dmsh
 VAL_NAME = valmsh
 LIBFT_A = ../libft/libft.a
 HEADERS = ../includes/minishell.h\
-		../includes/msh_limits.h
+		../includes/msh_limits.h\
+		test.h
 
 # Files
 MAIN ?= ../main.c
@@ -17,7 +18,7 @@ DEBUG_OBJ = $(SRC:.c=.debug.o)
 VAL_OBJ = $(SRC:.c=.val.o)
 
 # Flags
-CFLAGS = -I libft -I includes -Wall -Wextra -Werror# -pedantic-errors
+CFLAGS = -I. -include test.h -I libft -I includes -Wall -Wextra -Werror# -pedantic-errors
 DEBUGFLAGS = -g3 -fsanitize=address,undefined
 
 # Original
