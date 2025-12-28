@@ -1,0 +1,613 @@
+==133668== Memcheck, a memory error detector
+==133668== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==133668== Using Valgrind-3.25.1 and LibVEX; rerun with -h for copyright info
+==133668== Command: ./valmsh
+==133668== 
+node[0] = 0x4004080
+node->next = 0x40040a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[1] = 0x40040a0
+node->next = 0x40040c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[2] = 0x40040c0
+node->next = 0x40040e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[3] = 0x40040e0
+node->next = 0x4004100
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[4] = 0x4004100
+node->next = 0x4004120
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[5] = 0x4004120
+node->next = 0x4004140
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[6] = 0x4004140
+node->next = 0x4004160
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[7] = 0x4004160
+node->next = 0x4004180
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[8] = 0x4004180
+node->next = 0x40041a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[9] = 0x40041a0
+node->next = 0x40041c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[10] = 0x40041c0
+node->next = 0x40041e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[11] = 0x40041e0
+node->next = 0x4004200
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[12] = 0x4004200
+node->next = 0x4004220
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[13] = 0x4004220
+node->next = 0x4004240
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[14] = 0x4004240
+node->next = 0x4004260
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[15] = 0x4004260
+node->next = 0x4004280
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[16] = 0x4004280
+node->next = 0x40042a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[17] = 0x40042a0
+node->next = 0x40042c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[18] = 0x40042c0
+node->next = 0x40042e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[19] = 0x40042e0
+node->next = 0x4004300
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[20] = 0x4004300
+node->next = 0x4004320
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[21] = 0x4004320
+node->next = 0x4004340
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[22] = 0x4004340
+node->next = 0x4004360
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[23] = 0x4004360
+node->next = 0x4004380
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[24] = 0x4004380
+node->next = 0x40043a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[25] = 0x40043a0
+node->next = 0x40043c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[26] = 0x40043c0
+node->next = 0x40043e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[27] = 0x40043e0
+node->next = 0x4004400
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[28] = 0x4004400
+node->next = 0x4004420
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[29] = 0x4004420
+node->next = 0x4004440
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[30] = 0x4004440
+node->next = 0x4004460
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[31] = 0x4004460
+node->next = 0x4004480
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[32] = 0x4004480
+node->next = 0x40044a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[33] = 0x40044a0
+node->next = 0x40044c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[34] = 0x40044c0
+node->next = 0x40044e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[35] = 0x40044e0
+node->next = 0x4004500
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[36] = 0x4004500
+node->next = 0x4004520
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[37] = 0x4004520
+node->next = 0x4004540
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[38] = 0x4004540
+node->next = 0x4004560
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[39] = 0x4004560
+node->next = 0x4004580
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[40] = 0x4004580
+node->next = 0x40045a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[41] = 0x40045a0
+node->next = 0x40045c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[42] = 0x40045c0
+node->next = 0x40045e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[43] = 0x40045e0
+node->next = 0x4004600
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[44] = 0x4004600
+node->next = 0x4004620
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[45] = 0x4004620
+node->next = 0x4004640
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[46] = 0x4004640
+node->next = 0x4004660
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[47] = 0x4004660
+node->next = 0x4004680
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[48] = 0x4004680
+node->next = 0x40046a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[49] = 0x40046a0
+node->next = 0x40046c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[50] = 0x40046c0
+node->next = 0x40046e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[51] = 0x40046e0
+node->next = 0x4004700
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[52] = 0x4004700
+node->next = 0x4004720
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[53] = 0x4004720
+node->next = 0x4004740
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[54] = 0x4004740
+node->next = 0x4004760
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[55] = 0x4004760
+node->next = 0x4004780
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[56] = 0x4004780
+node->next = 0x40047a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[57] = 0x40047a0
+node->next = 0x40047c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[58] = 0x40047c0
+node->next = 0x40047e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[59] = 0x40047e0
+node->next = 0x4004800
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[60] = 0x4004800
+node->next = 0x4004820
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[61] = 0x4004820
+node->next = 0x4004840
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[62] = 0x4004840
+node->next = 0x4004860
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[63] = 0x4004860
+node->next = 0x4004880
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[64] = 0x4004880
+node->next = 0x40048a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[65] = 0x40048a0
+node->next = 0x40048c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[66] = 0x40048c0
+node->next = 0x40048e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[67] = 0x40048e0
+node->next = 0x4004900
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[68] = 0x4004900
+node->next = 0x4004920
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[69] = 0x4004920
+node->next = 0x4004940
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[70] = 0x4004940
+node->next = 0x4004960
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[71] = 0x4004960
+node->next = 0x4004980
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[72] = 0x4004980
+node->next = 0x40049a0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[73] = 0x40049a0
+node->next = 0x40049c0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[74] = 0x40049c0
+node->next = 0x40049e0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[75] = 0x40049e0
+node->next = 0x4004a00
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[76] = 0x4004a00
+node->next = 0x4004a20
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[77] = 0x4004a20
+node->next = 0x4004a40
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[78] = 0x4004a40
+node->next = 0x4004a60
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[79] = 0x4004a60
+node->next = 0x4004a80
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[80] = 0x4004a80
+node->next = 0x4004aa0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[81] = 0x4004aa0
+node->next = 0x4004ac0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[82] = 0x4004ac0
+node->next = 0x4004ae0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[83] = 0x4004ae0
+node->next = 0x4004b00
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[84] = 0x4004b00
+node->next = 0x4004b20
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[85] = 0x4004b20
+node->next = 0x4004b40
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[86] = 0x4004b40
+node->next = 0x4004b60
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[87] = 0x4004b60
+node->next = 0x4004b80
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[88] = 0x4004b80
+node->next = 0x4004ba0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[89] = 0x4004ba0
+node->next = 0x4004bc0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[90] = 0x4004bc0
+node->next = 0x4004be0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[91] = 0x4004be0
+node->next = 0x4004c00
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[92] = 0x4004c00
+node->next = 0x4004c20
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[93] = 0x4004c20
+node->next = 0x4004c40
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[94] = 0x4004c40
+node->next = 0x4004c60
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[95] = 0x4004c60
+node->next = 0x4004c80
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[96] = 0x4004c80
+node->next = 0x4004ca0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[97] = 0x4004ca0
+node->next = 0x4004cc0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[98] = 0x4004cc0
+node->next = 0x4004ce0
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+node[99] = 0x4004ce0
+node->next = (nil)
+node->key = (null)
+node->value = (null)
+node->is_exported = 0
+
+==133668== 
+==133668== HEAP SUMMARY:
+==133668==     in use at exit: 0 bytes in 0 blocks
+==133668==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==133668== 
+==133668== All heap blocks were freed -- no leaks are possible
+==133668== 
+==133668== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

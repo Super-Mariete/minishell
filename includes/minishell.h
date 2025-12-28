@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/22 23:23:03 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/28 01:38:40 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,6 @@ int		ft_load_env(t_msh *msh, char **envp);
 /* parse */
 
 /* utils */
-size_t	ft_buffercpy(char *src, char *dest, size_t size);
+size_t	ft_buffercpy(const char *src, char *dest, size_t size);
 
 #endif

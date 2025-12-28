@@ -6,10 +6,10 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:42:57 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/23 01:06:42 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/27 23:38:02 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define ARG_MAX 2097152
-#define VAR_MAX	50
+#define ARG_MAX 20480//2097152
+#define VAR_MAX	100
 #define CMD_MAX	682
