@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:41 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/22 13:41:37 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/29 21:40:24 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,11 @@ extern sig_atomic_t	g_signal;
 
 static void	ft_sig_int_parent(int signal)
 {
-	char	nl;
-
-	nl = '\n';
 	g_signal = 1;
 	if (signal == SIGINT)
 	{
+		g_signal = 2;
 		write(1, "^C", 2);
-		ioctl(STDIN_FILENO, TIOCSTI, &nl);
 	}
 }
 
