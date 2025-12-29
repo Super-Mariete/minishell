@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/28 01:38:40 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/29 00:13:44 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
-	int				is_exported;
+	uint8_t			is_exported;
 	struct s_env	*next;
 }	t_env;
 
@@ -109,5 +109,9 @@ int		ft_load_env(t_msh *msh, char **envp);
 
 /* utils */
 size_t	ft_buffercpy(const char *src, char *dest, size_t size);
+void	ft_refill_var_buffer(char *buffer, t_env *env);
+
+/* exec */
+void 	ft_unset(t_msh *msh, char *key);
 
 #endif
