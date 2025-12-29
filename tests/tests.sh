@@ -112,25 +112,25 @@ ft_clean_vars()
 	done
 }
 
-ft_test_is_gap()
-{
-	local	DIR="var_refill"
-	TESTFILE="$TESTS_DIR/var_refill.txt"
+# ft_test_is_gap()
+# {
+# 	local	DIR="var_refill"
+# 	TESTFILE="$TESTS_DIR/var_refill.txt"
 
-	ft_mk_log_dir $DIR
-	local	DEBUG_LOG="$DEBUG_DIR/var_refill.txt"
-	local	VAL_LOG="$VAL_DIR/var_refill.txt"
-	MAIN=$1 make fclean 
-	ft_make $1
-	# env
-	# echo -n "n_vars = " && env | wc -l
-	./unit-tests > $NORMAL_DIR/var_refill.txt 2>&1
-	./dmsh > $DEBUG_DIR/var_refill.txt 2>&1
-	valgrind -q --leak-check=full --error-exitcode=255 --track-origins=yes -s ./valmsh	> $VAL_LOG 2>&1
-	MAIN=$1  make fclean
-	# ./dmsh 2>&1
-	# ./val 2>&1
-}
+# 	ft_mk_log_dir $DIR
+# 	local	DEBUG_LOG="$DEBUG_DIR/var_refill.txt"
+# 	local	VAL_LOG="$VAL_DIR/var_refill.txt"
+# 	MAIN=$1 make fclean 
+# 	ft_make $1
+# 	# env
+# 	# echo -n "n_vars = " && env | wc -l
+# 	./unit-tests > $NORMAL_DIR/var_refill.txt 2>&1
+# 	./dmsh > $DEBUG_DIR/var_refill.txt 2>&1
+# 	valgrind -q --leak-check=full --error-exitcode=255 --track-origins=yes -s ./valmsh	> $VAL_LOG 2>&1
+# 	MAIN=$1  make fclean
+# 	# ./dmsh 2>&1
+# 	# ./val 2>&1
+# }
 
 ft_test_load_env()
 {
@@ -187,34 +187,6 @@ ft_test_load_env()
 	MAIN="$1" make clean
 }
 
-# ft_test_init_env()
-# {
-# 	local	test_status=0
-# 	local	DIR="init_env"
-# 	TESTFILE="$TESTS_DIR/init_env_tests.txt"
-
-
-# 	ft_mk_log_dir $DIR
-# 	local	DEBUG_LOG="$DEBUG_DIR/init_env.txt"
-# 	local	VAL_LOG="$VAL_DIR/init_env.txt"
-# 	local	expected=0
-# 	echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
-# 	MAIN=$1 make fclean 
-# 	ft_make "$1"
-
-# 	./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
-# 	ft_print_status "$?" $expected "" "|  normal  |"
-
-# 	./dmsh > "$DEBUG_LOG" 2>&1
-# 	ft_print_status "$?" $expected "" "|  debug   |"
-
-# 	valgrind -s --track-origins=yes --error-exitcode=-1 ./valmsh > "$VAL_LOG" 2>&1
-# 	ft_print_status "$?" $expected "" "| valgrind |"
-	
-# 	MAIN="$1" make clean
-# 	echo
-# }
-
 make -s fclean
 echo
 echo -e "${BLUE}---- Running static analisys ----${RESET}"
@@ -230,7 +202,5 @@ else
 	echo -e  "${GREEN}Norminette passed${RESET}"
 fi
 echo
-# ft_test_init_env "test_init_env.c"
 ft_test_load_env "test_load_env.c"
-# ft_test_is_gap "test_var_refill.c"
 make fclean

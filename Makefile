@@ -25,9 +25,11 @@ $(LIBFT_A):
 
 clean:
 	@rm  -f $(OBJ) $(DEBUG_OBJ) $(VAL_OBJ)
+	@make -s -C libft clean
 
 fclean: clean
 	@rm -f $(NAME) $(DEBUG_NAME) $(VAL_NAME)
+	@make -s -C libft fclean
 
 re: fclean all
 
