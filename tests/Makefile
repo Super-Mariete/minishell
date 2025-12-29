@@ -11,7 +11,7 @@ HEADERS = ../includes/minishell.h\
 MAIN ?= ../main.c
 SRC = $(MAIN)\
 	../signals/signals.c\
-	../init/init_env.c\
+	../variables/init_env.c\
 	../utils.c
 # 	../exec/builtins.c
 OBJ = $(SRC:.c=.o)

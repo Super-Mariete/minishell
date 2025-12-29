@@ -20,7 +20,7 @@ There are, nonetheless, some bottlenecks that, when considered, can give us an a
 
 ### Local and Environment Variable Lists
 
-We use the same linked list of variables, with a flag to differenciate local from environment variables. There's no limit to the number of variables (local or environmental), or the size of each value. But execve only accepts ARG_MAX ~= 2MB of arguments (args + envp), and we are going to use this size limit for the pool that stores the variables refernced by the linked list.
+We use an arena of chars, with the first byte previous to every variable used to differenciate local (1) from environment (2) variables. There's no limit to the number of variables (local or environmental), or the size of each value. But execve only accepts ARG_MAX ~ 2MB of arguments (args + envp), and we are going to use this size limit for the pool that stores the variables refernced by the linked list.
 
 ### Tokens and Expanded Tokens
 

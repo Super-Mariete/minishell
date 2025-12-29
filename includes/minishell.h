@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/29 00:13:44 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/29 17:54:10 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <unistd.h>
 # include <limits.h>
 # include "../libft/libft.h"
+# include <stdbool.h>
 // // # include <fcntl.h>
 // # include <sys/resource.h>
 # include <dirent.h>
@@ -36,14 +37,19 @@
 # define METACHARS " \t\n|&;()<>"
 # define CONTROL_OP "<>&|"
 # define PROMPT "\e[32mminishell\e[0m $ "
+
 // If PATH not in environment (predetermined PATH)
 # define PATH "/bin:/sbin/:local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
+
 // Set up signal handling status
 # define PARENT 0
 # define CHILD 1
 # define IGNORE 2
+
 // Error messages
 # define MEMOUT "minishell: buffer out of memory\n"
+# define ARG2BIG "minishell: Argument list too long\n"
+
 // Only allowed variable, to catch signals
 extern sig_atomic_t	g_signal;
 
@@ -63,9 +69,10 @@ typedef struct s_term
 // List of local and environment (if exported) variables
 typedef struct s_env
 {
-	char			*key;
-	char			*value;
-	uint8_t			is_exported;
+	char			*head;
+	char			*last;
+	char			*arena;
+	char			*cursor;
 	struct s_env	*next;
 }	t_env;
 
@@ -74,8 +81,6 @@ typedef struct s_msh
 {
 	t_term	*term; // Maybe not necessary
 	t_env	*env;
-	char	*env_arena;
-	char	*env_cursor;
 	char	*buffer;
 	char	*buf_cursor;
 	char	*cmd_env;
@@ -100,8 +105,7 @@ void	ft_set_sig(int option);
 
 /* init */
 
-int		ft_init_var_list(t_env *pool);
-int		ft_load_env(t_msh *msh, char **envp);
+int		ft_load_env(t_env *env, char **envp);
 
 /* readline */
 
@@ -109,9 +113,9 @@ int		ft_load_env(t_msh *msh, char **envp);
 
 /* utils */
 size_t	ft_buffercpy(const char *src, char *dest, size_t size);
-void	ft_refill_var_buffer(char *buffer, t_env *env);
+// void	ft_refill_var_buffer(char *buffer, t_env *env);
 
 /* exec */
-void 	ft_unset(t_msh *msh, char *key);
+void	ft_unset(t_msh *msh, char *key);
 
 #endif

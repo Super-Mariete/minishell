@@ -10,10 +10,10 @@ A significant deviation from standard practices in this specific implementation 
 The project uses three main static memory pools:
 1.  **Input Line Pool:** Buffer for the raw input line.
 2.  **AST & Environment Pool:** Stores the Abstract Syntax Tree and command environment data.
-3.  **Variables Pool:** Stores local and environment variable linked lists and command structures.
+3.  **Variables Pool:** Stores local and environment variables and command structures.
 
 **Key Structures:**
-*   `t_env`: Linked list node for environment and local variables.
+*   `t_env`: Structure with variables relevant pointers: head, arena, last, cursor.
 *   `t_term`: Terminal data for readline functionality.
 *   **Global Variable:** `extern sig_atomic_t g_signal` is the *only* allowed global variable, used strictly for signal handling.
 

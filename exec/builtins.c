@@ -18,19 +18,46 @@ static void	ft_add_empty_node(t_env *env, t_env *node)
 	temp = env;
 	while (i < VAR_MAX && temp)
 	{
+		if (!temp->next)
+			break ;
 		if (!temp->key && node != temp)
 		{
 			node->next = temp->next;
 			temp->next = node;
 			return ;
 		}
-		if (!temp->next)
-			break ;
 		temp = temp->next;
 		i++;
 	}
-	temp = node;
+	if (temp)
+		temp->next = node;
 	node->next = NULL;
+	return ;
+}
+
+static	void	ft_unset_node(t_msh *msh)
+{
+	t_env	*node;
+	t_env	*next;
+
+	node = msh->head;
+	ft_free_node(node);
+	if (node->next)
+	{
+		msh->head = node->next;
+		ft_add_empty_node(msh->head, node);
+	}
+	return ;
+}
+
+static	void	ft_unset_node(t_env *node, t_env *next)
+{
+	ft_free_node(next);
+	if (next->next)
+	{
+		node->next = next->next;
+		ft_add_empty_node(node->next, next);
+	}
 	return ;
 }
 
@@ -41,11 +68,10 @@ void ft_unset(t_msh *msh, char *key)
 
 	if (!key)
 		return ;
-	node = msh->env;
+	node = msh->head;
 	if (node->key && !ft_strcmp(node->key, key))
 	{
-		ft_free_node(node);
-		ft_add_empty_node(node->next, node);
+		ft_unset_node(msh);
 		return ;
 	}
 	next = node->next;
@@ -54,8 +80,11 @@ void ft_unset(t_msh *msh, char *key)
 		if (next->key && !ft_strcmp(next->key, key))
 		{
 			ft_free_node(next);
-			node->next = next->next;
-			ft_add_empty_node(next->next, next);
+			if (next->next)
+			{
+				node->next = next->next;
+				ft_add_empty_node(node->next, next);
+			}
 			return ;
 		}
 		node = node->next;
