@@ -4,7 +4,9 @@ LIBFT_A = libft/libft.a
 SRC = main.c\
 	signals/signals.c\
 	variables/init_env.c\
-	utils.c
+	utils.c\
+	readline/readline.c\
+	readline/process_key.c
 # 	exec/builtins.c
 OBJ = $(SRC:.c=.o)
 
@@ -16,7 +18,7 @@ $(NAME): $(LIBFT_A) $(OBJ)
 	@cc $(CFLAGS) $(OBJ) $(LIBFT_A) -lreadline -o $(NAME)
 
 $(LIBFT_A):
-	@$(MAKE) bonus -C libft
+	@$(MAKE) bonus -s -C libft
 
 %.o: %.c
 	@cc $(CFLAGS) -c $< -o $@

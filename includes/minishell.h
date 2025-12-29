@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:10 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/29 21:50:18 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define IFS " \t\n"
 # define METACHARS " \t\n|&;()<>"
 # define CONTROL_OP "<>&|"
-# define PROMPT "\e[32mminishell\e[0m $ "
+# define PROMPT "\033[32mminishell\033[0m $ "
 
 // If PATH not in environment (predetermined PATH)
 # define PATH "/bin:/sbin/:local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
@@ -58,12 +58,8 @@ typedef struct s_term
 {
 	struct termios	canon_mode;
 	struct termios	raw_mode;
-	char			*buffer;
-	int				cursor;
 	int				term_rows;
 	int				term_cols;
-	size_t			line_len;
-	char			*history;
 }	t_term;
 
 // List of local and environment (if exported) variables
@@ -76,15 +72,24 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+// Struct for readline buffer data
+typedef struct s_read
+{
+	unsigned char	*buffer;
+	size_t			cursor;
+	size_t			line_len;
+	unsigned char	*history;
+}	t_read;
+
 // Struct with references to the most used structures in the program
 typedef struct s_msh
 {
 	t_term	*term; // Maybe not necessary
 	t_env	*env;
-	char	*buffer;
-	char	*buf_cursor;
+	t_read	*read;
 	char	*cmd_env;
 	char	*cmd_cursor;
+	int		status;
 }	t_msh;
 
 // Linked list for the commands environment
@@ -108,6 +113,13 @@ void	ft_set_sig(int option);
 int		ft_load_env(t_env *env, char **envp);
 
 /* readline */
+int		ft_init_term(t_term *term);
+int		read_key(unsigned char *c);
+int		ft_readline(t_msh *msh);
+int		ft_process_key(const unsigned char c, t_read *read);
+int		ft_process_printable(const unsigned char c, t_read *read);
+int		ft_process_arrows(t_read *read);
+void	ft_reset_buffer(t_read *read);
 
 /* parse */
 
