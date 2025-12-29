@@ -7,6 +7,6 @@ echo "minishell: Argument list too long"
 "$(cat not_so_long_var.txt)=BAR $(env)"
 echo "minishell: Argument list too long"
 126
-$(for i in {0..150}; do echo -n "FOO$i=1 "; done)
+$(for i in {0..20480}; do echo -n "FOO$i=1 "; done)
 echo "minishell: Argument list too long"
 126

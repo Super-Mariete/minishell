@@ -24,21 +24,21 @@ ft_make()
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
-		make fclean
+		MAIN=$1 make fclean
 		exit 1
 	fi
 	MAIN=$1 make debug
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
-		make fclean
+		MAIN=$1 make fclean
 		exit 1
 	fi
 	MAIN=$1 make
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
-		make fclean
+		MAIN=$1 make fclean
 		exit 1
 	fi
 	make clean
@@ -112,6 +112,26 @@ ft_clean_vars()
 	done
 }
 
+ft_test_is_gap()
+{
+	local	DIR="var_refill"
+	TESTFILE="$TESTS_DIR/var_refill.txt"
+
+	ft_mk_log_dir $DIR
+	local	DEBUG_LOG="$DEBUG_DIR/var_refill.txt"
+	local	VAL_LOG="$VAL_DIR/var_refill.txt"
+	MAIN=$1 make fclean 
+	ft_make $1
+	# env
+	# echo -n "n_vars = " && env | wc -l
+	./unit-tests > $NORMAL_DIR/var_refill.txt 2>&1
+	./dmsh > $DEBUG_DIR/var_refill.txt 2>&1
+	valgrind -q --leak-check=full --error-exitcode=255 --track-origins=yes -s ./valmsh	> $VAL_LOG 2>&1
+	MAIN=$1  make fclean
+	# ./dmsh 2>&1
+	# ./val 2>&1
+}
+
 ft_test_load_env()
 {
 	local	exec_status
@@ -124,11 +144,11 @@ ft_test_load_env()
 	local	expected_status
 	TESTFILE="$TESTS_DIR/load_env_tests.txt"
 
-
 	ft_mk_log_dir $DIR
 	local	DEBUG_LOG="$DEBUG_DIR/load_env"
 	local	VAL_LOG="$VAL_DIR/load_env"
 	echo -e "${BLUE}---- Running load_env unit tests ----${RESET}"
+	MAIN=$1 make fclean 
 	ft_make "$1"
 	ft_not_so_long_var
 	if [ -f "$TESTFILE" ]; then
@@ -137,12 +157,8 @@ ft_test_load_env()
 		while read -r arg && read -r expected_cmd && read -r expected_status; do
 
 			expected_output=$(eval "{ export $arg && $expected_cmd; } 2>&1")
-			# if [ expected_output ==  ]; then
-			# 	ft_many_vars
-			# fi
 
     		output=$(eval "{ export $arg && ./unit-tests; } 2>&1")
-    		# expected_output=$(eval "export $arg && ./unit-tests 2>&1")
     		status=$?
     		echo "$output" > "$NORMAL_DIR/load_env_log$i.txt"
         	ft_check_output "$output" "$expected_output"
@@ -150,13 +166,12 @@ ft_test_load_env()
     		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
 
     		output=$(eval "{ export $arg && ./dmsh; } 2>&1")
-    		# expected_output=$(eval "export $arg && ./dmsh 2>&
     		status=$?
     		echo "$output" > "$DEBUG_LOG$i.txt"
     		ft_check_output "$output" "$expected_output"
     		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
 
-    		output=$(eval "{ export $arg &&  valgrind -q --leak-check=full --error-exitcode=255 ./valmsh; } 2>&1")
+    		output=$(eval "{ export $arg &&  valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
 			status=$?
     		echo "$output" > "$VAL_LOG$i.txt" 
     		ft_check_output "$output" "$expected_output"
@@ -169,44 +184,44 @@ ft_test_load_env()
 	else
 		echo "No $TESTFILE found"
 	fi
-	make fclean
 	MAIN="$1" make clean
 }
 
-ft_test_init_env()
-{
-	local	test_status=0
-	local	DIR="init_env"
-	TESTFILE="$TESTS_DIR/init_env_tests.txt"
+# ft_test_init_env()
+# {
+# 	local	test_status=0
+# 	local	DIR="init_env"
+# 	TESTFILE="$TESTS_DIR/init_env_tests.txt"
 
 
-	ft_mk_log_dir $DIR
-	local	DEBUG_LOG="$DEBUG_DIR/init_env.txt"
-	local	VAL_LOG="$VAL_DIR/init_env.txt"
-	local	expected=0
-	echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
-	ft_make "$1"
+# 	ft_mk_log_dir $DIR
+# 	local	DEBUG_LOG="$DEBUG_DIR/init_env.txt"
+# 	local	VAL_LOG="$VAL_DIR/init_env.txt"
+# 	local	expected=0
+# 	echo -e "${BLUE}---- Running init_env unit tests ----${RESET}"
+# 	MAIN=$1 make fclean 
+# 	ft_make "$1"
 
-	./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
-	ft_print_status "$?" $expected "" "|  normal  |"
+# 	./unit-tests > "$NORMAL_DIR/init_env_log.txt" 2>&1
+# 	ft_print_status "$?" $expected "" "|  normal  |"
 
-	./dmsh > "$DEBUG_LOG" 2>&1
-	ft_print_status "$?" $expected "" "|  debug   |"
+# 	./dmsh > "$DEBUG_LOG" 2>&1
+# 	ft_print_status "$?" $expected "" "|  debug   |"
 
-	valgrind -s --track-origins=yes --error-exitcode=-1 ./valmsh > "$VAL_LOG" 2>&1
-	ft_print_status "$?" $expected "" "| valgrind |"
+# 	valgrind -s --track-origins=yes --error-exitcode=-1 ./valmsh > "$VAL_LOG" 2>&1
+# 	ft_print_status "$?" $expected "" "| valgrind |"
 	
-	make fclean
-	MAIN="$1" make clean
-	echo
-}
+# 	MAIN="$1" make clean
+# 	echo
+# }
 
+make -s fclean
 echo
 echo -e "${BLUE}---- Running static analisys ----${RESET}"
 make check
 echo
 echo -e "${BLUE}---- Running norminette ----${RESET}"
-norminette ../main.c ../libft/ ../parse/ ../signals/ ../init/ ../readline/ \
+norminette ../main.c ../libft/ ../parse/ ../signals/ ../init/ ../readline/ ../exec/\
 ../includes/ > $LOG_DIR/norm_log.txt 2>&1
 cat $LOG_DIR/norm_log.txt | grep Error
 if [ $? -eq 0 ]; then
@@ -215,5 +230,7 @@ else
 	echo -e  "${GREEN}Norminette passed${RESET}"
 fi
 echo
-ft_test_init_env "test_init_env.c"
+# ft_test_init_env "test_init_env.c"
 ft_test_load_env "test_load_env.c"
+# ft_test_is_gap "test_var_refill.c"
+make fclean

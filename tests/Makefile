@@ -13,6 +13,7 @@ SRC = $(MAIN)\
 	../signals/signals.c\
 	../init/init_env.c\
 	../utils.c
+# 	../exec/builtins.c
 OBJ = $(SRC:.c=.o)
 DEBUG_OBJ = $(SRC:.c=.debug.o)
 VAL_OBJ = $(SRC:.c=.val.o)
@@ -54,9 +55,11 @@ check:
 # Cleanup and remake
 clean:
 	@rm  -f $(OBJ) $(DEBUG_OBJ) $(VAL_OBJ)
+	@make -C .. -C libft clean
 
 fclean: clean
 	@rm -f $(NAME) $(DEBUG_NAME) $(VAL_NAME)
+	@make -C .. -C libft fclean
 
 re: fclean all
 

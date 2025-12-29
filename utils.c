@@ -1,5 +1,7 @@
 #include "includes/minishell.h"
-/* @brief Returns the next position of a gap in a buffer */
+/* @brief Returns the next position of a gap of free memory in a buffer, 
+or NULL if there are no gaps
+ */
 static char	*ft_next_gap(const char *buffer)
 {
 	size_t	i;
@@ -9,13 +11,11 @@ static char	*ft_next_gap(const char *buffer)
 	ret = buffer;
 	while (i < ARG_MAX)
 	{
-		if (i == ARG_MAX)
-			return ((char *)ret + i);
 		if (buffer[i] == 0 && i + 1 < ARG_MAX && buffer[i + 1] == 0)
 			return ((char *)ret + i + 1);
 		i++;
 	}
-	return (0);
+	return (NULL);
 }
 
 static t_env	*ft_reset_ptrs(t_env *env, char *old_ptr, char *new_ptr)
@@ -52,6 +52,8 @@ void	ft_refill_var_buffer(char *buffer, t_env *env)
 	while ((size_t)temp - (size_t)buffer < ARG_MAX)
 	{
 		temp = ft_next_gap(temp);
+		if (!temp)
+			return ;
 		next_string = temp;
 		while (*next_string == 0)
 		{
