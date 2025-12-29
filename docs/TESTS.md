@@ -19,9 +19,15 @@ The following tools are required for the full test suite:
     - `tests.sh`: The main test runner script.
     - `test_*.c`: Unit test implementations (e.g., `test_init_env.c`).
     - `to_be_tested/`: Input files containing test cases and command strings.
+    When already executed the tests:
+    - Each run will generate a directory in the gorm of `date +%y%m%d%H%M%S`. Inside it:
+        - `norm_log.txt`: log with norminette output. Errors will be shown on stdout too.
+        - `<feature>`: directories with the logs for each feature tested. Inside it:
+            - `<feature_tested>_log<#test>.txt`: logs with every test for a specific unit test implementation.
+            - `val_log/`: directory with the logs run through Valgrind.
+            - `debug_log/`: directory with the logs run through fsanitize.
 
 ## 4. How to Run Tests
-
 ### 4.1. Full Automated Suite
 To run all unit tests and check memory safety:
 ```bash
@@ -57,7 +63,7 @@ norminette main.c includes/ init/ signals/ parse/
 4. Update `tests/tests.sh` to include your new test file in the `ft_test_<feature>` loop.
 
 ### 5.2. Adding Integration Cases
-Add command strings or environment variable sets to the relevant text file in `tests/to_be_tested/`. The runner script will iterate through these inputs.
+Not yet implemented.
 
 ## 6. Debugging & Logs
 When a test fails, check the generated log directories:
