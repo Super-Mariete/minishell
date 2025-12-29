@@ -29,7 +29,7 @@ $(NAME): $(LIBFT_A) $(OBJ)
 	@cc $(CFLAGS) $(OBJ) $(LIBFT_A) -lreadline -o $(NAME)
 
 $(LIBFT_A):
-	@$(MAKE) bonus -C libft
+	@$(MAKE) bonus -s -C .. -C libft
 
 %.o: %.c $(HEADERS)
 	@cc $(CFLAGS) -c $< -o $@
@@ -55,11 +55,11 @@ check:
 # Cleanup and remake
 clean:
 	@rm  -f $(OBJ) $(DEBUG_OBJ) $(VAL_OBJ)
-	@make -C .. -C libft clean
+	@make -s -C .. -C libft clean
 
 fclean: clean
 	@rm -f $(NAME) $(DEBUG_NAME) $(VAL_NAME)
-	@make -C .. -C libft fclean
+	@make -s -C .. -C libft fclean
 
 re: fclean all
 
