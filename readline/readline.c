@@ -1,23 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   readline.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/30 20:56:55 by rafael            #+#    #+#             */
+/*   Updated: 2025/12/30 21:12:10 by rafael           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void	ft_handle_sigint(t_read *read)
+static void	ft_handle_sigint(t_read *read, unsigned char *c)
 {
+	*c = '\n';
 	ft_reset_buffer(read);
 	while (read->cursor < read->line_len)
 	{
 		write(STDOUT_FILENO, "\033[D", 3);
 		read->cursor++;
 	}
-}
-
-void	ft_reset_buffer(t_read *read)
-{
-	size_t	i = 0;
-
-	while (i < read->line_len)
-		read->buffer[i++] = 0;
-	read->line_len = 0;
-	read->cursor = 0;
 }
 
 int	read_key(unsigned char *c)
@@ -70,12 +73,11 @@ static void	ft_init_read(t_msh *msh)
 int	ft_readline(t_msh *msh)
 {
 	unsigned char	c;
-	size_t 			pos;
+	size_t			pos;
 
 	pos = 0;
 	ft_init_read(msh);
 	write(1, PROMPT, sizeof(PROMPT));
-	write(1, "\033[1 q", 5);
 	while (1)
 	{
 		if (!read_key(&c) && g_signal != 2)
@@ -83,10 +85,7 @@ int	ft_readline(t_msh *msh)
 		if (g_signal)
 		{
 			if (g_signal == 2)
-			{
-				ft_handle_sigint(msh->read);
-				c = '\n';
-			}
+				ft_handle_sigint(msh->read, &c);
 			g_signal = 0;
 		}
 		if (pos == READ_MAX - 2)

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:37 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 16:09:36 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/30 21:10:49 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,38 @@
 
 sig_atomic_t	g_signal;
 
-int	main(int argc, char **argv, char **envp)
+static void	ft_init_structs(t_msh *msh)
 {
 	static unsigned char	var_arena[ARG_MAX];
+	static t_env			env;
+	static t_term			term;
+	static int				status;
+
+	msh->env = &env;
+	msh->env->arena = var_arena;
+	msh->env->last = NULL;
+	msh->env->cursor = var_arena;
+	msh->env->head = NULL;
+	msh->term = &term;
+	msh->status = &status;
+}
+
+int	main(int argc, char **argv, char **envp)
+{
 	t_msh					msh;
-	t_env					env;
-	t_term					term;
-	int						status;
 
 	(void)argc;
 	(void)argv;
-	msh.env = &env;
-	msh.env->arena = var_arena;
-	msh.env->last = NULL;
-	msh.env->cursor = var_arena;
-	msh.env->head = NULL;
-	msh.term = &term;
+	ft_init_structs(&msh);
 	ft_set_sig(PARENT);
 	if (ft_load_env(msh.env, envp))
 		return (126);
-	if (ft_init_term(&term))
+	if (ft_init_term(msh.term))
 		return (errno);
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &(term.raw_mode)) == -1)
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->raw_mode)) == -1)
 		return (errno);
-	status = ft_readline(&msh);
-	write(1, "\033[2 q", 5);
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &(term.canon_mode)) == -1)
+	*(msh.status) = ft_readline(&msh);
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->canon_mode)) == -1)
 		return (errno);
-	return (status);
+	return (*(msh.status));
 }

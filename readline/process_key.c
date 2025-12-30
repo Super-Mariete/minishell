@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process_key.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/30 20:57:00 by rafael            #+#    #+#             */
+/*   Updated: 2025/12/30 21:21:55 by rafael           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void	ft_backspace(t_read *read)
+static void	ft_backspace(t_read *read)
 {
 	size_t	i;
 	size_t	j;
@@ -16,7 +28,7 @@ void	ft_backspace(t_read *read)
 		if (i == read->cursor)
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		write(1, &(read->buffer[i]), 1);
 		read->buffer[j] = read->buffer[i];
@@ -46,7 +58,7 @@ int	ft_process_nl(t_read *read, const unsigned char c)
 	return (0);
 }
 
-void	ft_add_char_mid_buffer(t_read *read, const unsigned char c)
+static void	ft_add_char_mid_buffer(t_read *read, const unsigned char c)
 {
 	size_t			pos;
 	unsigned char	temp1;
@@ -65,7 +77,7 @@ void	ft_add_char_mid_buffer(t_read *read, const unsigned char c)
 	}
 }
 
-int	ft_process_printable(const unsigned char c, t_read *read)
+static int	ft_process_printable(const unsigned char c, t_read *read)
 {
 	size_t	pos;
 

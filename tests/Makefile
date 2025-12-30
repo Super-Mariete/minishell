@@ -12,7 +12,12 @@ MAIN ?= ../main.c
 SRC = $(MAIN)\
 	../signals/signals.c\
 	../variables/init_env.c\
-	../utils.c
+	../utils.c\
+	../readline/readline.c\
+	../readline/process_key.c\
+	../readline/process_arrows.c\
+	../readline/history.c\
+	../readline/readline_utils.c
 # 	../exec/builtins.c
 OBJ = $(SRC:.c=.o)
 DEBUG_OBJ = $(SRC:.c=.debug.o)

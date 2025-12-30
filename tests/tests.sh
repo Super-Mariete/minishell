@@ -193,7 +193,7 @@ echo -e "${BLUE}---- Running static analisys ----${RESET}"
 make check
 echo
 echo -e "${BLUE}---- Running norminette ----${RESET}"
-norminette ../main.c ../libft/ ../parse/ ../signals/ ../init/ ../readline/ ../exec/\
+norminette ../main.c ../libft/ ../parse/ ../signals/ ../variables/ ../readline/ ../exec/\
 ../includes/ > $LOG_DIR/norm_log.txt 2>&1
 cat $LOG_DIR/norm_log.txt | grep Error
 if [ $? -eq 0 ]; then
