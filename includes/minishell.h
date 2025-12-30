@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/29 21:50:18 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/30 20:50:12 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,21 @@ typedef struct s_term
 // List of local and environment (if exported) variables
 typedef struct s_env
 {
-	char			*head;
-	char			*last;
-	char			*arena;
-	char			*cursor;
+	unsigned char	*head;
+	unsigned char			*last;
+	unsigned char			*arena;
+	unsigned char			*cursor;
 	struct s_env	*next;
 }	t_env;
+
+// Struct for managing history
+typedef struct s_hist
+{
+	unsigned char	*buffer;
+	unsigned char	*last;
+	unsigned char	*current;
+	size_t			line_len;
+}	t_hist;
 
 // Struct for readline buffer data
 typedef struct s_read
@@ -78,7 +87,7 @@ typedef struct s_read
 	unsigned char	*buffer;
 	size_t			cursor;
 	size_t			line_len;
-	unsigned char	*history;
+	t_hist			*hist;
 }	t_read;
 
 // Struct with references to the most used structures in the program
@@ -106,13 +115,14 @@ typedef struct s_cmd
 
 /* signals */
 
-void	ft_set_sig(int option);
+void			ft_set_sig(int option);
 
-/* init */
+/* variables */
 
-int		ft_load_env(t_env *env, char **envp);
+int				ft_load_env(t_env *env, char **envp);
 
 /* readline */
+
 int		ft_init_term(t_term *term);
 int		read_key(unsigned char *c);
 int		ft_readline(t_msh *msh);
@@ -120,14 +130,21 @@ int		ft_process_key(const unsigned char c, t_read *read);
 int		ft_process_printable(const unsigned char c, t_read *read);
 int		ft_process_arrows(t_read *read);
 void	ft_reset_buffer(t_read *read);
+int		ft_process_nl(t_read *read, const unsigned char c);
+void	ft_up_history(t_read *read);
+void	ft_down_history(t_read *read);
+void	ft_reset_cl(t_read *read);
+void	ft_reset_cursor(t_read *read);
 
 /* parse */
 
 /* utils */
-size_t	ft_buffercpy(const char *src, char *dest, size_t size);
+
+size_t	ft_buffercpy(const unsigned char *src, unsigned char *dest, size_t size);
 // void	ft_refill_var_buffer(char *buffer, t_env *env);
 
 /* exec */
-void	ft_unset(t_msh *msh, char *key);
+
+void	ft_unset(t_msh *msh, unsigned char *key);
 
 #endif

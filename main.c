@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:37 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/29 20:56:23 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/30 16:09:36 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ sig_atomic_t	g_signal;
 
 int	main(int argc, char **argv, char **envp)
 {
-	static char	var_arena[ARG_MAX];
-	t_msh		msh;
-	t_env		env;
-	t_term		term;
-	int			status;
+	static unsigned char	var_arena[ARG_MAX];
+	t_msh					msh;
+	t_env					env;
+	t_term					term;
+	int						status;
 
 	(void)argc;
 	(void)argv;
@@ -38,6 +38,7 @@ int	main(int argc, char **argv, char **envp)
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &(term.raw_mode)) == -1)
 		return (errno);
 	status = ft_readline(&msh);
+	write(1, "\033[2 q", 5);
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &(term.canon_mode)) == -1)
 		return (errno);
 	return (status);

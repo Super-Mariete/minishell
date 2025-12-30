@@ -2,14 +2,12 @@
 
 void	ft_handle_sigint(t_read *read)
 {
+	ft_reset_buffer(read);
 	while (read->cursor < read->line_len)
 	{
 		write(STDOUT_FILENO, "\033[D", 3);
 		read->cursor++;
 	}
-	// write(1, "\n", 1);
-	// write(1, PROMPT, sizeof(PROMPT));
-	// ft_reset_buffer(read);
 }
 
 void	ft_reset_buffer(t_read *read)
@@ -31,7 +29,7 @@ int	read_key(unsigned char *c)
 	{
 		if (errno == EINTR)
 			return (0);
-		return (perror("read: "), -1);
+		return (perror("minishell: read: "), -1);
 	}
 	if (ret == 0)
 		return (0);
@@ -53,13 +51,18 @@ int	ft_init_term(t_term *term)
 static void	ft_init_read(t_msh *msh)
 {
 	static unsigned char	buffer[READ_MAX];
+	static t_hist			hist;
 	static unsigned char	history[HIST_MAX];
 	static t_read			read;
 
 	msh->read = &read;
 	msh->read->cursor = 0;
 	msh->read->buffer = buffer;
-	msh->read->history = history;
+	msh->read->hist = &hist;
+	msh->read->hist->buffer = history;
+	msh->read->hist->current = history;
+	msh->read->hist->last = history;
+	msh->read->hist->line_len = 0;
 	msh->read->line_len = 0;
 	return ;
 }
@@ -72,6 +75,7 @@ int	ft_readline(t_msh *msh)
 	pos = 0;
 	ft_init_read(msh);
 	write(1, PROMPT, sizeof(PROMPT));
+	write(1, "\033[1 q", 5);
 	while (1)
 	{
 		if (!read_key(&c) && g_signal != 2)
@@ -87,14 +91,8 @@ int	ft_readline(t_msh *msh)
 		}
 		if (pos == READ_MAX - 2)
 			return (write(2, MEMOUT, sizeof(MEMOUT)), E2BIG);
-		if (c == '\n')
-		{
-			write(1, "\n", 1);
-			printf("result = %s\n", msh->read->buffer);
-			write(1, PROMPT, sizeof(PROMPT));
-			ft_reset_buffer(msh->read);
+		if (ft_process_nl(msh->read, c))
 			continue ;
-		}
 		if (ft_process_key(c, msh->read) == 2)
 			return (2);
 		pos++;

@@ -70,9 +70,9 @@ or NULL if there are no gaps
 // 	return ;
 // }
 
-size_t	ft_buffercpy(const char *src, char *dest, size_t size)
+size_t	ft_buffercpy(const unsigned char *src, unsigned char *dest, size_t size)
 {
-	ft_strncpy(dest, src, size);
+	ft_strncpy((char *)dest, (char *)src, size);
 	if (*(dest + size) != 0)
 		return (1);
 	return (0);

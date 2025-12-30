@@ -6,11 +6,15 @@ SRC = main.c\
 	variables/init_env.c\
 	utils.c\
 	readline/readline.c\
-	readline/process_key.c
+	readline/process_key.c\
+	readline/process_arrows.c\
+	readline/history.c\
+	readline/readline_utils.c
+
 # 	exec/builtins.c
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -I libft -I includes -Wall -Wextra -Werror -pedantic-errors
+CFLAGS = -I libft -I includes -g -Wall -Wextra -Werror -pedantic-errors
 
 all: $(NAME)
 
