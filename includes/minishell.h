@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/30 21:22:09 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/30 22:09:29 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,9 +132,12 @@ void	ft_reset_buffer(t_read *read);
 int		ft_process_nl(t_read *read, const unsigned char c);
 void	ft_up_history(t_read *read);
 void	ft_down_history(t_read *read);
-void	ft_reset_cl(t_read *read);
-void	ft_reset_cursor(t_read *read);
+void	ft_add_to_history(t_read *read);
+void	ft_reset_cl(const t_read *read);
+void	ft_reset_cursor(const t_read *read);
 void	ft_reset_buffer(t_read *read);
+
+void	ft_print_history(t_hist *hist);
 
 /* parse */
 

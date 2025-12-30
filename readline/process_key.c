@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:00 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 21:21:55 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/30 22:06:20 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	ft_backspace(t_read *read)
 	j = 0;
 	i = 0;
 	read->cursor--;
-	while (read->cursor > 0 && i < read->line_len)
+	while (i < read->line_len)
 	{
 		if (i == read->cursor)
 		{
@@ -49,7 +49,8 @@ int	ft_process_nl(t_read *read, const unsigned char c)
 		printf("result = %s\n", read->buffer);
 		ft_buffercpy(read->buffer, read->hist->last, read->line_len);
 		if (*(read->buffer))
-			read->hist->last += read->line_len + 1;
+			ft_add_to_history(read);
+		ft_print_history(read->hist);
 		write(1, PROMPT, sizeof(PROMPT));
 		read->hist->current = read->hist->last;
 		ft_reset_buffer(read);
@@ -75,6 +76,7 @@ static void	ft_add_char_mid_buffer(t_read *read, const unsigned char c)
 		temp1 = temp2;
 		pos++;
 	}
+	return ;
 }
 
 static int	ft_process_printable(const unsigned char c, t_read *read)

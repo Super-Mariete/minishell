@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:22 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 21:20:13 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/30 22:09:10 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ void	ft_reset_cl(const t_read *read)
 	size_t	i;
 
 	i = read->cursor;
-	while (i < read->line_len)
+	while (i <= read->line_len)
 	{
 		write(1, "\033[C", 3);
 		i++;
 	}
-	while (i > 0)
+	while (i > 0 && read->cursor)
 	{
 		write(1, "\b", 1);
 		write(1, " ", 1);

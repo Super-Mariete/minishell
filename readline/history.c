@@ -6,11 +6,24 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 21:19:25 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/30 22:08:54 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	ft_print_history(t_hist *hist)
+{
+	unsigned char	*t;
+
+	t = hist->buffer;
+	// printf("history:\n");
+	while (t < hist->last)
+	{
+		printf("%s\n", t);
+		t += ft_strlen((char *)t) + 1;
+	}
+}
 
 static unsigned char	*ft_get_next_line(t_hist *hist)
 {
@@ -97,4 +110,17 @@ void	ft_down_history(t_read *read)
 	write(1, read->buffer, len);
 }
 
+void	ft_add_to_history(t_read *read)
+{
+	size_t	buffer_len;
+
+	buffer_len = (read->hist->last + read->line_len) - read->hist->buffer;
+	if (buffer_len >= HIST_MAX)
+	{
+		write(2, "minishell: history buffer out of memory\n", 40);
+		return ;
+	}
+	ft_buffercpy(read->buffer, read->hist->last, read->line_len);
+	read->hist->last += read->line_len + 1;
+}
 //TODO: implement refilling of line buffer
