@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 19:03:35 by made-ped          #+#    #+#             */
-/*   Updated: 2025/12/25 20:39:44 by rafael           ###   ########.fr       */
+/*   Updated: 2025/12/31 12:38:19 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,103 +110,103 @@ int	exec_builtin_child(t_cli *cli)
 	return (builtin(cli->args, cli->env));
 }
 
-int	execute_command(t_cli *cli)
+int execute_command(t_cli *cli)
 {
-	pid_t pid;
-	int status;
-	// char *path;
+    pid_t pid;
+    int status;
 
-	pid = fork();
-	if (pid < 0)
-	{
-		perror("fork");
-		return(1);
-	}
-	if (pid == CHILD)
-	{
-		ft_set_sig(CHILD);
-		if (apply_redirs(cli))
-			exit(1);
-		// path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
-		// if (!path)
-		// {
-		// 	// printf("HOLA\n");
-		// 	ft_perror_token(cli->cmd, CMD_ERR);
-		// 	exit(127);
-		// }
-		if (access(cli->cmd, X_OK))
-		{
-		ft_perror_msh(cli->cmd, "command not found\n");
-			exit(127);
-		}
-		execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
-		perror("execve");
-		exit(126);
-	}
-	ft_set_sig(PARENT);
-	waitpid(pid, &status, 0);
-	cli->last_status = WEXITSTATUS(status);
-	return (cli->last_status);
+    pid = fork();
+    if (pid < 0)
+    {
+        perror("fork");
+        return(1);
+    }
+    if (pid == CHILD)
+    {
+        ft_set_sig(CHILD);
+        if (apply_redirs(cli))
+            exit(1);
+
+        // Usar directamente cli->cmd
+        if (access(cli->cmd, X_OK) != 0)
+        {
+            ft_perror_msh(cli->cmd, "command not found\n");
+            exit(127);
+        }
+        execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
+        perror("execve");
+        exit(126);
+    }
+    ft_set_sig(PARENT);
+    waitpid(pid, &status, 0);
+    cli->last_status = WEXITSTATUS(status);
+    return (cli->last_status);
 }
 
-int	execute_pipeline(t_cli *cli)
+int execute_pipeline(t_cli *cli)
 {
-	int fd[2];
-	int prev_fd = -1;
-	pid_t pid;
-	int status;
-	// char *path;
+    int fd[2];
+    int prev_fd = -1;
+    pid_t pid;
+    pid_t last_pid = -1;
+    int status;
+    int last_status = 0;
 
-	while (cli)
-	{
-		if (cli->next && pipe(fd) < 0)
-			return (perror("pipe"), 1);
-		pid = fork();
-		if (pid == 0)
-		{
-			ft_set_sig(CHILD);
-			if (prev_fd != -1)
-			{
-				dup2(prev_fd, STDIN_FILENO);
-				close(prev_fd);
-			}
-			if (cli->next)
-			{
-				dup2(fd[PIPE_WRITE], STDOUT_FILENO);
-				close(fd[PIPE_READ]);
-				close(fd[PIPE_WRITE]);
-			}
-			if (apply_redirs(cli))
-				exit(1);
-			if (get_builtin(cli->cmd))
-				exit(exec_builtin_child(cli));
-			
-			// path = ft_cmd_path(ft_getenv(*cli->env, "PATH"), cli->cmd);
-			// if (!path)
-			// {
-			// 	ft_perror_token(cli->cmd, CMD_ERR);
-			// 	exit (127);
-			// }
-			// printf("EXEC PATH: [%s]\n", path);
-			if (access(cli->cmd, X_OK))
-			{
-				ft_perror_msh(cli->cmd, "command not found\n");
-				exit(127);
-			}
-			execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
-			perror("execve");
-			exit(127);
-		}
-		if (prev_fd != -1)
-			close (prev_fd);
-		if (cli->next)
-		{
-			close(fd[WRITE]);
-			prev_fd = fd[PIPE_READ];
-		}
-		cli = cli->next;
-	}
-	while (wait(&status) > 0)
-		;
-	return (WEXITSTATUS(status));
+    while (cli)
+    {
+        if (cli->next && pipe(fd) < 0)
+            return (perror("pipe"), 1);
+        
+        pid = fork();
+        if (pid < 0)
+            return (perror("fork"), 1);
+            
+        if (pid == 0)
+        {
+            ft_set_sig(CHILD);
+            if (prev_fd != -1)
+            {
+                dup2(prev_fd, STDIN_FILENO);
+                close(prev_fd);
+            }
+            if (cli->next)
+            {
+                dup2(fd[PIPE_WRITE], STDOUT_FILENO);
+                close(fd[PIPE_READ]);
+                close(fd[PIPE_WRITE]);
+            }
+            if (apply_redirs(cli))
+                exit(1);
+            if (get_builtin(cli->cmd))
+                exit(exec_builtin_child(cli));
+
+            // Usar directamente cli->cmd que ya tiene el path del parsing
+            if (access(cli->cmd, X_OK) != 0)
+            {
+                ft_perror_msh(cli->cmd, "command not found\n");
+                exit(127);
+            }
+            execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
+            perror("execve");
+            exit(126);
+        }
+        
+        if (prev_fd != -1)
+            close(prev_fd);
+        if (cli->next)
+        {
+            close(fd[PIPE_WRITE]);
+            prev_fd = fd[PIPE_READ];
+        }
+        if (!cli->next)
+            last_pid = pid;
+        cli = cli->next;
+    }
+    
+    while ((pid = wait(&status)) > 0)
+    {
+        if (pid == last_pid)
+            last_status = status;
+    }
+    return (WEXITSTATUS(last_status));
 }
