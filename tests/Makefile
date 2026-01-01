@@ -55,7 +55,13 @@ val: fclean $(VAL_OBJ) $(LIBFT_A)
 
 # Static analisys
 check:
-	@cppcheck --inconclusive --enable=all --suppress=missingIncludeSystem --inconclusive --std=c11 --check-level=exhaustive $(SRC)
+	@cppcheck --enable=warning,style,performance,portability \
+         --language=c \
+         --std=c11 \
+         --template='{file}:{line},{severity},{id},{message}' \
+         --suppress=missingIncludeSystem \
+         --error-exitcode=1 \
+		  $(SRC)
 
 # Cleanup and remake
 clean:

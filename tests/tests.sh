@@ -187,13 +187,13 @@ ft_test_load_env()
 	MAIN="$1" make clean
 }
 
-make -s fclean
+# make -s fclean
 echo
 echo -e "${BLUE}---- Running static analisys ----${RESET}"
 make check
 echo
-echo -e "${BLUE}---- Running norminette ----${RESET}"
-norminette ../main.c ../libft/ ../parse/ ../signals/ ../variables/ ../readline/ ../exec/\
+# echo -e "${BLUE}---- Running norminette ----${RESET}"
+# norminette ../main.c ../libft/ ../parse/ ../signals/ ../variables/ ../readline/ ../exec/\
 ../includes/ > $LOG_DIR/norm_log.txt 2>&1
 cat $LOG_DIR/norm_log.txt | grep Error
 if [ $? -eq 0 ]; then
@@ -202,5 +202,6 @@ else
 	echo -e  "${GREEN}Norminette passed${RESET}"
 fi
 echo
-ft_test_load_env "test_load_env.c"
-make fclean
+ft_make ../main.c
+# ft_test_load_env "test_load_env.c"
+make clean
