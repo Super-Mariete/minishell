@@ -12,9 +12,9 @@ Furthermore, it forces us to anticipate memory usage from the beginning of the p
 
 There are many disadvantages: more complexity in development of the project, the need for artificial bounds to the memory, an unnecessary heavier program on average… Still, it’s a choice of personal development and not of practicality.
 
-## Memory Pools
+## Memory Arenas
 
-We use three static memory pools, one for the input line, another one for the Abstract Syntax Tree and command environment (pointing to adresses) and the third one for local and environment variables and command. They all have a semi-arbitrary size, given that there are no bottlenecks in other places of the program that limit the functionality of the shell. For example, there's no limit of commands in one prompt for the bonus part, or there’s no limit for the number of redirections of a command, so in principle you can redirect until you fill the RAM with the line buffer; there's also no limit to the size of a variable (or number of variables), local or environmental.
+We use three static memory arenas, one for the input line, another one for the Abstract Syntax Tree content and the third one for local and environment variables and command. They all have a semi-arbitrary size, given that there are no bottlenecks in other places of the program that limit the functionality of the shell. For example, there's no limit of commands in one prompt for the bonus part, or there’s no limit for the number of redirections of a command, so in principle you can redirect until you fill the RAM with the line buffer; there's also no limit to the size of a variable (or number of variables), local or environmental.
 
 There are, nonetheless, some bottlenecks that, when considered, can give us an approximation of a size that makes sense. For example, execve just accepts a total of ~2MB of  arguments (args + envp), there’s a limit to the opened file descriptors at the same time (for the mandatory part, that implies a limit of commands).
 
@@ -28,7 +28,7 @@ For tokenization we create an Abstract Syntax Tree in the next form:
 
 ![AST](./Screenshot_20251215_120314.png)
 
-This is stored on the second buffer. We expand variables inside the tree. To do this,  we hava to put the expanded tokens at the end of the buffer. If we run out of memory, then we can rewrite the buffer to fill the gaps and get some more memory at the end of the buffer. 
+This is stored on the second buffer. We expand variables inside the tree. If we run out of memory, then we can rewrite the buffer to fill the gaps and get some more memory at the end of the buffer. 
 
 ### Command Environment
 
@@ -37,6 +37,7 @@ A struct containing all the information each command needs for execution:
 * The command arguments, the names of the files for input and output redirection (if any, strings) then reconverted to fd's (int), and their mode (in case it's appended instead of truncated).
 * Heredoc if present (we have decided to simplify and pass a string directly instead of writing to temporary files).
 * Pointers to the previously mentioned variable lists.
+* Possible redirections and their type.
 
 ### Global Variable
 
