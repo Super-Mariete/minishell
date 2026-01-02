@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 12:35:03 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 12:47:27 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,12 @@ static unsigned char	*ft_get_next_line(t_hist *hist)
 	buffer = hist->current;
 	if (!(*buffer))
 		return (NULL);
-	while (buffer < hist->last && *buffer != 0)
+	while (!ft_strcmp((char *)buffer, (char *)hist->current))
+	{
+		while (buffer < hist->last && *buffer != 0)
+			buffer++;
 		buffer++;
-	buffer++;
+	}
 	if (!(*buffer) && hist->stash && *(hist->stash))
 		return (hist->stash);
 	hist->current = buffer;
@@ -46,10 +49,13 @@ static unsigned char	*ft_get_prev_line(t_hist *hist)
 	unsigned char	*buffer;
 
 	buffer = hist->current;
-	buffer -= 2;
-	while (buffer >= hist->buffer && *buffer != 0)
-		buffer--;
-	buffer++;
+	while (!ft_strcmp((char *)buffer, (char *)hist->current))
+	{
+		buffer -= 2;
+		while (buffer >= hist->buffer && *buffer != 0)
+			buffer--;
+		buffer++;
+	}
 	hist->current = buffer;
 	return (buffer);
 }
