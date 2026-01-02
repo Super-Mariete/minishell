@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:00 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 00:38:06 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 12:37:23 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,10 @@ int	ft_process_nl(t_read *read, const unsigned char c)
 	if (c == '\n')
 	{
 		write(1, "\n", 1);
-		printf("result = %s\n", read->buffer);
+		// printf("result = %s\n", read->buffer);
 		read->cursor += read->line_len;
 		ft_buffercpy(read->buffer, read->hist->last, read->line_len);
 		ft_add_to_history(read);
-		ft_print_history(read->hist);
-		printf("stash = %s\n", read->hist->stash);
 		ft_bzero(read->hist->stash, ft_strlen((char *)read->hist->stash));
 		read->hist->stash = NULL;
 		write(1, PROMPT, sizeof(PROMPT));

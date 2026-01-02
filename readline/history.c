@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 02:33:25 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 12:35:03 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,30 +54,34 @@ static unsigned char	*ft_get_prev_line(t_hist *hist)
 	return (buffer);
 }
 
+static void	ft_copy_line(unsigned const char *next_line, t_read *read)
+{
+	size_t				len;
+
+	if (next_line == read->hist->stash)
+	{
+		len = ft_strlen((char *)(read->hist->stash));
+		ft_buffercpy(read->hist->stash, read->buffer, len);
+	}
+	else
+	{
+		ft_bzero(read->buffer, read->line_len);
+		len = ft_strlen((char *)(read->hist->current));
+		ft_buffercpy(read->hist->current, read->buffer, len);
+	}
+	ft_reset_cl(read);
+	read->line_len = len;
+	read->cursor = len;
+	write(1, read->buffer, len);
+}
+
 void	ft_down_history(t_read *read)
 {
 	unsigned const char	*next_line;
-	size_t				len;
 
 	next_line = ft_get_next_line(read->hist);
 	if (next_line)
-	{
-		if (next_line == read->hist->stash)
-		{
-			len = ft_strlen((char *)(read->hist->stash));
-			ft_buffercpy(read->hist->stash, read->buffer, len);
-		}
-		else
-		{
-			ft_bzero(read->buffer, read->line_len);
-			len = ft_strlen((char *)(read->hist->current));
-			ft_buffercpy(read->hist->current, read->buffer, len);
-		}
-		ft_reset_cl(read);
-		read->line_len = len;
-		read->cursor = len;
-		write(1, read->buffer, len);
-	}
+		ft_copy_line(next_line, read);
 	else
 	{
 		ft_bzero(read->buffer, read->line_len);
@@ -88,6 +92,7 @@ void	ft_down_history(t_read *read)
 	return ;
 }
 
+// TODO
 void	ft_up_history(t_read *read)
 {
 	unsigned const char	*prev_line;

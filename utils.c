@@ -72,7 +72,7 @@ or NULL if there are no gaps
 
 size_t	ft_buffercpy(const unsigned char *src, unsigned char *dest, size_t size)
 {
-	if (!size)
+	if (!size || !src || !dest)
 		return (0);
 	ft_strncpy((char *)dest, (char *)src, size);
 	if (*(dest + size) != 0)

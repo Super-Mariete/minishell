@@ -202,6 +202,6 @@ else
 	echo -e  "${GREEN}Norminette passed${RESET}"
 fi
 echo
-# ft_make ../main.c
+ft_make ../main.c
 # ft_test_load_env "test_load_env.c"
-# make clean
+make clean
