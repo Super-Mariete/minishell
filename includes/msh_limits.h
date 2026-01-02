@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:42:57 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 16:52:28 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/01 23:51:57 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,3 +15,4 @@
 #define CMD_MAX	682
 #define READ_MAX 2048
 #define HIST_MAX 2097152
+#define CMDENV_MAX 2097152

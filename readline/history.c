@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 22:08:54 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 02:33:25 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_print_history(t_hist *hist)
 	unsigned char	*t;
 
 	t = hist->buffer;
-	// printf("history:\n");
+	printf("history:\n");
 	while (t < hist->last)
 	{
 		printf("%s\n", t);
@@ -30,13 +30,13 @@ static unsigned char	*ft_get_next_line(t_hist *hist)
 	unsigned char	*buffer;
 
 	buffer = hist->current;
-	while (buffer <= hist->last && *buffer != 0)
-	{
+	if (!(*buffer))
+		return (NULL);
+	while (buffer < hist->last && *buffer != 0)
 		buffer++;
-		if (buffer >= hist->last)
-			return (NULL);
-	}
 	buffer++;
+	if (!(*buffer) && hist->stash && *(hist->stash))
+		return (hist->stash);
 	hist->current = buffer;
 	return (buffer);
 }
@@ -46,74 +46,81 @@ static unsigned char	*ft_get_prev_line(t_hist *hist)
 	unsigned char	*buffer;
 
 	buffer = hist->current;
+	buffer -= 2;
 	while (buffer >= hist->buffer && *buffer != 0)
-	{
 		buffer--;
-		if (buffer <= hist->buffer)
-			return (NULL);
-	}
-	buffer--;
-	while (buffer >= hist->buffer && *buffer != 0)
-	{
-		buffer--;
-		if (buffer < hist->buffer)
-			return (NULL);
-	}
 	buffer++;
 	hist->current = buffer;
 	return (buffer);
 }
 
-void	ft_up_history(t_read *read)
+void	ft_down_history(t_read *read)
 {
 	unsigned const char	*next_line;
 	size_t				len;
-	size_t				i;
 
 	next_line = ft_get_next_line(read->hist);
-	if (!next_line)
-		return ;
-	i = read->cursor;
-	len = ft_strlen((char *)read->hist->current);
-	if (next_line < &(read->buffer[read->line_len]))
-		ft_buffercpy(read->hist->current, read->buffer, len);
-	read->line_len = len;
-	read->cursor = len;
-	while (i > 0)
+	if (next_line)
 	{
-		write(1, "\033[D", 3);
-		i--;
+		if (next_line == read->hist->stash)
+		{
+			len = ft_strlen((char *)(read->hist->stash));
+			ft_buffercpy(read->hist->stash, read->buffer, len);
+		}
+		else
+		{
+			ft_bzero(read->buffer, read->line_len);
+			len = ft_strlen((char *)(read->hist->current));
+			ft_buffercpy(read->hist->current, read->buffer, len);
+		}
+		ft_reset_cl(read);
+		read->line_len = len;
+		read->cursor = len;
+		write(1, read->buffer, len);
 	}
-	write(1, read->buffer, len);
+	else
+	{
+		ft_bzero(read->buffer, read->line_len);
+		ft_reset_cl(read);
+		read->line_len = 0;
+		read->cursor = 0;
+	}
+	return ;
 }
 
-void	ft_down_history(t_read *read)
+void	ft_up_history(t_read *read)
 {
 	unsigned const char	*prev_line;
 	size_t				len;
-	size_t				i;
 
-	prev_line = ft_get_prev_line(read->hist);
-	if (!prev_line)
-		return ;
-	i = read->cursor;
-	len = ft_strlen((char *)(read->hist->current));
-	if (prev_line != read->buffer)
-		ft_buffercpy(read->hist->current, read->buffer, len);
-	read->line_len = len;
-	read->cursor = len;
-	while (i > 0)
+	if (!*(read->hist->current) && *(read->buffer))
 	{
-		write(1, "\033[D", 3);
-		i--;
+		if (!read->hist->stash)
+			read->hist->stash = ft_get_stash(read);
+		ft_buffercpy(read->buffer, read->hist->stash,\
+			ft_strlen((char *)read->buffer));
 	}
-	write(1, read->buffer, len);
+	if (read->hist->buffer != read->hist->current)
+	{
+		prev_line = ft_get_prev_line(read->hist);
+		if (!prev_line)
+			return ;
+		len = ft_strlen((char *)(read->hist->current));
+		ft_buffercpy(read->hist->current, read->buffer, len);
+		ft_reset_cl(read);
+		read->line_len = len;
+		read->cursor = len;
+		write(1, read->buffer, len);
+	}
+	return ;
 }
 
 void	ft_add_to_history(t_read *read)
 {
 	size_t	buffer_len;
 
+	if (*(read->buffer) == 0)
+		return ;
 	buffer_len = (read->hist->last + read->line_len) - read->hist->buffer;
 	if (buffer_len >= HIST_MAX)
 	{
@@ -122,5 +129,6 @@ void	ft_add_to_history(t_read *read)
 	}
 	ft_buffercpy(read->buffer, read->hist->last, read->line_len);
 	read->hist->last += read->line_len + 1;
+	read->hist->current = read->hist->last;
 }
 //TODO: implement refilling of line buffer

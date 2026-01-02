@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:56:55 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 21:12:10 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 00:34:52 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ static void	ft_init_read(t_msh *msh)
 	msh->read->hist->buffer = history;
 	msh->read->hist->current = history;
 	msh->read->hist->last = history;
+	msh->read->hist->stash = NULL;
 	msh->read->hist->line_len = 0;
 	msh->read->line_len = 0;
 	return ;

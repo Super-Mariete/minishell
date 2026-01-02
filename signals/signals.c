@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:41 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/29 21:40:24 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/01 21:10:18 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static void	ft_sig_int_parent(int signal)
 	}
 }
 
+// For Ctrl + z: sigaction(SIGTSTP, &sa, NULL);
 void	ft_set_sig(int option)
 {
 	struct sigaction	sa;
@@ -40,7 +41,6 @@ void	ft_set_sig(int option)
 	{
 		sa.sa_handler = SIG_DFL;
 		sigaction(SIGINT, &sa, NULL);
-		sigaction(SIGQUIT, &sa, NULL);
 	}
 	if (option == IGNORE)
 	{

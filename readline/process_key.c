@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:00 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 22:06:20 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 00:38:06 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,14 @@ int	ft_process_nl(t_read *read, const unsigned char c)
 	{
 		write(1, "\n", 1);
 		printf("result = %s\n", read->buffer);
+		read->cursor += read->line_len;
 		ft_buffercpy(read->buffer, read->hist->last, read->line_len);
-		if (*(read->buffer))
-			ft_add_to_history(read);
+		ft_add_to_history(read);
 		ft_print_history(read->hist);
+		printf("stash = %s\n", read->hist->stash);
+		ft_bzero(read->hist->stash, ft_strlen((char *)read->hist->stash));
+		read->hist->stash = NULL;
 		write(1, PROMPT, sizeof(PROMPT));
-		read->hist->current = read->hist->last;
 		ft_reset_buffer(read);
 		return (1);
 	}
@@ -121,9 +123,9 @@ int	ft_process_key(const unsigned char c, t_read *read)
 		ft_reset_buffer(read);
 		return (0);
 	}
-	if (c == 27)
+	else if (c == 27)
 		ft_process_arrows(read);
-	if (c == 4 && read->line_len == 0)
+	else if (c == 4 && read->line_len == 0)
 		return (write(2, "\nexit\n", 6), 2);
 	else if (c == 4)
 		return (0);

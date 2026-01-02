@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:03 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 21:13:36 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/01 21:19:56 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ int	ft_process_arrows(t_read *read)
 	else if (esc_seq[1] == 'D')
 		ft_bwd_cursor(read);
 	else if (esc_seq[1] == 'A')
-		ft_down_history(read);
-	else if (esc_seq[1] == 'B')
 		ft_up_history(read);
+	else if (esc_seq[1] == 'B')
+		ft_down_history(read);
 	return (0);
 }
