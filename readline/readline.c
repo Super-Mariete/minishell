@@ -6,13 +6,13 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:56:55 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 00:34:52 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 15:19:13 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	ft_handle_sigint(t_read *read, unsigned char *c)
+static void	ft_handle_sigint(t_read *read, char *c)
 {
 	*c = '\n';
 	ft_reset_buffer(read);
@@ -23,7 +23,7 @@ static void	ft_handle_sigint(t_read *read, unsigned char *c)
 	}
 }
 
-int	read_key(unsigned char *c)
+int	read_key(char *c)
 {
 	ssize_t	ret;
 
@@ -53,10 +53,10 @@ int	ft_init_term(t_term *term)
 
 static void	ft_init_read(t_msh *msh)
 {
-	static unsigned char	buffer[READ_MAX];
-	static t_hist			hist;
-	static unsigned char	history[HIST_MAX];
-	static t_read			read;
+	static char		buffer[READ_MAX];
+	static t_hist	hist;
+	static char		history[HIST_MAX];
+	static t_read	read;
 
 	msh->read = &read;
 	msh->read->cursor = 0;
@@ -73,8 +73,8 @@ static void	ft_init_read(t_msh *msh)
 
 int	ft_readline(t_msh *msh)
 {
-	unsigned char	c;
-	size_t			pos;
+	char	c;
+	size_t	pos;
 
 	pos = 0;
 	ft_init_read(msh);

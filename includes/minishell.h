@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/02 02:32:27 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 15:35:46 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # include "msh_limits.h"
 
 # define IFS " \t\n"
-# define METACHARS " \t\n|&;()<>"
+# define METACHARS " \t\n|&()<>" //Omited ';'
 # define CONTROL_OP "<>&|"
 # define PROMPT "\033[32mminishell\033[0m $ "
 
@@ -50,6 +50,7 @@
 # define MEMOUT "minishell: buffer out of memory\n"
 # define ARG2BIG "minishell: Argument list too long\n"
 # define NOSTASH "\nminishell: MEMOUT: can't stash current line\n"
+
 // Only allowed variable, to catch signals
 extern sig_atomic_t	g_signal;
 
@@ -65,92 +66,104 @@ typedef struct s_term
 // List of local and environment (if exported) variables
 typedef struct s_env
 {
-	unsigned char	*head;
-	unsigned char	*last;
-	unsigned char	*arena;
-	unsigned char	*cursor;
+	char			*head;
+	char			*last;
+	char			*arena;
+	char			*cursor;
 	struct s_env	*next;
 }	t_env;
 
 // Struct for managing history
 typedef struct s_hist
 {
-	unsigned char	*buffer;
-	unsigned char	*last;
-	unsigned char	*current;
-	unsigned char	*stash;
-	size_t			line_len;
+	char	*buffer;
+	char	*last;
+	char	*current;
+	char	*stash;
+	size_t	line_len;
 }	t_hist;
 
 // Struct for readline buffer data
 typedef struct s_read
 {
-	unsigned char	*buffer;
-	size_t			cursor;
-	size_t			line_len;
-	t_hist			*hist;
+	char	*buffer;
+	t_hist	*hist;
+	size_t	cursor;
+	size_t	line_len;
 }	t_read;
 
 // Struct with references to the most used structures in the program
 typedef struct s_msh
 {
-	t_term			*term; // Maybe not necessary
-	t_env			*env;
-	t_read			*read;
-	unsigned char	*cmd_env;
-	unsigned char	*cmd_cursor;
-	int				*status;
+	t_term	*term; // Maybe not necessary
+	t_env	*env;
+	t_read	*read;
+	char	*cmd_env;
+	char	*cmd_cursor;
+	int		*status;
 }	t_msh;
 
-// Linked list for the commands environment
-typedef struct s_cmd
+// Struct for each node of the AST
+typedef struct s_ast
 {
-	t_msh	*msh;
 	char	*cmd;
-	char	**argv;
 	char	*heredoc;
-	char	*input;
-	char	*output;
-	int		mode;
-}	t_cmd;
+	char	*infile;
+	char	*outfile;
+	char	*args;
+	int		type;
+	int		outf_mode;
+}	t_ast;
+
+// Linked list for the commands environment
+// typedef struct s_cmd
+// {
+// 	t_msh	*msh;
+// 	char	*cmd;
+// 	char	**argv;
+// 	char	*heredoc;
+// 	char	*input;
+// 	char	*output;
+// 	int		mode;
+// }	t_cmd;
 
 /* signals */
 
-void			ft_set_sig(int option);
+void	ft_set_sig(int option);
 
 /* variables */
 
-int				ft_load_env(t_env *env, char **envp);
+int		ft_load_env(t_env *env, char **envp);
 
 /* readline */
 
-int				ft_init_term(t_term *term);
-int				read_key(unsigned char *c);
-int				ft_readline(t_msh *msh);
-int				ft_process_key(const unsigned char c, t_read *read);
-int				ft_process_arrows(t_read *read);
-void			ft_reset_buffer(t_read *read);
-int				ft_process_nl(t_read *read, const unsigned char c);
-void			ft_up_history(t_read *read);
-void			ft_down_history(t_read *read);
-void			ft_add_to_history(t_read *read);
-void			ft_reset_cl(const t_read *read);
-void			ft_reset_cursor(const t_read *read);
-void			ft_reset_buffer(t_read *read);
-unsigned char	*ft_get_stash(const t_read *read);
+int		ft_init_term(t_term *term);
+int		read_key(char *c);
+int		ft_readline(t_msh *msh);
+int		ft_process_key(const char c, t_read *read);
+int		ft_process_arrows(t_read *read);
+void	ft_reset_buffer(t_read *read);
+int		ft_process_nl(t_read *read, const char c);
+void	ft_up_history(t_read *read);
+void	ft_down_history(t_read *read);
+void	ft_add_to_history(t_read *read);
+void	ft_reset_cl(const t_read *read);
+void	ft_reset_cursor(const t_read *read);
+void	ft_reset_buffer(t_read *read);
+char	*ft_get_stash(const t_read *read);
 
-void			ft_print_history(t_hist *hist);
+// void	ft_print_history(t_hist *hist);
 
 /* parse */
 
 /* utils */
 
-size_t			ft_buffercpy(const unsigned char *src,\
-	unsigned char *dest, size_t size);
+size_t	ft_buffercpy(const char *src,\
+	char *dest, size_t size);
 // void	ft_refill_var_buffer(char *buffer, t_env *env);
 
 /* exec */
 
-void			ft_unset(t_msh *msh, unsigned char *key);
+void	ft_unset(t_msh *msh, char *key);
 
 #endif

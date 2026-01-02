@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:37 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 00:30:33 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 15:18:52 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ sig_atomic_t	g_signal;
 
 static void	ft_init_structs(t_msh *msh)
 {
-	static unsigned char	var_arena[ARG_MAX];
-	static t_env			env;
-	static t_term			term;
-	static int				status;
+	static char		var_arena[ARG_MAX];
+	static t_env	env;
+	static t_term	term;
+	static int		status;
 
 	msh->env = &env;
 	msh->env->arena = var_arena;
@@ -32,7 +32,7 @@ static void	ft_init_structs(t_msh *msh)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_msh					msh;
+	t_msh	msh;
 
 	(void)argc;
 	(void)argv;

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 12:47:27 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 15:27:33 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_print_history(t_hist *hist)
 {
-	unsigned char	*t;
+	char	*t;
 
 	t = hist->buffer;
 	printf("history:\n");
@@ -25,14 +25,14 @@ void	ft_print_history(t_hist *hist)
 	}
 }
 
-static unsigned char	*ft_get_next_line(t_hist *hist)
+static char	*ft_get_next_line(t_hist *hist)
 {
-	unsigned char	*buffer;
+	char	*buffer;
 
 	buffer = hist->current;
 	if (!(*buffer))
 		return (NULL);
-	while (!ft_strcmp((char *)buffer, (char *)hist->current))
+	while (!ft_strcmp(buffer, hist->current))
 	{
 		while (buffer < hist->last && *buffer != 0)
 			buffer++;
@@ -44,12 +44,12 @@ static unsigned char	*ft_get_next_line(t_hist *hist)
 	return (buffer);
 }
 
-static unsigned char	*ft_get_prev_line(t_hist *hist)
+static char	*ft_get_prev_line(t_hist *hist)
 {
-	unsigned char	*buffer;
+	char	*buffer;
 
 	buffer = hist->current;
-	while (!ft_strcmp((char *)buffer, (char *)hist->current))
+	while (!ft_strcmp(buffer, hist->current))
 	{
 		buffer -= 2;
 		while (buffer >= hist->buffer && *buffer != 0)
@@ -60,19 +60,19 @@ static unsigned char	*ft_get_prev_line(t_hist *hist)
 	return (buffer);
 }
 
-static void	ft_copy_line(unsigned const char *next_line, t_read *read)
+static void	ft_copy_line(const char *next_line, t_read *read)
 {
-	size_t				len;
+	size_t	len;
 
 	if (next_line == read->hist->stash)
 	{
-		len = ft_strlen((char *)(read->hist->stash));
+		len = ft_strlen(read->hist->stash);
 		ft_buffercpy(read->hist->stash, read->buffer, len);
 	}
 	else
 	{
 		ft_bzero(read->buffer, read->line_len);
-		len = ft_strlen((char *)(read->hist->current));
+		len = ft_strlen(read->hist->current);
 		ft_buffercpy(read->hist->current, read->buffer, len);
 	}
 	ft_reset_cl(read);
@@ -83,7 +83,7 @@ static void	ft_copy_line(unsigned const char *next_line, t_read *read)
 
 void	ft_down_history(t_read *read)
 {
-	unsigned const char	*next_line;
+	const char	*next_line;
 
 	next_line = ft_get_next_line(read->hist);
 	if (next_line)
@@ -98,25 +98,24 @@ void	ft_down_history(t_read *read)
 	return ;
 }
 
-// TODO
+// TODO Better managment of filling stash buffer
 void	ft_up_history(t_read *read)
 {
-	unsigned const char	*prev_line;
-	size_t				len;
+	const char	*prev_line;
+	size_t		len;
 
 	if (!*(read->hist->current) && *(read->buffer))
 	{
 		if (!read->hist->stash)
 			read->hist->stash = ft_get_stash(read);
-		ft_buffercpy(read->buffer, read->hist->stash,\
-			ft_strlen((char *)read->buffer));
+		ft_buffercpy(read->buffer, read->hist->stash, ft_strlen(read->buffer));
 	}
 	if (read->hist->buffer != read->hist->current)
 	{
 		prev_line = ft_get_prev_line(read->hist);
 		if (!prev_line)
 			return ;
-		len = ft_strlen((char *)(read->hist->current));
+		len = ft_strlen(read->hist->current);
 		ft_buffercpy(read->hist->current, read->buffer, len);
 		ft_reset_cl(read);
 		read->line_len = len;

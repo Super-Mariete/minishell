@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:42:03 by rafael            #+#    #+#             */
-/*   Updated: 2025/12/30 16:05:14 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 15:09:35 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	ft_load_env(t_env *env, char **envp)
 			return (write(2, ARG2BIG, ft_strlen(ARG2BIG)), 126);
 		*(env->cursor) = (uint8_t)2;
 		env->cursor++;
-		if (ft_buffercpy((unsigned char *)envp[i], env->cursor, len))
+		if (ft_buffercpy((char *)envp[i], env->cursor, len))
 			return (write(2, ARG2BIG, ft_strlen(ARG2BIG)), 126);
 		if (!env->head)
 			env->head = (env->cursor - 1);

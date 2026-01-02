@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:03 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/01 21:19:56 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 15:09:35 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	ft_bwd_cursor(t_read *read)
 
 int	ft_process_arrows(t_read *read)
 {
-	unsigned char	esc_seq[2];
+	char	esc_seq[2];
 
 	if (read_key(&esc_seq[0]) != 1)
 		return (0);

@@ -35,3 +35,8 @@ FOO='|BARVAR' $(env)
 FOO===BAR
 FOO===BAR $(env)
 0
+>1.txt
+>1.txt >2.txt ls
+>1.txt >2.txt
+ls >1.txt >2.txt
+ls >1.txt >|

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:00 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 12:37:23 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/02 15:33:13 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,15 @@ static void	ft_backspace(t_read *read)
 	return ;
 }
 
-int	ft_process_nl(t_read *read, const unsigned char c)
+int	ft_process_nl(t_read *read, const char c)
 {
 	if (c == '\n')
 	{
 		write(1, "\n", 1);
-		// printf("result = %s\n", read->buffer);
 		read->cursor += read->line_len;
 		ft_buffercpy(read->buffer, read->hist->last, read->line_len);
 		ft_add_to_history(read);
-		ft_bzero(read->hist->stash, ft_strlen((char *)read->hist->stash));
+		ft_bzero(read->hist->stash, ft_strlen(read->hist->stash));
 		read->hist->stash = NULL;
 		write(1, PROMPT, sizeof(PROMPT));
 		ft_reset_buffer(read);
@@ -59,11 +58,11 @@ int	ft_process_nl(t_read *read, const unsigned char c)
 	return (0);
 }
 
-static void	ft_add_char_mid_buffer(t_read *read, const unsigned char c)
+static void	ft_add_char_mid_buffer(t_read *read, const char c)
 {
-	size_t			pos;
-	unsigned char	temp1;
-	unsigned char	temp2;
+	size_t	pos;
+	char	temp1;
+	char	temp2;
 
 	pos = 0;
 	while (pos < read->cursor)
@@ -79,7 +78,7 @@ static void	ft_add_char_mid_buffer(t_read *read, const unsigned char c)
 	return ;
 }
 
-static int	ft_process_printable(const unsigned char c, t_read *read)
+static int	ft_process_printable(const char c, t_read *read)
 {
 	size_t	pos;
 
@@ -108,9 +107,9 @@ static int	ft_process_printable(const unsigned char c, t_read *read)
 	return (0);
 }
 
-int	ft_process_key(const unsigned char c, t_read *read)
+int	ft_process_key(const char c, t_read *read)
 {
-	if (c >= 32 && c <= 127)
+	if (c >= 32)
 	{
 		ft_process_printable(c, read);
 		return (0);

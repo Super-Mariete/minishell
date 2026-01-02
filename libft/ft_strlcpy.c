@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 12:26:32 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/22 22:28:58 by rafael           ###   ########.fr       */
+/*   Updated: 2025/07/20 22:32:23 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,21 @@ The strlcpy() function copies up to size - 1 characters from the NUL-terminated
 string src to dst, NUL-terminating the result.
 
 RETURN VALUES
-	The  strlcpy()  and strlcat() functions return the total length of the
-	string they tried to create.  For strlcpy() that means the  length  of
-	src.   For  strlcat()  that  means  the initial length of dst plus the
-	length of src.  While this may seem somewhat confusing, it was done to
-	make truncation detection simple.
+The strlcpy() and strlcat() functions return the total len of the string
+they tried to create. For strlcpy() that means the len of src.  For
+strlcat() that means the initial len of dst plus the len of src.  While
+this may seem somewhat confusing, it was done to make truncation detection
+simple.
 */
-
 size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
 	size_t	i;
 	size_t	lg;
 
+	i = 0;
 	lg = ft_strlen(src);
 	if (size == 0)
 		return (lg);
-	i = 0;
 	while (i < (size - 1) && src[i])
 	{
 		dest[i] = (char)src[i];
