@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:03 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 15:09:35 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/03 19:53:43 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static void	ft_fwd_cursor(t_read *read)
 	if (read->cursor < read->line_len)
 	{
 		read->cursor += 1;
-		write(STDOUT_FILENO, "\033[C", 3);
+		if (read->prompt)
+			write(STDOUT_FILENO, "\033[C", 3);
 	}
 }
 
@@ -26,7 +27,8 @@ static void	ft_bwd_cursor(t_read *read)
 	if (read->cursor > 0)
 	{
 		read->cursor -= 1;
-		write(STDOUT_FILENO, "\033[D", 3);
+		if (read->prompt)
+			write(STDOUT_FILENO, "\033[D", 3);
 	}
 }
 

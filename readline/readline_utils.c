@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:22 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 15:32:36 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/03 16:14:49 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_reset_cursor(const t_read *read)
 	}
 }
 
-void	ft_reset_buffer(t_read *read)
+void	ft_reset_read(t_read *read)
 {
 	size_t	i;
 
@@ -60,9 +60,9 @@ char	*ft_get_stash(const t_read *read)
 	unsigned long	buffer;
 
 	buffer = (unsigned long)read->buffer;
-	pos_to_stash = (READ_MAX - read->line_len) / 2;
+	pos_to_stash = (BUF_MAX - read->line_len) / 2;
 	ret = read->buffer + pos_to_stash;
-	if (((unsigned long)ret + read->line_len) >= buffer + READ_MAX)
+	if (((unsigned long)ret + read->line_len) >= buffer + BUF_MAX)
 	{
 		write(2, NOSTASH, 44);
 		return (NULL);

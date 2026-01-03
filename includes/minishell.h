@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/02 15:35:46 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/03 20:10:48 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@
 
 # define IFS " \t\n"
 # define METACHARS " \t\n|&()<>" //Omited ';'
-# define CONTROL_OP "<>&|"
+# define CONTROL_OP "<>&|()"
 # define PROMPT "\033[32mminishell\033[0m $ "
+# define QUOTES "\"\'"
 
 // If PATH not in environment (predetermined PATH)
 # define PATH "/bin:/sbin/:local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
@@ -70,7 +71,6 @@ typedef struct s_env
 	char			*last;
 	char			*arena;
 	char			*cursor;
-	struct s_env	*next;
 }	t_env;
 
 // Struct for managing history
@@ -90,42 +90,43 @@ typedef struct s_read
 	t_hist	*hist;
 	size_t	cursor;
 	size_t	line_len;
+	int	prompt;
 }	t_read;
-
-// Struct with references to the most used structures in the program
-typedef struct s_msh
-{
-	t_term	*term; // Maybe not necessary
-	t_env	*env;
-	t_read	*read;
-	char	*cmd_env;
-	char	*cmd_cursor;
-	int		*status;
-}	t_msh;
 
 // Struct for each node of the AST
 typedef struct s_ast
 {
-	char	*cmd;
-	char	*heredoc;
-	char	*infile;
-	char	*outfile;
-	char	*args;
-	int		type;
-	int		outf_mode;
+	struct s_ast	*prev;
+	struct s_ast	*left;
+	struct s_ast	*right;
+	char			*cmd;
+	char			*heredoc;
+	char			*infile;
+	char			*outfile;
+	char			*args;
+	int				type;
+	int				outf_mode;
 }	t_ast;
 
-// Linked list for the commands environment
-// typedef struct s_cmd
-// {
-// 	t_msh	*msh;
-// 	char	*cmd;
-// 	char	**argv;
-// 	char	*heredoc;
-// 	char	*input;
-// 	char	*output;
-// 	int		mode;
-// }	t_cmd;
+// Buffer holding the lexed line
+typedef struct s_buffer
+{
+	t_ast	*ast;
+	char	*buffer;
+	char	*current;
+	char	*last;
+}	t_buffer;
+
+// Struct with references to the most used structures in the program
+typedef struct s_msh
+{
+	t_term		*term; // Maybe not necessary
+	t_env		*env;
+	t_read		*read;
+	t_buffer	*buff;
+	t_ast		*ast;
+	int			*status;
+}	t_msh;
 
 /* signals */
 
@@ -142,19 +143,24 @@ int		read_key(char *c);
 int		ft_readline(t_msh *msh);
 int		ft_process_key(const char c, t_read *read);
 int		ft_process_arrows(t_read *read);
-void	ft_reset_buffer(t_read *read);
-int		ft_process_nl(t_read *read, const char c);
+int		ft_process_nl(t_read *read, const char c, t_msh *msh);
+void	ft_reset_read(t_read *read);
 void	ft_up_history(t_read *read);
 void	ft_down_history(t_read *read);
 void	ft_add_to_history(t_read *read);
 void	ft_reset_cl(const t_read *read);
 void	ft_reset_cursor(const t_read *read);
-void	ft_reset_buffer(t_read *read);
+void	ft_reset_read(t_read *read);
 char	*ft_get_stash(const t_read *read);
 
 // void	ft_print_history(t_hist *hist);
 
 /* parse */
+
+void	ft_parse(t_msh *msh);
+int		ft_quoted_len(const char *line, char quote);
+int		ft_op_len(const char *line, int pos);
+void	ft_reset_buffer(t_buffer *buff);
 
 /* utils */
 

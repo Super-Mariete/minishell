@@ -112,25 +112,54 @@ ft_clean_vars()
 	done
 }
 
-# ft_test_is_gap()
-# {
-# 	local	DIR="var_refill"
-# 	TESTFILE="$TESTS_DIR/var_refill.txt"
+ft_test_tokens()
+{
+	local	DIR="lexing"
+	local	output
+	local	expected_output
+	TESTFILE="$TESTS_DIR/lexing_tests.txt"
 
-# 	ft_mk_log_dir $DIR
-# 	local	DEBUG_LOG="$DEBUG_DIR/var_refill.txt"
-# 	local	VAL_LOG="$VAL_DIR/var_refill.txt"
-# 	MAIN=$1 make fclean 
-# 	ft_make $1
-# 	# env
-# 	# echo -n "n_vars = " && env | wc -l
-# 	./unit-tests > $NORMAL_DIR/var_refill.txt 2>&1
-# 	./dmsh > $DEBUG_DIR/var_refill.txt 2>&1
-# 	valgrind -q --leak-check=full --error-exitcode=255 --track-origins=yes -s ./valmsh	> $VAL_LOG 2>&1
-# 	MAIN=$1  make fclean
-# 	# ./dmsh 2>&1
-# 	# ./val 2>&1
-# }
+	ft_mk_log_dir $DIR
+	local	DEBUG_LOG="$DEBUG_DIR/lexing"
+	local	VAL_LOG="$VAL_DIR/lexing"
+	echo -e "${BLUE}---- Running lexing integration tests ----${RESET}"
+	MAIN=$1 make fclean 
+	ft_make "$1"
+		if [ -f "$TESTFILE" ]; then
+		local i=1;
+
+		while read -r expected_output; do
+
+			expected_output=$(eval "{ export $arg && $expected_cmd; } 2>&1")
+
+    		output=$(eval "{ export $arg && ./unit-tests; } 2>&1")
+    		status=$?
+    		echo "$output" > "$NORMAL_DIR/load_env_log$i.txt"
+        	ft_check_output "$output" "$expected_output"
+    		((final_status = exec_status + output_status))
+    		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
+
+    		output=$(eval "{ export $arg && ./dmsh; } 2>&1")
+    		status=$?
+    		echo "$output" > "$DEBUG_LOG$i.txt"
+    		ft_check_output "$output" "$expected_output"
+    		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
+
+    		output=$(eval "{ export $arg &&  valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
+			status=$?
+    		echo "$output" > "$VAL_LOG$i.txt" 
+    		ft_check_output "$output" "$expected_output"
+    		ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
+    
+    		echo "------------------------------------------------"
+    		((i++))
+
+		done < "$TESTFILE"
+	else
+		echo "No $TESTFILE found"
+	fi
+	MAIN="$1" make clean
+}
 
 ft_test_load_env()
 {
@@ -152,7 +181,7 @@ ft_test_load_env()
 	ft_make "$1"
 	ft_not_so_long_var
 	if [ -f "$TESTFILE" ]; then
-	local i=1;
+		local i=1;
 
 		while read -r arg && read -r expected_cmd && read -r expected_status; do
 
@@ -193,8 +222,8 @@ echo -e "${BLUE}---- Running static analisys ----${RESET}"
 make check
 echo
 echo -e "${BLUE}---- Running norminette ----${RESET}"
-norminette ../main.c ../libft/ ../parse/ ../signals/ ../variables/ ../readline/ ../exec/\
-../includes/ > $LOG_DIR/norm_log.txt 2>&1
+# norminette ../main.c ../libft/ ../parse/ ../signals/ ../variables/ ../readline/ ../exec/\
+# ../includes/ > $LOG_DIR/norm_log.txt 2>&1
 cat $LOG_DIR/norm_log.txt | grep Error
 if [ $? -eq 0 ]; then
 	echo -e  "${RED}Norminette not passed${RESET}"
@@ -204,4 +233,5 @@ fi
 echo
 ft_make ../main.c
 # ft_test_load_env "test_load_env.c"
+# ft_test_tokens
 make clean

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/03 17:10:40 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/03 20:01:09 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,12 @@ static void	ft_copy_line(const char *next_line, t_read *read)
 		len = ft_strlen(read->hist->current);
 		ft_buffercpy(read->hist->current, read->buffer, len);
 	}
-	ft_reset_cl(read);
+	if (read->prompt)
+		ft_reset_cl(read);
 	read->line_len = len;
 	read->cursor = len;
-	write(1, read->buffer, len);
+	if (read->prompt)
+		write(1, read->buffer, len);
 }
 
 void	ft_down_history(t_read *read)
@@ -117,10 +119,12 @@ void	ft_up_history(t_read *read)
 			return ;
 		len = ft_strlen(read->hist->current);
 		ft_buffercpy(read->hist->current, read->buffer, len);
-		ft_reset_cl(read);
+		if (read->prompt)
+			ft_reset_cl(read);
 		read->line_len = len;
 		read->cursor = len;
-		write(1, read->buffer, len);
+		if (read->prompt)
+			write(1, read->buffer, len);
 	}
 	return ;
 }

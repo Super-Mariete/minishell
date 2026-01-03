@@ -9,6 +9,7 @@ HEADERS = ../includes/minishell.h\
 
 # Files
 MAIN ?= ../main.c
+LEXING?= ../parse/lexing.c
 SRC = $(MAIN)\
 	../signals/signals.c\
 	../variables/init_env.c\
@@ -17,7 +18,9 @@ SRC = $(MAIN)\
 	../readline/process_key.c\
 	../readline/process_arrows.c\
 	../readline/history.c\
-	../readline/readline_utils.c
+	../readline/readline_utils.c\
+	$(LEXING)\
+	../parse/parse_utils.c
 # 	../exec/builtins.c
 OBJ = $(SRC:.c=.o)
 DEBUG_OBJ = $(SRC:.c=.debug.o)
@@ -61,6 +64,7 @@ check:
          --template='{file}:{line},{severity},{id},{message}' \
          --suppress=missingIncludeSystem \
          --error-exitcode=1 \
+		 --check-level=exhaustive\
 		  $(SRC)
 
 # Cleanup and remake

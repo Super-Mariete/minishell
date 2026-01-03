@@ -6,21 +6,24 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:56:55 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 15:19:13 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/03 20:18:22 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	ft_handle_sigint(t_read *read, char *c)
+// Shouldn't be necessary to check if the shell is in interactive mode
+static void	ft_handle_sigint(t_read *read)
 {
-	*c = '\n';
-	ft_reset_buffer(read);
+	ft_reset_read(read);
 	while (read->cursor < read->line_len)
 	{
-		write(STDOUT_FILENO, "\033[D", 3);
+		if (read->prompt)
+			write(STDOUT_FILENO, "\033[D", 3);
 		read->cursor++;
 	}
+	write(2, "\n", 1);
+	write(2, PROMPT, sizeof(PROMPT));
 }
 
 int	read_key(char *c)
@@ -53,7 +56,7 @@ int	ft_init_term(t_term *term)
 
 static void	ft_init_read(t_msh *msh)
 {
-	static char		buffer[READ_MAX];
+	static char		buffer[BUF_MAX];
 	static t_hist	hist;
 	static char		history[HIST_MAX];
 	static t_read	read;
@@ -68,17 +71,24 @@ static void	ft_init_read(t_msh *msh)
 	msh->read->hist->stash = NULL;
 	msh->read->hist->line_len = 0;
 	msh->read->line_len = 0;
+	if (isatty(STDIN_FILENO))
+	 	msh->read->prompt = 1;
+	else
+		msh->read->prompt = 0;
 	return ;
 }
 
 int	ft_readline(t_msh *msh)
 {
-	char	c;
 	size_t	pos;
+	int		ret;
+	char	c;
 
 	pos = 0;
+	ret = 0;
 	ft_init_read(msh);
-	write(1, PROMPT, sizeof(PROMPT));
+	if (msh->read->prompt)
+		write(2, PROMPT, sizeof(PROMPT));
 	while (1)
 	{
 		if (!read_key(&c) && g_signal != 2)
@@ -86,15 +96,19 @@ int	ft_readline(t_msh *msh)
 		if (g_signal)
 		{
 			if (g_signal == 2)
-				ft_handle_sigint(msh->read, &c);
+				ft_handle_sigint(msh->read);
 			g_signal = 0;
-		}
-		if (pos == READ_MAX - 2)
-			return (write(2, MEMOUT, sizeof(MEMOUT)), E2BIG);
-		if (ft_process_nl(msh->read, c))
 			continue ;
-		if (ft_process_key(c, msh->read) == 2)
-			return (2);
+		}
+		if (pos == BUF_MAX - 2)
+			return (write(2, MEMOUT, sizeof(MEMOUT)), E2BIG);
+		if (ft_process_nl(msh->read, c, msh))
+			continue ;
+		ret = ft_process_key(c, msh->read);
+		if (ret == 2)
+			return (ret);
+		if (ret == 1)
+			
 		pos++;
 	}
 	return (0);
