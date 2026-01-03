@@ -6,24 +6,24 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/02 15:27:33 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/03 17:10:40 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_print_history(t_hist *hist)
-{
-	char	*t;
+// void	ft_print_history(t_hist *hist)
+// {
+// 	char	*t;
 
-	t = hist->buffer;
-	printf("history:\n");
-	while (t < hist->last)
-	{
-		printf("%s\n", t);
-		t += ft_strlen((char *)t) + 1;
-	}
-}
+// 	t = hist->buffer;
+// 	printf("history:\n");
+// 	while (t < hist->last)
+// 	{
+// 		printf("%s\n", t);
+// 		t += ft_strlen((char *)t) + 1;
+// 	}
+// }
 
 static char	*ft_get_next_line(t_hist *hist)
 {
@@ -104,13 +104,13 @@ void	ft_up_history(t_read *read)
 	const char	*prev_line;
 	size_t		len;
 
-	if (!*(read->hist->current) && *(read->buffer))
+	if (read->hist->current >= read->hist->buffer && !*(read->hist->current) && *(read->buffer))
 	{
 		if (!read->hist->stash)
 			read->hist->stash = ft_get_stash(read);
 		ft_buffercpy(read->buffer, read->hist->stash, ft_strlen(read->buffer));
 	}
-	if (read->hist->buffer != read->hist->current)
+	if (read->hist->buffer < read->hist->current)
 	{
 		prev_line = ft_get_prev_line(read->hist);
 		if (!prev_line)
