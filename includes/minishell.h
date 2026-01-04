@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/03 20:10:48 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 01:56:41 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ typedef struct s_read
 	t_hist	*hist;
 	size_t	cursor;
 	size_t	line_len;
-	int	prompt;
+	int		intr;
+	int		quoted;
 }	t_read;
 
 // Struct for each node of the AST
@@ -122,7 +123,7 @@ typedef struct s_msh
 {
 	t_term		*term; // Maybe not necessary
 	t_env		*env;
-	t_read		*read;
+	t_read		*rbuffer;
 	t_buffer	*buff;
 	t_ast		*ast;
 	int			*status;
@@ -141,17 +142,17 @@ int		ft_load_env(t_env *env, char **envp);
 int		ft_init_term(t_term *term);
 int		read_key(char *c);
 int		ft_readline(t_msh *msh);
-int		ft_process_key(const char c, t_read *read);
-int		ft_process_arrows(t_read *read);
-int		ft_process_nl(t_read *read, const char c, t_msh *msh);
-void	ft_reset_read(t_read *read);
-void	ft_up_history(t_read *read);
-void	ft_down_history(t_read *read);
-void	ft_add_to_history(t_read *read);
-void	ft_reset_cl(const t_read *read);
-void	ft_reset_cursor(const t_read *read);
-void	ft_reset_read(t_read *read);
-char	*ft_get_stash(const t_read *read);
+int		ft_process_key(const char c, t_read *rbuffer, t_msh *msh);
+int		ft_process_arrows(t_read *rbuffer);
+int		ft_process_nl(t_read *rbuffer, t_msh *msh);
+void	ft_reset_read(t_read *rbuffer);
+void	ft_up_history(t_read *rbuffer);
+void	ft_down_history(t_read *rbuffer);
+void	ft_add_to_history(t_read *rbuffer);
+void	ft_reset_cl(const t_read *rbuffer);
+void	ft_reset_cursor(const t_read *rbuffer);
+void	ft_reset_read(t_read *rbuffer);
+char	*ft_get_stash(const t_read *rbuffer);
 
 // void	ft_print_history(t_hist *hist);
 
@@ -164,8 +165,7 @@ void	ft_reset_buffer(t_buffer *buff);
 
 /* utils */
 
-size_t	ft_buffercpy(const char *src,\
-	char *dest, size_t size);
+size_t	ft_buffercpy(const char *src, char *dest, size_t size);
 // void	ft_refill_var_buffer(char *buffer, t_env *env);
 
 /* exec */

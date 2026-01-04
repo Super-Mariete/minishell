@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/03 20:01:09 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 01:57:41 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,89 +60,89 @@ static char	*ft_get_prev_line(t_hist *hist)
 	return (buffer);
 }
 
-static void	ft_copy_line(const char *next_line, t_read *read)
+static void	ft_copy_line(const char *next_line, t_read *rbuffer)
 {
 	size_t	len;
 
-	if (next_line == read->hist->stash)
+	if (next_line == rbuffer->hist->stash)
 	{
-		len = ft_strlen(read->hist->stash);
-		ft_buffercpy(read->hist->stash, read->buffer, len);
+		len = ft_strlen(rbuffer->hist->stash);
+		ft_buffercpy(rbuffer->hist->stash, rbuffer->buffer, len);
 	}
 	else
 	{
-		ft_bzero(read->buffer, read->line_len);
-		len = ft_strlen(read->hist->current);
-		ft_buffercpy(read->hist->current, read->buffer, len);
+		ft_bzero(rbuffer->buffer, rbuffer->line_len);
+		len = ft_strlen(rbuffer->hist->current);
+		ft_buffercpy(rbuffer->hist->current, rbuffer->buffer, len);
 	}
-	if (read->prompt)
-		ft_reset_cl(read);
-	read->line_len = len;
-	read->cursor = len;
-	if (read->prompt)
-		write(1, read->buffer, len);
+	if (rbuffer->intr)
+		ft_reset_cl(rbuffer);
+	rbuffer->line_len = len;
+	rbuffer->cursor = len;
+	if (rbuffer->intr)
+		write(1, rbuffer->buffer, len);
 }
 
-void	ft_down_history(t_read *read)
+void	ft_down_history(t_read *rbuffer)
 {
 	const char	*next_line;
 
-	next_line = ft_get_next_line(read->hist);
+	next_line = ft_get_next_line(rbuffer->hist);
 	if (next_line)
-		ft_copy_line(next_line, read);
+		ft_copy_line(next_line, rbuffer);
 	else
 	{
-		ft_bzero(read->buffer, read->line_len);
-		ft_reset_cl(read);
-		read->line_len = 0;
-		read->cursor = 0;
+		ft_bzero(rbuffer->buffer, rbuffer->line_len);
+		ft_reset_cl(rbuffer);
+		rbuffer->line_len = 0;
+		rbuffer->cursor = 0;
 	}
 	return ;
 }
 
 // TODO Better managment of filling stash buffer
-void	ft_up_history(t_read *read)
+void	ft_up_history(t_read *rbuffer)
 {
 	const char	*prev_line;
 	size_t		len;
 
-	if (read->hist->current >= read->hist->buffer && !*(read->hist->current) && *(read->buffer))
+	if (rbuffer->hist->current >= rbuffer->hist->buffer && !*(rbuffer->hist->current) && *(rbuffer->buffer))
 	{
-		if (!read->hist->stash)
-			read->hist->stash = ft_get_stash(read);
-		ft_buffercpy(read->buffer, read->hist->stash, ft_strlen(read->buffer));
+		if (!rbuffer->hist->stash)
+			rbuffer->hist->stash = ft_get_stash(rbuffer);
+		ft_buffercpy(rbuffer->buffer, rbuffer->hist->stash, ft_strlen(rbuffer->buffer));
 	}
-	if (read->hist->buffer < read->hist->current)
+	if (rbuffer->hist->buffer < rbuffer->hist->current)
 	{
-		prev_line = ft_get_prev_line(read->hist);
+		prev_line = ft_get_prev_line(rbuffer->hist);
 		if (!prev_line)
 			return ;
-		len = ft_strlen(read->hist->current);
-		ft_buffercpy(read->hist->current, read->buffer, len);
-		if (read->prompt)
-			ft_reset_cl(read);
-		read->line_len = len;
-		read->cursor = len;
-		if (read->prompt)
-			write(1, read->buffer, len);
+		len = ft_strlen(rbuffer->hist->current);
+		ft_buffercpy(rbuffer->hist->current, rbuffer->buffer, len);
+		if (rbuffer->intr)
+			ft_reset_cl(rbuffer);
+		rbuffer->line_len = len;
+		rbuffer->cursor = len;
+		if (rbuffer->intr)
+			write(1, rbuffer->buffer, len);
 	}
 	return ;
 }
 
-void	ft_add_to_history(t_read *read)
+void	ft_add_to_history(t_read *rbuffer)
 {
 	size_t	buffer_len;
 
-	if (*(read->buffer) == 0)
+	if (*(rbuffer->buffer) == 0)
 		return ;
-	buffer_len = (read->hist->last + read->line_len) - read->hist->buffer;
+	buffer_len = (rbuffer->hist->last + rbuffer->line_len) - rbuffer->hist->buffer;
 	if (buffer_len >= HIST_MAX)
 	{
 		write(2, "minishell: history buffer out of memory\n", 40);
 		return ;
 	}
-	ft_buffercpy(read->buffer, read->hist->last, read->line_len);
-	read->hist->last += read->line_len + 1;
-	read->hist->current = read->hist->last;
+	ft_buffercpy(rbuffer->buffer, rbuffer->hist->last, rbuffer->line_len);
+	rbuffer->hist->last += rbuffer->line_len + 1;
+	rbuffer->hist->current = rbuffer->hist->last;
 }
 //TODO: implement refilling of line buffer

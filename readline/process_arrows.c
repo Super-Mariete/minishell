@@ -6,49 +6,49 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:03 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/03 19:53:43 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 02:00:09 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	ft_fwd_cursor(t_read *read)
+static void	ft_fwd_cursor(t_read *rbuffer)
 {
-	if (read->cursor < read->line_len)
+	if (rbuffer->cursor < rbuffer->line_len)
 	{
-		read->cursor += 1;
-		if (read->prompt)
+		rbuffer->cursor += 1;
+		if (rbuffer->intr)
 			write(STDOUT_FILENO, "\033[C", 3);
 	}
 }
 
-static void	ft_bwd_cursor(t_read *read)
+static void	ft_bwd_cursor(t_read *rbuffer)
 {
-	if (read->cursor > 0)
+	if (rbuffer->cursor > 0)
 	{
-		read->cursor -= 1;
-		if (read->prompt)
+		rbuffer->cursor -= 1;
+		if (rbuffer->intr)
 			write(STDOUT_FILENO, "\033[D", 3);
 	}
 }
 
-int	ft_process_arrows(t_read *read)
+int	ft_process_arrows(t_read *rbuffer)
 {
 	char	esc_seq[2];
 
-	if (read_key(&esc_seq[0]) != 1)
-		return (0);
+	if (read(STDIN_FILENO, &esc_seq[0], 1) != 1)
+			return (0);	
 	if (esc_seq[0] != '[')
 		return (0);
-	if (read_key(&esc_seq[1]) != 1)
+	if (read(STDIN_FILENO, &esc_seq[1], 1) != 1)
 		return (0);
 	if (esc_seq[1] == 'C')
-		ft_fwd_cursor(read);
+		ft_fwd_cursor(rbuffer);
 	else if (esc_seq[1] == 'D')
-		ft_bwd_cursor(read);
+		ft_bwd_cursor(rbuffer);
 	else if (esc_seq[1] == 'A')
-		ft_up_history(read);
+		ft_up_history(rbuffer);
 	else if (esc_seq[1] == 'B')
-		ft_down_history(read);
+		ft_down_history(rbuffer);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:37 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/03 19:41:35 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 01:27:53 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	if (ft_load_env(msh.env, envp))
 		return (126);
-	*(msh.status) = ft_readline(&msh);
+	ft_readline(&msh);
 	if (isatty(STDIN_FILENO))
 	{
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->canon_mode)) == -1)
