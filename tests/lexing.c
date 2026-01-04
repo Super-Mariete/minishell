@@ -6,11 +6,11 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 02:19:47 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 18:15:56 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "test.h"
+#include "../includes/minishell.h"
 
 static	size_t ft_skip_spaces(const char *line)
 {
@@ -22,60 +22,74 @@ static	size_t ft_skip_spaces(const char *line)
 	return (i);
 }
 
+// If want to escape quotes, add: && (i == 0 || (i > 0 && line[i - 1] != '\\'))
 static size_t	ft_token_len(const char *line)
 {
 	size_t	i;
-	size_t	len;
+	size_t	line_len;
+	size_t	qlen;
+	size_t	ret;
 
 	i = 0;
-	len = ft_strlen(line);
+	ret = 0;
+	line_len = ft_strlen(line);
 	if (ft_strchr(CONTROL_OP, line[i]))
-		return (i + ft_op_len(line, i));
-	while (i < len)
+		return (ft_op_len(line, i));
+	while (i < line_len)
 	{
-		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		if (ft_strchr(QUOTES, line[i]))
 		{
-			if (ft_quoted_len(line + i, line[i]) <= 0)
+			qlen = ft_quoted_len(line + i, line[i]);
+			if (qlen == 0)
 				return (ft_perror_token(line[i], UNCLOSED), 0);
-			i = (ft_quoted_len(line + i, line[i]) + i);
+			i = (qlen + i);
+			ret = i;
 			continue ;
 		}
 		if (ft_strchr(METACHARS, line[i]))
-			return (i);
+			return (ret);
 		i++;
+		ret++;
 	}
-	return (i);
+	return (ret);
 }
 
 void	ft_print_buffer(const t_buffer *buff)
 {
-	// char	*t;
 	size_t	i;
 	size_t	r;
+	size_t	p;
 	
 	i = 0;
+	p = 0;
 	r = buff->last - buff->buffer;
 	while (i < r)
 	{
 		if (!buff->buffer[i])
 		{
 			if (i + 1 <= r && !buff->buffer[i + 1])
+			{
+				write(2, "\n", 1);
 				return ;
-			printf(" ");
+			}
+			write(2, " ", 1);
 		}
 		else
-			printf("%c", buff->buffer[i]);
+		{
+			write(2, &(buff->buffer[i]), 1);
+			p++;
+		}
 		i++;
 	}
-	printf("\n");
-	fflush(stdout);
+	if (p)
+		write(2, "\n", 1);
 	return ;
 }
 
 static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 {
-	size_t	i;
-	size_t	len;
+	size_t		i;
+	size_t		len;
 	const char	*max;
 
 	i = 0;
@@ -83,17 +97,17 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 	while (i < rbuffer->line_len)
 	{
 		len = ft_token_len(&(rbuffer->buffer[i]));
-		if (!len)
+		if (len == 0)
 			break ;
 		if (i + len >= BUF_MAX - 1 || buff->last + len >= max)
-			return (write(2, MEMOUT, sizeof(MEMOUT)), 1);
+			return (write(2, MEMOUT, sizeof(MEMOUT)), E2BIG);
 		ft_buffercpy(&(rbuffer->buffer[i]), buff->last, len);
 		buff->last += len + 1;
 		buff->current = buff->last;
 		i += len;
 		i += ft_skip_spaces(&(rbuffer->buffer[i]));
 	}
-	ft_print_buffer(buff);	
+	ft_print_buffer(buff);
 	return (0);
 }
 
@@ -102,13 +116,19 @@ void	ft_parse(t_msh *msh)
 	static t_ast	ast[MAX_NODES];
 	static char		buffer[BUF_MAX];
 	static t_buffer	buff;
+	int				status;
 
 	buff.buffer = buffer;
 	buff.ast = ast;
 	buff.current = buffer;
 	buff.last = buffer;
 	msh->buff = &buff;
-	ft_put_tokens(&buff, msh->rbuffer);
+	status = ft_put_tokens(&buff, msh->rbuffer);
+	if (status)
+	{
+		*msh->status = status;
+		return ;
+	}
 	ft_reset_buffer(&buff);
 	return ;
 }
