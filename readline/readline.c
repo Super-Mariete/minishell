@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:56:55 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 02:15:18 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 18:22:20 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	ft_readline(t_msh *msh)
 			continue ;
 		}
 		if (pos == BUF_MAX - 2)
-			return (write(2, MEMOUT, sizeof(MEMOUT)), E2BIG);
+			return (write(2, MEMOUT, sizeof(MEMOUT)), *msh->status = E2BIG, E2BIG);
 		if (c == '\n')
 		{
 			ft_process_nl(msh->rbuffer, msh);

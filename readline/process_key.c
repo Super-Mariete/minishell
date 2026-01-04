@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:00 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 01:58:41 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 17:59:26 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ static int	ft_process_printable(const char c, t_read *rbuffer)
 
 	if (c == 127)
 		return (ft_backspace(rbuffer), 1);
-	if (rbuffer->line_len >= BUF_MAX - 1)
-		return (write(2, "\a", 1), 0);
 	if (rbuffer->cursor == rbuffer->line_len)
 	{
 		rbuffer->buffer[rbuffer->cursor] = c;

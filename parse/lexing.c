@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 15:49:15 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 18:20:44 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 		if (len == 0)
 			break ;
 		if (i + len >= BUF_MAX - 1 || buff->last + len >= max)
-			return (write(2, MEMOUT, sizeof(MEMOUT)), 1);
+			return (write(2, MEMOUT, sizeof(MEMOUT)), E2BIG);
 		ft_buffercpy(&(rbuffer->buffer[i]), buff->last, len);
 		buff->last += len + 1;
 		buff->current = buff->last;
@@ -116,13 +116,16 @@ void	ft_parse(t_msh *msh)
 	static t_ast	ast[MAX_NODES];
 	static char		buffer[BUF_MAX];
 	static t_buffer	buff;
+	int				status;
 
 	buff.buffer = buffer;
 	buff.ast = ast;
 	buff.current = buffer;
 	buff.last = buffer;
 	msh->buff = &buff;
-	ft_put_tokens(&buff, msh->rbuffer);
+	status = ft_put_tokens(&buff, msh->rbuffer);
+	if (status)
+		*msh->status = status;
 	ft_reset_buffer(&buff);
 	return ;
 }

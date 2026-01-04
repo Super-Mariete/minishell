@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 01:57:41 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 17:47:30 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ void	ft_up_history(t_read *rbuffer)
 void	ft_add_to_history(t_read *rbuffer)
 {
 	size_t	buffer_len;
+	size_t	i;
 
 	if (*(rbuffer->buffer) == 0)
 		return ;
@@ -139,6 +140,15 @@ void	ft_add_to_history(t_read *rbuffer)
 	if (buffer_len >= HIST_MAX)
 	{
 		write(2, "minishell: history buffer out of memory\n", 40);
+		i = 0;
+		while (i < HIST_MAX)
+		{
+			rbuffer->hist->buffer[i] = 0;
+			i++;
+			rbuffer->hist->current = rbuffer->hist->buffer;
+			rbuffer->hist->last = rbuffer->hist->buffer;
+			rbuffer->hist->line_len = 0;
+ 		}
 		return ;
 	}
 	ft_buffercpy(rbuffer->buffer, rbuffer->hist->last, rbuffer->line_len);
