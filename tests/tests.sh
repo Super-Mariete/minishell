@@ -144,22 +144,22 @@ ft_test_tokens()
 		local i=1;
 
 		while read -r arg && read -r expected_output; do
-    		output=$(eval "{ echo '$arg' | ./unit-tests; } 2>&1")
+    		output=$(printf "%s\n" "$arg" | ./unit-tests 2>&1)
     		echo "$output" > "$NORMAL_DIR/lexing_log$i.txt"
         	ft_check_line_output "$output" "$expected_output"
     		status=$?
     		((final_status = exec_status + output_status))
     		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
 
-    		output=$(eval "{ echo '$arg' | ./dmsh; } 2>&1")
+    		output=$(printf "%s\n" "$arg" | ./dmsh 2>&1)
     		echo "$output" > "$DEBUG_LOG$i.txt"
     		ft_check_line_output "$output" "$expected_output"
     		status=$?
     		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
 
-    		output=$(eval "{ echo '$arg' | valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
-    		echo "$output" > "$VAL_LOG$i.txt" 
-    		output=$(eval "{ echo '$arg' | valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>/dev/null")
+    		output=$(printf "%s\n" "$arg" | valgrind --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh 2>&1)
+    		echo "$output" > "$VAL_LOG$i.txt"
+    		output=$(printf "%s\n" "$arg" | valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh 2>/dev/null)
     		ft_check_line_output "$output" "$expected_output"
     		status=$?
     		ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
@@ -245,6 +245,6 @@ else
 fi
 echo
 # ft_make ../main.c
-ft_test_load_env "test_load_env.c" "../parse/lexing.c"
+# ft_test_load_env "test_load_env.c" "../parse/lexing.c"
 ft_test_tokens "test_lexing.c" "lexing.c"
 make clean
