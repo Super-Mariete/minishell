@@ -156,14 +156,14 @@ ft_test_tokens()
     		ft_check_line_output "$output" "$expected_output"
     		status=$?
     		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
-
-    		output=$(printf "%s\n" "$arg" | valgrind --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh 2>&1)
-    		echo "$output" > "$VAL_LOG$i.txt"
-    		output=$(printf "%s\n" "$arg" | valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh 2>/dev/null)
-    		ft_check_line_output "$output" "$expected_output"
-    		status=$?
-    		ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
-    
+    		
+			# Valgrind: Log to file to separate tool output from program output (stderr)
+			output=$(printf "%s\n" "$arg" | valgrind --log-file="$VAL_LOG$i.valgrind.txt" --leak-check=full --error-exitcode=255 --track-origins=yes -s ./valmsh 2>&1)
+			cat "$VAL_LOG$i.valgrind.txt" >> "$VAL_LOG$i.txt"
+			rm "$VAL_LOG$i.valgrind.txt"	
+			ft_check_line_output "$output" "$expected_output"
+			status=$?
+			ft_print_status "$status" "$expected_status" "$i" "| valgrind |"    
     		echo "------------------------------------------------"
     		((i++))
 
@@ -207,7 +207,7 @@ ft_test_load_env()
     		((final_status = exec_status + output_status))
     		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
 
-    		output=$(eval "{ export $arg && ./dmsh; } 2>&1")
+    		output=$(printf "%s\n" "$arg" | ./dmsh 2>&1)
     		status=$?
     		echo "$output" > "$DEBUG_LOG$i.txt"
     		ft_check_output "$output" "$expected_output"
@@ -215,8 +215,9 @@ ft_test_load_env()
 
     		output=$(eval "{ export $arg &&  valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
 			status=$?
-    		echo "$output" > "$VAL_LOG$i.txt" 
     		ft_check_output "$output" "$expected_output"
+			output=$(eval "{ export $arg &&  valgrind --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
+    		echo "$output" > "$VAL_LOG$i.txt" 
     		ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
     
     		echo "------------------------------------------------"

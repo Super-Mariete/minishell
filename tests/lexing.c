@@ -36,7 +36,7 @@ static size_t	ft_token_len(const char *line)
 		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
 		{
 			if (ft_quoted_len(line + i, line[i]) <= 0)
-				return (-1);
+				return (ft_perror_token(line[i], UNCLOSED), 0);
 			i = (ft_quoted_len(line + i, line[i]) + i);
 			continue ;
 		}

@@ -56,3 +56,23 @@ minishell: expected another '
 "'"
 "\'"
 "\'"
+(ls)
+( ls )
+(ls && echo)
+( ls && echo ) 
+(ls && (echo h o l a | wc -l))
+( ls && ( echo h o l a | wc -l ) )
+((ls))
+( ( ls ) )
+(ls) > text.txt
+( ls ) > text.txt
+(ls && (echo h o l a | wc -l) > text.txt) > text2.txt
+( ls && ( echo h o l a | wc -l ) > text.txt ) > text2.txt
+((ls)> text.txt)
+( ( ls ) > text.txt )
+<< >><><<
+<< >> < > <<
+"<"">"
+"<"">"
+&&&&|||&<<>><
+&& && || | & << >> <
