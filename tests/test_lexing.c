@@ -1,5 +1,7 @@
 #include "test.h"
 
+sig_atomic_t	g_signal;
+
 static void	ft_init_structs(t_msh *msh)
 {
 	static char		var_arena[ARG_MAX];
@@ -23,15 +25,21 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	ft_init_structs(&msh);
-	ft_set_sig(PARENT);
+	if (isatty(STDIN_FILENO))
+	{
+		ft_set_sig(PARENT);
+		if (ft_init_term(msh.term))
+			return (errno);
+		if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->raw_mode)) == -1)
+			return (errno);
+	}
 	if (ft_load_env(msh.env, envp))
 		return (126);
-	if (ft_init_term(msh.term))
-		return (errno);
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->raw_mode)) == -1)
-		return (errno);
 	*(msh.status) = ft_readline(&msh);
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->canon_mode)) == -1)
+	if (isatty(STDIN_FILENO))
+	{
+		if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->canon_mode)) == -1)
 		return (errno);
+	}
 	return (*(msh.status));
 }

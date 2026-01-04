@@ -20,25 +20,25 @@ ft_make()
 {
 	local	test_status=0
 
-	MAIN=$1 make val
+	LEXING=$2 MAIN=$1 make val
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
-		MAIN=$1 make fclean
+		LEXING=$2 MAIN=$1 make fclean
 		exit 1
 	fi
-	MAIN=$1 make debug
+	LEXING=$2 MAIN=$1 make debug
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
-		MAIN=$1 make fclean
+		LEXING=$2 MAIN=$1 make fclean
 		exit 1
 	fi
 	MAIN=$1 make
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
-		MAIN=$1 make fclean
+		LEXING=$2 MAIN=$1 make fclean
 		exit 1
 	fi
 	make clean
@@ -61,6 +61,17 @@ ft_check_output()
         ((i++))
     done <<< "$1" 3<<< "$2"
 	return $ret
+}
+
+ft_check_line_output()
+{
+    if [ "$1" != "$2" ]; then
+		echo "----------- Error en línea $i -----------"
+		echo -e "${BLUE}Output real:      '$1'${RESET}"
+		echo -e "Output esperado:  '$2'"
+		return 1
+	fi
+	return 0
 }
 
 ft_print_status()
@@ -117,38 +128,40 @@ ft_test_tokens()
 	local	DIR="lexing"
 	local	output
 	local	expected_output
-	TESTFILE="$TESTS_DIR/lexing_tests.txt"
+	local	status
+	local	expected_output
+	local	expected_status=0
+	local	arg
+	TESTFILE="$TESTS_DIR/test_lexing.txt"
 
 	ft_mk_log_dir $DIR
 	local	DEBUG_LOG="$DEBUG_DIR/lexing"
 	local	VAL_LOG="$VAL_DIR/lexing"
 	echo -e "${BLUE}---- Running lexing integration tests ----${RESET}"
 	MAIN=$1 make fclean 
-	ft_make "$1"
-		if [ -f "$TESTFILE" ]; then
+	ft_make "$1" "$2"
+	if [ -f "$TESTFILE" ]; then
 		local i=1;
 
-		while read -r expected_output; do
-
-			expected_output=$(eval "{ export $arg && $expected_cmd; } 2>&1")
-
-    		output=$(eval "{ export $arg && ./unit-tests; } 2>&1")
+		while read -r arg && read -r expected_output; do
+    		output=$(eval "{ echo '$arg' | ./unit-tests; } 2>&1")
+    		echo "$output" > "$NORMAL_DIR/lexing_log$i.txt"
+        	ft_check_line_output "$output" "$expected_output"
     		status=$?
-    		echo "$output" > "$NORMAL_DIR/load_env_log$i.txt"
-        	ft_check_output "$output" "$expected_output"
     		((final_status = exec_status + output_status))
     		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
 
-    		output=$(eval "{ export $arg && ./dmsh; } 2>&1")
-    		status=$?
+    		output=$(eval "{ echo '$arg' | ./dmsh; } 2>&1")
     		echo "$output" > "$DEBUG_LOG$i.txt"
-    		ft_check_output "$output" "$expected_output"
+    		ft_check_line_output "$output" "$expected_output"
+    		status=$?
     		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
 
-    		output=$(eval "{ export $arg &&  valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
-			status=$?
+    		output=$(eval "{ echo '$arg' | valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
     		echo "$output" > "$VAL_LOG$i.txt" 
-    		ft_check_output "$output" "$expected_output"
+    		output=$(eval "{ echo '$arg' | valgrind -q --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>/dev/null")
+    		ft_check_line_output "$output" "$expected_output"
+    		status=$?
     		ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
     
     		echo "------------------------------------------------"
@@ -158,7 +171,7 @@ ft_test_tokens()
 	else
 		echo "No $TESTFILE found"
 	fi
-	MAIN="$1" make clean
+	LEXING=$2 MAIN="$1" make fclean
 }
 
 ft_test_load_env()
@@ -177,8 +190,8 @@ ft_test_load_env()
 	local	DEBUG_LOG="$DEBUG_DIR/load_env"
 	local	VAL_LOG="$VAL_DIR/load_env"
 	echo -e "${BLUE}---- Running load_env unit tests ----${RESET}"
-	MAIN=$1 make fclean 
-	ft_make "$1"
+	LEXING=$2 MAIN=$1 make fclean 
+	ft_make "$1" "$2"
 	ft_not_so_long_var
 	if [ -f "$TESTFILE" ]; then
 		local i=1;
@@ -213,7 +226,7 @@ ft_test_load_env()
 	else
 		echo "No $TESTFILE found"
 	fi
-	MAIN="$1" make clean
+	LEXING=$2 MAIN="$1" make fclean
 }
 
 # make -s fclean
@@ -231,7 +244,7 @@ else
 	echo -e  "${GREEN}Norminette passed${RESET}"
 fi
 echo
-ft_make ../main.c
-# ft_test_load_env "test_load_env.c"
-# ft_test_tokens
+# ft_make ../main.c
+ft_test_load_env "test_load_env.c" "../parse/lexing.c"
+ft_test_tokens "test_lexing.c" "lexing.c"
 make clean

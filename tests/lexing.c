@@ -6,11 +6,11 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/03 18:12:32 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 02:19:47 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "test.h"
 
 static	size_t ft_skip_spaces(const char *line)
 {
@@ -49,25 +49,30 @@ static size_t	ft_token_len(const char *line)
 
 void	ft_print_buffer(const t_buffer *buff)
 {
+	// char	*t;
 	size_t	i;
 	size_t	r;
-
+	
 	i = 0;
-	printf("buffer:\n");
 	r = buff->last - buff->buffer;
 	while (i < r)
 	{
 		if (!buff->buffer[i])
+		{
+			if (i + 1 <= r && !buff->buffer[i + 1])
+				return ;
 			printf(" ");
+		}
 		else
 			printf("%c", buff->buffer[i]);
 		i++;
 	}
 	printf("\n");
+	fflush(stdout);
 	return ;
 }
 
-static int	ft_put_tokens(t_buffer *buff, t_read *read)
+static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 {
 	size_t	i;
 	size_t	len;
@@ -75,18 +80,18 @@ static int	ft_put_tokens(t_buffer *buff, t_read *read)
 
 	i = 0;
 	max = buff->buffer + BUF_MAX - 1;
-	while (i < read->line_len)
+	while (i < rbuffer->line_len)
 	{
-		len = ft_token_len(&(read->buffer[i]));
+		len = ft_token_len(&(rbuffer->buffer[i]));
 		if (!len)
 			break ;
 		if (i + len >= BUF_MAX - 1 || buff->last + len >= max)
 			return (write(2, MEMOUT, sizeof(MEMOUT)), 1);
-		ft_buffercpy(&(read->buffer[i]), buff->last, len);
+		ft_buffercpy(&(rbuffer->buffer[i]), buff->last, len);
 		buff->last += len + 1;
 		buff->current = buff->last;
 		i += len;
-		i += ft_skip_spaces(&(read->buffer[i]));
+		i += ft_skip_spaces(&(rbuffer->buffer[i]));
 	}
 	ft_print_buffer(buff);	
 	return (0);
@@ -103,7 +108,7 @@ void	ft_parse(t_msh *msh)
 	buff.current = buffer;
 	buff.last = buffer;
 	msh->buff = &buff;
-	ft_put_tokens(&buff, msh->read);
+	ft_put_tokens(&buff, msh->rbuffer);
 	ft_reset_buffer(&buff);
 	return ;
 }
