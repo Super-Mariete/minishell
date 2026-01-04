@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 02:07:11 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 13:54:29 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,27 @@ static	size_t ft_skip_spaces(const char *line)
 	return (i);
 }
 
+// If want to escape quotes, add: && (i == 0 || (i > 0 && line[i - 1] != '\\'))
 static size_t	ft_token_len(const char *line)
 {
 	size_t	i;
-	size_t	len;
+	size_t	line_len;
+	size_t	qlen;
 	size_t	ret;
 
 	i = 0;
 	ret = 0;
-	len = ft_strlen(line);
+	line_len = ft_strlen(line);
 	if (ft_strchr(CONTROL_OP, line[i]))
 		return (ret+ ft_op_len(line, i));
-	while (i < len)
+	while (i < line_len)
 	{
-		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		if (ft_strchr(QUOTES, line[i]))
 		{
-			if (ft_quoted_len(line + i, line[i]) <= 0)
-				return (-1);
-			i = (ft_quoted_len(line + i, line[i]) + i);
+			qlen = ft_quoted_len(line + i, line[i]);
+			if (qlen == 0)
+				return (ft_perror_token(line[i], UNCLOSED), 0);
+			i = (qlen + i);
 			ret = i;
 			continue ;
 		}
@@ -85,8 +88,8 @@ void	ft_print_buffer(const t_buffer *buff)
 
 static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 {
-	size_t	i;
-	size_t	len;
+	size_t		i;
+	size_t		len;
 	const char	*max;
 
 	i = 0;
@@ -94,7 +97,7 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 	while (i < rbuffer->line_len)
 	{
 		len = ft_token_len(&(rbuffer->buffer[i]));
-		if (!len)
+		if (len == 0)
 			break ;
 		if (i + len >= BUF_MAX - 1 || buff->last + len >= max)
 			return (write(2, MEMOUT, sizeof(MEMOUT)), 1);

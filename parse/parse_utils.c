@@ -6,13 +6,13 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:11 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/03 16:47:12 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 13:54:12 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_quoted_len(const char *line, char quote)
+size_t	ft_quoted_len(const char *line, char quote)
 {
 	int	i;
 
@@ -22,24 +22,16 @@ int	ft_quoted_len(const char *line, char quote)
 	while (line[i])
 	{
 		if (line[i] == quote)
-		{
-			if (quote == '\'')
-				return (i + 1);
-			else if (quote == '\"')
-			{
-				if (line[i - 1] != '\\')
-					return (i + 1);
-			}
-		}
+			return (i + 1);
 		i++;
 	}
-	return (-1);
+	return (0);
 }
 
-int	ft_op_len(const char *line, int pos)
+size_t	ft_op_len(const char *line, int pos)
 {
 	if (!line || pos < 0)
-		return (-1);
+		return (0);
 	if (ft_isspace(line[pos]))
 		return (0);
 	if (ft_strchr(CONTROL_OP, line[pos]) && line[pos + 1] == line[pos])

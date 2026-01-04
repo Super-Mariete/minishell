@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/04 01:56:41 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 13:43:20 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@
 # define MEMOUT "minishell: buffer out of memory\n"
 # define ARG2BIG "minishell: Argument list too long\n"
 # define NOSTASH "\nminishell: MEMOUT: can't stash current line\n"
-
+# define UNEXPTKN "minishell: unexpected token "
+# define UNCLOSED "minishell: expected another "
 // Only allowed variable, to catch signals
 extern sig_atomic_t	g_signal;
 
@@ -159,13 +160,15 @@ char	*ft_get_stash(const t_read *rbuffer);
 /* parse */
 
 void	ft_parse(t_msh *msh);
-int		ft_quoted_len(const char *line, char quote);
-int		ft_op_len(const char *line, int pos);
 void	ft_reset_buffer(t_buffer *buff);
+size_t	ft_quoted_len(const char *line, char quote);
+size_t	ft_op_len(const char *line, int pos);
 
 /* utils */
 
 size_t	ft_buffercpy(const char *src, char *dest, size_t size);
+void	ft_perror_token(const char token, const char *error);
+
 // void	ft_refill_var_buffer(char *buffer, t_env *env);
 
 /* exec */

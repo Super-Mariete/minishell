@@ -79,3 +79,12 @@ size_t	ft_buffercpy(const char *src, char *dest, size_t size)
 		return (1);
 	return (0);
 }
+
+void	ft_perror_token(const char token, const char *error)
+{
+	if (error)
+		write(2, error, ft_strlen(error));
+	if (token)
+		write(2, &token, 1);
+	write(2, "\n", 1);
+}
