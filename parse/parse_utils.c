@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:11 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 13:54:12 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 17:07:20 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ size_t	ft_op_len(const char *line, int pos)
 		return (0);
 	if (ft_isspace(line[pos]))
 		return (0);
-	if (ft_strchr(CONTROL_OP, line[pos]) && line[pos + 1] == line[pos])
+	if (ft_strchr(CONTROL_OP, line[pos]) && line[pos + 1] == line[pos] && !ft_strchr(PRTS, line[pos]))
 		return (2);
 	if (ft_strchr(CONTROL_OP, line[pos]))
 		return (1);

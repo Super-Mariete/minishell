@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/04 13:43:20 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 15:58:50 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # define IFS " \t\n"
 # define METACHARS " \t\n|&()<>" //Omited ';'
 # define CONTROL_OP "<>&|()"
+# define PRTS "()"
 # define PROMPT "\033[32mminishell\033[0m $ "
 # define QUOTES "\"\'"
 

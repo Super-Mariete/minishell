@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 13:54:29 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 15:49:15 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static size_t	ft_token_len(const char *line)
 	ret = 0;
 	line_len = ft_strlen(line);
 	if (ft_strchr(CONTROL_OP, line[i]))
-		return (ret+ ft_op_len(line, i));
+		return (ft_op_len(line, i));
 	while (i < line_len)
 	{
 		if (ft_strchr(QUOTES, line[i]))

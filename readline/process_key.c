@@ -86,6 +86,8 @@ static int	ft_process_printable(const char c, t_read *rbuffer)
 
 	if (c == 127)
 		return (ft_backspace(rbuffer), 1);
+	if (rbuffer->line_len >= BUF_MAX - 1)
+		return (write(2, "\a", 1), 0);
 	if (rbuffer->cursor == rbuffer->line_len)
 	{
 		rbuffer->buffer[rbuffer->cursor] = c;
@@ -93,12 +95,14 @@ static int	ft_process_printable(const char c, t_read *rbuffer)
 			write(1, &c, 1);
 		rbuffer->cursor += 1;
 		rbuffer->line_len += 1;
+		rbuffer->buffer[rbuffer->line_len] = 0;
 		return (1);
 	}
 	pos = rbuffer->line_len;
 	ft_add_char_mid_buffer(rbuffer, c);
 	rbuffer->line_len += 1;
 	rbuffer->cursor += 1;
+	rbuffer->buffer[rbuffer->line_len] = 0;
 	if (rbuffer->intr)
 	{
 		write(1, "\r", 1);

@@ -76,9 +76,9 @@ int	ft_readline(t_msh *msh)
 	ft_init_read(msh);
 	if (msh->rbuffer->intr)
 		write(2, PROMPT, sizeof(PROMPT));
+	pos = 0;
 	while (1)
 	{
-		pos = 0;
 		if (read(STDIN_FILENO, &c, 1) == 0)
 		{
 			if (msh->rbuffer->line_len > 0 && !msh->rbuffer->intr)
@@ -94,8 +94,12 @@ int	ft_readline(t_msh *msh)
 		}
 		if (pos == BUF_MAX - 2)
 			return (write(2, MEMOUT, sizeof(MEMOUT)), E2BIG);
-		if (c == '\n' && ft_process_nl(msh->rbuffer, msh))
+		if (c == '\n')
+		{
+			ft_process_nl(msh->rbuffer, msh);
+			pos = 0;
 			continue ;
+		}
 		if (ft_process_key(c, msh->rbuffer, msh))
 			return (1);
 		pos++;
