@@ -1,6 +1,11 @@
-#include "test.h"
+#include "../../includes/minishell.h"
 
 sig_atomic_t	g_signal;
+
+size_t	ft_parse(t_msh *msh)
+{
+	return (ft_lexer(msh));
+}
 
 static void	ft_init_structs(t_msh *msh)
 {

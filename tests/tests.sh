@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Relevant directories
-LOG_DIR="$(date +%y%m%d%H%M%S)"
-TESTS_DIR="to_be_tested"
+LOG_DIR="$(pwd)/$(date +%y%m%d%H%M%S)"
 NORMAL_DIR=0
 VAL_DIR=0
 DEBUG_DIR=0
@@ -20,21 +19,21 @@ ft_make()
 {
 	local	test_status=0
 
-	LEXING=$2 MAIN=$1 make val
+	make val
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
 		LEXING=$2 MAIN=$1 make fclean
 		exit 1
 	fi
-	LEXING=$2 MAIN=$1 make debug
+	make debug
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
 		LEXING=$2 MAIN=$1 make fclean
 		exit 1
 	fi
-	MAIN=$1 make
+	make
 	test_status=$?
 	if [ $test_status -ne 0 ]; then
 		echo "Failed to make targets"
@@ -132,13 +131,14 @@ ft_test_tokens()
 	local	expected_output
 	local	expected_status=0
 	local	arg
-	TESTFILE="$TESTS_DIR/test_lexing.txt"
+	TESTFILE="test_lexing.txt"
 
 	ft_mk_log_dir $DIR
 	local	DEBUG_LOG="$DEBUG_DIR/lexing"
 	local	VAL_LOG="$VAL_DIR/lexing"
 	echo -e "${BLUE}---- Running lexing integration tests ----${RESET}"
-	MAIN=$1 make fclean 
+	cd "test_lexing/"
+	make fclean
 	ft_make "$1" "$2"
 	if [ -f "$TESTFILE" ]; then
 		local i=1;
@@ -152,7 +152,7 @@ ft_test_tokens()
     		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
 
     		output=$(printf "%s\n" "$arg" | ./dmsh 2>&1)
-    		echo "$output" > "$DEBUG_LOG$i.txt"
+    		echo "$output" > "$DEBUG_LOG$i.san.txt"
     		ft_check_line_output "$output" "$expected_output"
     		status=$?
     		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
@@ -171,7 +171,8 @@ ft_test_tokens()
 	else
 		echo "No $TESTFILE found"
 	fi
-	LEXING=$2 MAIN="$1" make fclean
+	make fclean
+	cd ..
 }
 
 ft_test_load_env()
@@ -184,13 +185,14 @@ ft_test_load_env()
 	local	status
 	local	expected_output
 	local	expected_status
-	TESTFILE="$TESTS_DIR/load_env_tests.txt"
+	TESTFILE="load_env_tests.txt"
 
 	ft_mk_log_dir $DIR
 	local	DEBUG_LOG="$DEBUG_DIR/load_env"
 	local	VAL_LOG="$VAL_DIR/load_env"
 	echo -e "${BLUE}---- Running load_env unit tests ----${RESET}"
-	LEXING=$2 MAIN=$1 make fclean 
+	cd "test_load_env/"
+	make fclean 
 	ft_make "$1" "$2"
 	ft_not_so_long_var
 	if [ -f "$TESTFILE" ]; then
@@ -209,7 +211,7 @@ ft_test_load_env()
 
     		output=$(printf "%s\n" "$arg" | ./dmsh 2>&1)
     		status=$?
-    		echo "$output" > "$DEBUG_LOG$i.txt"
+    		echo "$output" > "$DEBUG_LOG$i.san.txt"
     		ft_check_output "$output" "$expected_output"
     		ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
 
@@ -217,7 +219,7 @@ ft_test_load_env()
 			status=$?
     		ft_check_output "$output" "$expected_output"
 			output=$(eval "{ export $arg &&  valgrind --leak-check=full --error-exitcode=255  --track-origins=yes -s ./valmsh; } 2>&1")
-    		echo "$output" > "$VAL_LOG$i.txt" 
+    		echo "$output" > "$VAL_LOG$i.val.txt" 
     		ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
     
     		echo "------------------------------------------------"
@@ -227,7 +229,8 @@ ft_test_load_env()
 	else
 		echo "No $TESTFILE found"
 	fi
-	LEXING=$2 MAIN="$1" make fclean
+	make fclean
+	cd ..
 }
 
 # make -s fclean
@@ -246,6 +249,5 @@ else
 fi
 echo
 # ft_make ../main.c
-# ft_test_load_env "test_load_env.c" "../parse/lexing.c"
+ft_test_load_env "test_load_env.c" "../parse/lexing.c"
 ft_test_tokens "test_lexing.c" "lexing.c"
-make clean

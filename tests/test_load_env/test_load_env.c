@@ -1,4 +1,4 @@
-#include "test.h"
+#include "../../includes/minishell.h"
 
 sig_atomic_t g_signal;
 
