@@ -86,3 +86,12 @@ void	ft_perror_token(const char token, const char *error)
 		write(2, &token, 1);
 	write(2, "\n", 1);
 }
+
+void	ft_perror_str_token(const char *token, const char *error)
+{
+	if (error)
+		write(2, error, ft_strlen(error));
+	if (token)
+		write(2, token, ft_strlen(token));
+	write(2, "\n", 1);
+}

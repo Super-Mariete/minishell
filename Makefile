@@ -11,7 +11,9 @@ SRC = main.c\
 	readline/history.c\
 	readline/readline_utils.c\
 	parse/lexing.c\
-	parse/parse_utils.c
+	parse/parse_utils.c\
+	parse/ast_utils.c\
+	parse/parsing.c
 
 # 	exec/builtins.c
 OBJ = $(SRC:.c=.o)

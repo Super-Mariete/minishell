@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:11 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 17:07:20 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/05 19:23:43 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,12 @@ void	ft_reset_buffer(t_buffer *buff)
 	}
 	buff->last = buff->buffer;
 	buff->current = buff->last;
+}
+
+size_t	ft_next_token(const char *line, size_t pos)
+{
+	while (line[pos] != 0)
+		pos++;
+	pos++;
+	return (pos);
 }

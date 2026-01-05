@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/04 15:58:50 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/05 19:36:41 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@
 # define IFS " \t\n"
 # define METACHARS " \t\n|&()<>" //Omited ';'
 # define CONTROL_OP "<>&|()"
+# define OP "&|()"
 # define PRTS "()"
 # define PROMPT "\033[32mminishell\033[0m $ "
 # define QUOTES "\"\'"
+# define REDIR_S "<>"
 
-// If PATH not in environment (predetermined PATH)
+// If PATH not in environment (predetermined PATH, almost sure invalid)
 # define PATH "/bin:/sbin/:local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
 
 // Set up signal handling status
@@ -52,8 +54,10 @@
 # define MEMOUT "minishell: buffer out of memory\n"
 # define ARG2BIG "minishell: Argument list too long\n"
 # define NOSTASH "\nminishell: MEMOUT: can't stash current line\n"
-# define UNEXPTKN "minishell: unexpected token "
+# define UNEXPTKN "minishell: syntax error near unexpected token "
 # define UNCLOSED "minishell: expected another "
+# define NOARGS "minishell: expected arguments after last "
+
 // Only allowed variable, to catch signals
 extern sig_atomic_t	g_signal;
 
@@ -96,25 +100,47 @@ typedef struct s_read
 	int		quoted;
 }	t_read;
 
-// Struct for each node of the AST
-typedef struct s_ast
+// AST node types
+typedef	enum
 {
-	struct s_ast	*prev;
-	struct s_ast	*left;
-	struct s_ast	*right;
+	CMD = 1,
+	PIPE,
+	OPEN_PRTS,
+	CLS_PRTS,
+	OR,
+	AND
+}	node_type;
+
+// Struct for each node of the AST
+typedef struct s_node
+{
+	struct s_node	*prev;
+	struct s_node	*left;
+	struct s_node	*right;
 	char			*cmd;
 	char			*heredoc;
 	char			*infile;
 	char			*outfile;
 	char			*args;
 	int				type;
-	int				outf_mode;
+	int				append;
+	int				n_args;
+	int				n_node;
+	int				is_builtin;
+	
+}	t_node;
+
+// Struct for the AST
+typedef struct s_ast
+{
+	t_node	*first;
+	t_node	*current;
+	int		n_nodes;
 }	t_ast;
 
 // Buffer holding the lexed line
 typedef struct s_buffer
 {
-	t_ast	*ast;
 	char	*buffer;
 	char	*current;
 	char	*last;
@@ -156,19 +182,24 @@ void	ft_reset_cursor(const t_read *rbuffer);
 void	ft_reset_read(t_read *rbuffer);
 char	*ft_get_stash(const t_read *rbuffer);
 
-// void	ft_print_history(t_hist *hist);
+//Printers for debugging
+void	ft_print_history(t_hist *hist);
+void	ft_print_ast(t_ast *ast);
 
 /* parse */
 
-void	ft_parse(t_msh *msh);
+size_t	ft_parse(t_msh *msh);
+size_t	ft_lexer(t_msh *msh);
 void	ft_reset_buffer(t_buffer *buff);
 size_t	ft_quoted_len(const char *line, char quote);
 size_t	ft_op_len(const char *line, int pos);
+size_t	ft_next_token(const char *line, size_t pos);
 
 /* utils */
 
 size_t	ft_buffercpy(const char *src, char *dest, size_t size);
 void	ft_perror_token(const char token, const char *error);
+void	ft_perror_str_token(const char *token, const char *error);
 
 // void	ft_refill_var_buffer(char *buffer, t_env *env);
 

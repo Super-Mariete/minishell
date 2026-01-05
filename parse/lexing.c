@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 18:20:44 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/05 16:48:19 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,21 +111,36 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 	return (0);
 }
 
-void	ft_parse(t_msh *msh)
+static void	ft_init_ast(t_msh *msh)
 {
-	static t_ast	ast[MAX_NODES];
+	static t_node	node[MAX_NODES + 1];
+	int				i;
+	static t_ast	ast;
+	
+	i = 0;
+	while (i < MAX_NODES)
+	{
+		node[i].n_node = i + 1;
+		i++;
+	}
+	ast.first = node;
+	ast.current = node;
+	msh->ast = &ast;
+	return ;
+}
+size_t	ft_lexer(t_msh *msh)
+{
 	static char		buffer[BUF_MAX];
 	static t_buffer	buff;
 	int				status;
 
 	buff.buffer = buffer;
-	buff.ast = ast;
+	ft_init_ast(msh);
 	buff.current = buffer;
 	buff.last = buffer;
 	msh->buff = &buff;
 	status = ft_put_tokens(&buff, msh->rbuffer);
 	if (status)
 		*msh->status = status;
-	ft_reset_buffer(&buff);
-	return ;
+	return (0);
 }
