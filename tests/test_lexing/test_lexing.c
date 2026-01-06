@@ -4,7 +4,10 @@ sig_atomic_t	g_signal;
 
 size_t	ft_parse(t_msh *msh)
 {
-	return (ft_lexer(msh));
+	ft_lexer(msh);
+	ft_reset_read(msh->rbuffer);
+	ft_reset_buffer(msh->buff);
+	return (0);
 }
 
 static void	ft_init_structs(t_msh *msh)

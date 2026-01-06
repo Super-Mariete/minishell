@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:03 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 02:00:09 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 10:23:05 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_process_arrows(t_read *rbuffer)
 	char	esc_seq[2];
 
 	if (read(STDIN_FILENO, &esc_seq[0], 1) != 1)
-			return (0);	
+		return (0);	
 	if (esc_seq[0] != '[')
 		return (0);
 	if (read(STDIN_FILENO, &esc_seq[1], 1) != 1)

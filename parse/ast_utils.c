@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ast_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/06 10:09:44 by rafael            #+#    #+#             */
+/*   Updated: 2026/01/06 10:10:29 by rafael           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_print_ast(t_ast *ast)
@@ -38,7 +50,7 @@ void	ft_print_ast(t_ast *ast)
 		else if (node->prev->right)
 			node = node->prev->right;
 		else
-			node = node->prev;	
+			node = node->prev;
 	}
 	return ;
 }

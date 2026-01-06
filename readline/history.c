@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:57:12 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 18:55:18 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 10:20:33 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void	ft_add_to_history(t_read *rbuffer)
 			rbuffer->hist->current = rbuffer->hist->buffer;
 			rbuffer->hist->last = rbuffer->hist->buffer;
 			rbuffer->hist->line_len = 0;
- 		}
+		}
 		return ;
 	}
 	ft_buffercpy(rbuffer->buffer, rbuffer->hist->last, rbuffer->line_len);

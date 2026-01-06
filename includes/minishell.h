@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/05 19:36:41 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 10:27:03 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ typedef struct s_read
 }	t_read;
 
 // AST node types
-typedef	enum
+typedef enum s_node_type
 {
 	CMD = 1,
 	PIPE,
@@ -109,7 +109,7 @@ typedef	enum
 	CLS_PRTS,
 	OR,
 	AND
-}	node_type;
+}	t_node_type;
 
 // Struct for each node of the AST
 typedef struct s_node
@@ -127,7 +127,6 @@ typedef struct s_node
 	int				n_args;
 	int				n_node;
 	int				is_builtin;
-	
 }	t_node;
 
 // Struct for the AST

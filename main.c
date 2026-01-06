@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 13:32:37 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 01:27:53 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 10:07:23 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	if (isatty(STDIN_FILENO))
 	{
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &(msh.term->canon_mode)) == -1)
-		return (errno);
+			return (errno);
 	}
 	return (*(msh.status));
 }

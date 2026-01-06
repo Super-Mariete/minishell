@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/30 20:56:55 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/04 18:48:15 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 10:21:31 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void	ft_init_read(t_msh *msh)
 	msh->rbuffer->hist->line_len = 0;
 	msh->rbuffer->line_len = 0;
 	if (isatty(STDIN_FILENO))
-	 	msh->rbuffer->intr = 1;
+		msh->rbuffer->intr = 1;
 	else
 		msh->rbuffer->intr = 0;
 	return ;

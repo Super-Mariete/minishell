@@ -209,7 +209,7 @@ ft_test_load_env()
     		((final_status = exec_status + output_status))
     		ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
 
-    		output=$(printf "%s\n" "$arg" | ./dmsh 2>&1)
+    		output=$(eval "{ export $arg && ./unit-tests; } 2>&1")
     		status=$?
     		echo "$output" > "$DEBUG_LOG$i.san.txt"
     		ft_check_output "$output" "$expected_output"
@@ -239,8 +239,8 @@ echo -e "${BLUE}---- Running static analisys ----${RESET}"
 make check
 echo
 echo -e "${BLUE}---- Running norminette ----${RESET}"
-# norminette ../main.c ../libft/ ../parse/ ../signals/ ../variables/ ../readline/ ../exec/\
-# ../includes/ > $LOG_DIR/norm_log.txt 2>&1
+norminette ../main.c ../libft/ ../parse/ ../signals/ ../variables/ ../readline/ ../exec/\
+../includes/ > $LOG_DIR/norm_log.txt 2>&1
 cat $LOG_DIR/norm_log.txt | grep Error
 if [ $? -eq 0 ]; then
 	echo -e  "${RED}Norminette not passed${RESET}"

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 19:40:47 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/05 18:34:37 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 12:06:25 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ static size_t	ft_parse_op(char *buff, size_t pos, t_ast *ast)
 {
 	size_t	ret;
 	size_t	next;
+
+	printf("op!\n");
 	ret = 2;
 	if (buff[pos] == '|' && buff[pos + 1] == '|')
 		ast->current->type = OR;
@@ -45,32 +47,31 @@ static size_t	ft_parse_op(char *buff, size_t pos, t_ast *ast)
 size_t	ft_append(char *buff, size_t pos, t_ast *ast)
 {
 	size_t	i;
-	size_t	next;
 
-	i = ft_next_token(buff, pos);
+	printf("pos = %zu\n", pos);
+	printf("append!\n");
+	i = pos + 3;
+	printf("next[%zu] = %s\n", i, &(buff[i]));
 	if (!buff[i])
 	{
-		ft_perror_str_token(">>", NOARGS);
+		ft_perror_str_token("'newline'", UNEXPTKN);
 		return (SIZE_MAX);
 	}
-	next = ft_next_token(buff, i);
-	if (ft_strchr(CONTROL_OP, buff[next]))
+	if (ft_strchr(CONTROL_OP, buff[i]))
 	{
 		ft_perror_str_token(&buff[i], UNEXPTKN);
 		return (SIZE_MAX);
 	}
 	ast->current->append = 1;
 	ast->current->outfile = buff + i;
-	if (next == i)
-		return (SIZE_MAX);
+	printf("of = %s\n", ast->current->outfile);
+	i += ft_strlen(&(buff[i]));
 	return (i);
 }
 
 // char	*ft_cmd_path(char *buffer, t_env *env)
 // {
-	
 // }
-
 // static int	ft_parse_cmd(char *buff, size_t pos, t_ast *ast, t_read *read)
 // {
 // 	if (!ft_strcmp(&(buff[pos]), "echo")
@@ -84,7 +85,6 @@ size_t	ft_append(char *buff, size_t pos, t_ast *ast)
 // 	}
 // 	if (ft_strchr(&(buff[pos]), '/'))
 // 		ast->current->cmd = &(buff[pos]);
-	
 // 	// else
 // 	// 	cli->cmd = ft_cmd_path(getenv("PATH"), &(buff[pos]));
 // 	// if (!cli->cmd)
@@ -99,14 +99,17 @@ size_t	ft_parse(t_msh *msh)
 	char	*buff;
 	t_ast	*ast;
 
-	if (ft_lexer(msh))
+	len = ft_lexer(msh);
+	if (len) 
 		return (*msh->status);
 	i = 0;
 	ast = msh->ast;
 	len = msh->buff->last - msh->buff->buffer;
+	printf("len = %zu\n", len);
 	buff = msh->buff->buffer;
 	while (i < len)
 	{
+		printf("token = %s\n", &(buff[i]));
 		if (!ft_strncmp(buff + i, ">>", 2))
 			i = ft_append(buff + i, i, ast);
 		else if (ft_strchr(OP, buff[i]))
@@ -117,17 +120,19 @@ size_t	ft_parse(t_msh *msh)
 		// {
 		// 	if (ft_heredoc(buff[++i], buff) == 130)
 		// 		return (130);
-
 		// else
 		// 	i = ft_parse_token(buff, i, cli, &group);
+		printf("i = %zu\n", i);
 		if (i == SIZE_MAX)
 		{
 			*msh->status = 2;
 			return (2);
 		}
-		break ;
+		i++;
+		// break ;
 	}
-	// ft_print_ast(msh->ast);
+	ft_print_ast(msh->ast);
+	ft_reset_read(msh->rbuffer);
 	ft_reset_buffer(msh->buff);
 	return (i);
 }

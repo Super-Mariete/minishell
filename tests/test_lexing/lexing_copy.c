@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/05 20:44:38 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 11:43:29 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,8 @@ static size_t	ft_token_len(const char *line)
 	size_t	i;
 	size_t	line_len;
 	size_t	qlen;
-	size_t	ret;
 
 	i = 0;
-	ret = 0;
 	line_len = ft_strlen(line);
 	if (ft_strchr(CONTROL_OP, line[i]))
 		return (ft_op_len(line, i));
@@ -43,15 +41,13 @@ static size_t	ft_token_len(const char *line)
 			if (qlen == 0)
 				return (ft_perror_token(line[i], UNCLOSED), 0);
 			i = (qlen + i);
-			ret = i;
 			continue ;
 		}
 		if (ft_strchr(METACHARS, line[i]))
-			return (ret);
+			return (i);
 		i++;
-		ret++;
 	}
-	return (ret);
+	return (i);
 }
 
 void	ft_print_buffer(const t_buffer *buff)
@@ -96,6 +92,9 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 	max = buff->buffer + BUF_MAX - 1;
 	while (i < rbuffer->line_len)
 	{
+		i += ft_skip_spaces(&(rbuffer->buffer[i]));
+		if (i >= rbuffer->line_len || !rbuffer->buffer[i])
+			return (0);
 		len = ft_token_len(&(rbuffer->buffer[i]));
 		if (len == 0)
 			break ;
@@ -105,7 +104,7 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 		buff->last += len + 1;
 		buff->current = buff->last;
 		i += len;
-		i += ft_skip_spaces(&(rbuffer->buffer[i]));
+		// i += ft_skip_spaces(&(rbuffer->buffer[i]));
 	}
 	ft_print_buffer(buff);
 	return (0);
@@ -128,6 +127,7 @@ static void	ft_init_ast(t_msh *msh)
 	msh->ast = &ast;
 	return ;
 }
+
 size_t	ft_lexer(t_msh *msh)
 {
 	static char		buffer[BUF_MAX];
