@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/06 10:27:03 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 18:21:14 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@
 # define UNEXPTKN "minishell: syntax error near unexpected token "
 # define UNCLOSED "minishell: expected another "
 # define NOARGS "minishell: expected arguments after last "
+# define NONODES "minishell: MAX_NODES exceeded\n"
 
 // Only allowed variable, to catch signals
 extern sig_atomic_t	g_signal;
@@ -134,7 +135,7 @@ typedef struct s_ast
 {
 	t_node	*first;
 	t_node	*current;
-	int		n_nodes;
+	size_t	n_nodes;
 }	t_ast;
 
 // Buffer holding the lexed line
@@ -193,6 +194,7 @@ void	ft_reset_buffer(t_buffer *buff);
 size_t	ft_quoted_len(const char *line, char quote);
 size_t	ft_op_len(const char *line, int pos);
 size_t	ft_next_token(const char *line, size_t pos);
+size_t	ft_parse_op(char *buff, size_t pos, t_ast *ast);
 
 /* utils */
 

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 10:09:44 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/06 10:10:29 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 18:10:58 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ void	ft_print_ast(t_ast *ast)
 	{
 		i = 0;
 		len = 0;
-		printf("node = %p\n", (void *)node);
+		printf("\nnode = %p\n", (void *)node);
 		printf("append = %d\n", node->append);
 		printf("type = %d\n", node->type);
 		printf("prev = %p\n", (void *)node->prev);
+		if (node->prev)
+			printf("prev->type = %d\n", node->prev->type);
 		printf("left = %p\n", (void *)node->left);
 		printf("right = %p\n", (void *)node->right);
 		printf("cmd = %s\n", node->cmd);
@@ -43,14 +45,16 @@ void	ft_print_ast(t_ast *ast)
 			len += ft_strlen(node->args + 1);
 			i++;
 		}
-		if (!node->prev && node->right == node)
-			return ;
 		if (!node->prev)
-			node = node->right;
-		else if (node->prev->right)
-			node = node->prev->right;
+			return ;
+		if (node->prev->right == node)
+		{
+			if (!node->prev->prev)
+				return ;
+			node = node->prev->prev->right;
+		}
 		else
-			node = node->prev;
+			node = node->prev->right;
 	}
 	return ;
 }

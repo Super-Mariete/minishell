@@ -6,66 +6,30 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 19:40:47 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/06 12:06:25 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 19:09:30 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static size_t	ft_parse_op(char *buff, size_t pos, t_ast *ast)
-{
-	size_t	ret;
-	size_t	next;
-
-	printf("op!\n");
-	ret = 2;
-	if (buff[pos] == '|' && buff[pos + 1] == '|')
-		ast->current->type = OR;
-	else if (buff[pos] == '|' )
-	{
-		ast->current->type = PIPE;
-		ret = 1;
-	}
-	else if (buff[pos] == '&' && buff[pos + 1] == '&')
-		ast->current->type = AND;
-	else if (buff[pos] == '(')
-	{
-		ast->current->type = OPEN_PRTS;
-		ret = 1;
-	}
-	ast->current->left = &ast->first[ast->n_nodes + 1];
-	next = ft_next_token(buff, pos);
-	if (ft_strchr(CONTROL_OP, buff[next]))
-	{
-		ft_perror_str_token(&(buff[next]), UNEXPTKN);
-		return (SIZE_MAX);
-	}
-	ret += pos;
-	return (ret);
-}
-
 size_t	ft_append(char *buff, size_t pos, t_ast *ast)
 {
 	size_t	i;
 
-	printf("pos = %zu\n", pos);
-	printf("append!\n");
 	i = pos + 3;
-	printf("next[%zu] = %s\n", i, &(buff[i]));
 	if (!buff[i])
 	{
 		ft_perror_str_token("'newline'", UNEXPTKN);
-		return (SIZE_MAX);
+		return (SIZE_MAX - 1);
 	}
 	if (ft_strchr(CONTROL_OP, buff[i]))
 	{
 		ft_perror_str_token(&buff[i], UNEXPTKN);
-		return (SIZE_MAX);
+		return (SIZE_MAX - 1);
 	}
 	ast->current->append = 1;
 	ast->current->outfile = buff + i;
-	printf("of = %s\n", ast->current->outfile);
-	i += ft_strlen(&(buff[i]));
+	i += ft_strlen(&(buff[i])) ;
 	return (i);
 }
 
@@ -92,6 +56,19 @@ size_t	ft_append(char *buff, size_t pos, t_ast *ast)
 // 	return (1);
 // }
 
+// static void ft_print_buff(const char *s, size_t len)
+// {
+// 	size_t	i;
+
+// 	i = 0;
+// 	while (i <= len)
+// 	{
+// 		printf("i = %zu, %c\n", i, s[i]);
+// 		i++;
+// 	}
+// 	write(1, "\n", 1);
+// }
+
 size_t	ft_parse(t_msh *msh)
 {
 	size_t	i;
@@ -104,15 +81,16 @@ size_t	ft_parse(t_msh *msh)
 		return (*msh->status);
 	i = 0;
 	ast = msh->ast;
-	len = msh->buff->last - msh->buff->buffer;
-	printf("len = %zu\n", len);
+	len = msh->buff->last - 1 - msh->buff->buffer;
+	// printf("len = %zu\n", len);
 	buff = msh->buff->buffer;
+	// ft_print_buff(buff, len);
 	while (i < len)
 	{
-		printf("token = %s\n", &(buff[i]));
-		if (!ft_strncmp(buff + i, ">>", 2))
-			i = ft_append(buff + i, i, ast);
-		else if (ft_strchr(OP, buff[i]))
+		// printf("token = %s, i = %zu\n", &(buff[i]), i);
+		if (buff[i] && !ft_strncmp(buff + i, ">>", 2))
+			i = ft_append(buff, i, ast);
+		else if (buff[i] && ft_strchr(OP, buff[i]))
 			i = ft_parse_op(buff, i, msh->ast);
 		// else if (!ast->current->cmd)
 		// 	ft_parse_cmd();
@@ -122,12 +100,9 @@ size_t	ft_parse(t_msh *msh)
 		// 		return (130);
 		// else
 		// 	i = ft_parse_token(buff, i, cli, &group);
-		printf("i = %zu\n", i);
-		if (i == SIZE_MAX)
-		{
+		// printf("i = %zu\n", i);
+		if (i == SIZE_MAX - 1)
 			*msh->status = 2;
-			return (2);
-		}
 		i++;
 		// break ;
 	}

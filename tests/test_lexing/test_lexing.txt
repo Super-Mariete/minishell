@@ -82,3 +82,11 @@ minishell: expected another '
 "<"">"
 &&&&|||&<<>><
 && && || | & << >> <
+asda>>asd
+asda >> asd
+asd&&asd
+assd && asd
+asda||asd
+asda || asd
+asda|asd
+asda||asd

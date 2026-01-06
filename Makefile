@@ -13,7 +13,8 @@ SRC = main.c\
 	parse/lexing.c\
 	parse/parse_utils.c\
 	parse/ast_utils.c\
-	parse/parsing.c
+	parse/parsing.c\
+	parse/parse_op.c
 
 # 	exec/builtins.c
 OBJ = $(SRC:.c=.o)

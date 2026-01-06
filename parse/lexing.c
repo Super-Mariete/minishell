@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/06 11:41:05 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/06 15:19:17 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ static void	ft_init_ast(t_msh *msh)
 	}
 	ast.first = node;
 	ast.current = node;
+	ast.n_nodes = 1;
 	msh->ast = &ast;
 	return ;
 }
@@ -134,5 +135,6 @@ size_t	ft_lexer(t_msh *msh)
 	status = ft_put_tokens(&buff, msh->rbuffer);
 	if (status)
 		*msh->status = status;
+	ft_reset_read(msh->rbuffer);
 	return (0);
 }
