@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:11 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/06 10:09:06 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/07 19:48:39 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,22 @@ size_t	ft_next_token(const char *line, size_t pos)
 		pos++;
 	pos++;
 	return (pos);
+}
+
+int	ft_assign_cmd(t_node *node, t_msh *msh)
+{
+	static t_cmd	cmd_stash[CMD_MAX];
+	static int		i;
+
+	if (node->cmd)
+		return (0);
+	if (i >= CMD_MAX)
+	{
+		write(2, MEMOUT, sizeof(MEMOUT));
+		return (1);
+	}
+	node->cmd = &cmd_stash[i++];
+	node->cmd->env = msh->env;
+	node->cmd->n_node = (int)(node - msh->ast->first + 1);
+	return (0);
 }

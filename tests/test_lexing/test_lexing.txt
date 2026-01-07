@@ -85,7 +85,7 @@ minishell: expected another '
 asda>>asd
 asda >> asd
 asd&&asd
-assd && asd
+asd && asd
 asda||asd
 asda || asd
 asda|asd

@@ -6,16 +6,18 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 19:40:47 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/06 19:09:30 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/07 11:36:32 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-size_t	ft_append(char *buff, size_t pos, t_ast *ast)
+size_t	ft_append(char *buff, size_t pos, t_msh *msh)
 {
 	size_t	i;
+	t_ast	*ast;
 
+	ast = msh->ast;
 	i = pos + 3;
 	if (!buff[i])
 	{
@@ -27,8 +29,10 @@ size_t	ft_append(char *buff, size_t pos, t_ast *ast)
 		ft_perror_str_token(&buff[i], UNEXPTKN);
 		return (SIZE_MAX - 1);
 	}
-	ast->current->append = 1;
-	ast->current->outfile = buff + i;
+	if (ft_assign_cmd(ast->current, msh))
+		return (SIZE_MAX - 1);
+	ast->current->cmd->append = 1;
+	ast->current->cmd->outfile = buff + i;
 	i += ft_strlen(&(buff[i])) ;
 	return (i);
 }
@@ -71,16 +75,14 @@ size_t	ft_append(char *buff, size_t pos, t_ast *ast)
 
 size_t	ft_parse(t_msh *msh)
 {
-	size_t	i;
-	size_t	len;
-	char	*buff;
-	t_ast	*ast;
-
+	size_t			i;
+	size_t			len;
+	char			*buff;
+	
 	len = ft_lexer(msh);
 	if (len) 
 		return (*msh->status);
 	i = 0;
-	ast = msh->ast;
 	len = msh->buff->last - 1 - msh->buff->buffer;
 	// printf("len = %zu\n", len);
 	buff = msh->buff->buffer;
@@ -89,7 +91,7 @@ size_t	ft_parse(t_msh *msh)
 	{
 		// printf("token = %s, i = %zu\n", &(buff[i]), i);
 		if (buff[i] && !ft_strncmp(buff + i, ">>", 2))
-			i = ft_append(buff, i, ast);
+			i = ft_append(buff, i, msh);
 		else if (buff[i] && ft_strchr(OP, buff[i]))
 			i = ft_parse_op(buff, i, msh->ast);
 		// else if (!ast->current->cmd)

@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 15:23:17 by rafael            #+#    #+#             */
-/*   Updated: 2026/01/06 11:43:29 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/07 14:16:32 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,15 +113,8 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 static void	ft_init_ast(t_msh *msh)
 {
 	static t_node	node[MAX_NODES + 1];
-	int				i;
 	static t_ast	ast;
 	
-	i = 0;
-	while (i < MAX_NODES)
-	{
-		node[i].n_node = i + 1;
-		i++;
-	}
 	ast.first = node;
 	ast.current = node;
 	msh->ast = &ast;

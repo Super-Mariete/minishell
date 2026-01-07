@@ -26,25 +26,28 @@ void	ft_print_ast(t_ast *ast)
 		i = 0;
 		len = 0;
 		printf("\nnode = %p\n", (void *)node);
-		printf("append = %d\n", node->append);
+		if (node->cmd)
+		{
+			printf("append = %d\n", node->cmd->append);
+			printf("cmd = %s\n", node->cmd->cmd);
+			printf("infile = %s\n", node->cmd->infile);
+			printf("outfile = %s\n", node->cmd->outfile);
+			printf("heredoc = %s\n", node->cmd->heredoc);
+			printf("n_args = %d\n", node->cmd->n_args);
+			printf("is_bultin = %d\n", node->cmd->is_builtin);
+			while (i < node->cmd->n_args)
+			{
+				printf("arg[%d] = %s\n", i, (node->cmd->args + len));
+				len += ft_strlen(node->cmd->args + len) + 1;
+				i++;
+			}
+		}
 		printf("type = %d\n", node->type);
 		printf("prev = %p\n", (void *)node->prev);
 		if (node->prev)
 			printf("prev->type = %d\n", node->prev->type);
 		printf("left = %p\n", (void *)node->left);
 		printf("right = %p\n", (void *)node->right);
-		printf("cmd = %s\n", node->cmd);
-		printf("infile = %s\n", node->infile);
-		printf("outfile = %s\n", node->outfile);
-		printf("heredoc = %s\n", node->heredoc);
-		printf("n_args = %d\n", node->type);
-		printf("is_bultin = %d\n", node->is_builtin);
-		while (i < node->n_args)
-		{
-			printf("arg[%d] = %s\n", i, (node->args + len));
-			len += ft_strlen(node->args + 1);
-			i++;
-		}
 		if (!node->prev)
 			return ;
 		if (node->prev->right == node)

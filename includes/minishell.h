@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/06 18:21:14 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/07 13:10:14 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,22 +112,29 @@ typedef enum s_node_type
 	AND
 }	t_node_type;
 
+// Command environment
+typedef struct s_cmd
+{
+	t_env	*env;
+	char	*cmd;
+	char	*heredoc;
+	char	*infile;
+	char	*outfile;
+	char	*args;
+	int		append;
+	int		n_args;
+	int		n_node;
+	int		is_builtin;
+}	t_cmd;
+
 // Struct for each node of the AST
 typedef struct s_node
 {
 	struct s_node	*prev;
 	struct s_node	*left;
 	struct s_node	*right;
-	char			*cmd;
-	char			*heredoc;
-	char			*infile;
-	char			*outfile;
-	char			*args;
-	int				type;
-	int				append;
-	int				n_args;
-	int				n_node;
-	int				is_builtin;
+	t_cmd			*cmd;
+	t_node_type		type;
 }	t_node;
 
 // Struct for the AST
@@ -183,6 +190,7 @@ void	ft_reset_read(t_read *rbuffer);
 char	*ft_get_stash(const t_read *rbuffer);
 
 //Printers for debugging
+
 void	ft_print_history(t_hist *hist);
 void	ft_print_ast(t_ast *ast);
 
@@ -195,6 +203,7 @@ size_t	ft_quoted_len(const char *line, char quote);
 size_t	ft_op_len(const char *line, int pos);
 size_t	ft_next_token(const char *line, size_t pos);
 size_t	ft_parse_op(char *buff, size_t pos, t_ast *ast);
+int		ft_assign_cmd(t_node *node, t_msh *msh);
 
 /* utils */
 

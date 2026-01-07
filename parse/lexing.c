@@ -105,15 +105,8 @@ static int	ft_put_tokens(t_buffer *buff, t_read *rbuffer)
 static void	ft_init_ast(t_msh *msh)
 {
 	static t_node	node[MAX_NODES + 1];
-	int				i;
 	static t_ast	ast;
 
-	i = 0;
-	while (i < MAX_NODES)
-	{
-		node[i].n_node = i + 1;
-		i++;
-	}
 	ast.first = node;
 	ast.current = node;
 	ast.n_nodes = 1;

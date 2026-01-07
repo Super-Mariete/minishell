@@ -15,18 +15,8 @@ static size_t	ft_parse_cls_prnts(t_ast *ast)
 static size_t	ft_parse_op_prnts(t_ast *ast)
 {
 	printf("%p\n", (void *)ast);
-	// if (ast->n_nodes + 3 >= MAX_NODES)
-	// 	return (write(2, NONODES, sizeof(NONODES)), SIZE_MAX - 1);
-	// ast->current->type = OPEN_PRTS;
-	// ast->n_nodes++;
-	// ast->current->right = ast->first + (ast->n_nodes * sizeof(t_node));
-	// ast->current->right->type = CLS_PRTS;
-	// ast->n_nodes++;
-	// ast->current->left = ast->first + (ast->n_nodes * sizeof(t_node));
-	// ast->current = ast->current->left;
-	// ast->n_nodes++;
-	// ast->current->right = ast->first + (ast->n_nodes * sizeof(t_node));
-	// ast->current = ast->current->right;
+	if (ast->n_nodes + 3 >= MAX_NODES)
+		return (write(2, NONODES, sizeof(NONODES)), SIZE_MAX - 1);
 	return (1);
 }
 
@@ -62,11 +52,14 @@ size_t	ft_parse_op(char *buff, size_t pos, t_ast *ast)
 	size_t	ret;
 	size_t	next;
 
-	printf("op!\n");
 	next = ft_next_token(buff, pos);
-	if (buff[next] && ft_strchr(OP, buff[next]))
+	printf("pos = %zu, next = %zu, buff[next] = %d\n", pos, next, buff[next]);
+	if (!buff[next] && ft_strchr(OP, buff[next]))
 	{
-		ft_perror_str_token(&(buff[next]), UNEXPTKN);
+		if (!buff[next])
+			ft_perror_str_token("'newline'", UNEXPTKN);
+		else
+			ft_perror_str_token(&(buff[next]), UNEXPTKN);
 		return (SIZE_MAX - 1);
 	}
 	if (ft_setup_nodes(ast))
