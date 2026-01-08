@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/25 20:38:33 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/07 19:08:26 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <signal.h>
 # include <sys/wait.h>
 # include <sys/ioctl.h>
+# include <sys/stat.h>
 # include <stdbool.h>
 # include <errno.h>
 

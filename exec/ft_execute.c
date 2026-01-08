@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 19:03:35 by made-ped          #+#    #+#             */
-/*   Updated: 2025/12/31 12:38:19 by made-ped         ###   ########.fr       */
+/*   Updated: 2026/01/08 13:04:52 by made-ped         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,11 +123,62 @@ int execute_command(t_cli *cli)
     }
     if (pid == CHILD)
     {
+    	printf("DEBUG CHILD: cmd = [%s]\n", cli->cmd);
+//	printf("DEBUG CHILD: access X_OK = %d\n", access(cli->cmd, X_OK));
+//	printf("DEBUG CHILD: access F_OK = %d\n", access(cli->cmd, F_OK));
+        ft_set_sig(CHILD);
+        if (apply_redirs(cli))
+            exit(1);
+	if(access(cli->cmd, F_OK) != 0)
+	{
+		ft_perror_msh(cli->cmd, "command not found\n");
+		exit(127);
+	}
+	struct stat st;
+	if (stat(cli->cmd, &st) == 0 && S_ISDIR(st.st_mode))
+	{
+		ft_perror_msh(cli->cmd, "is a directory\n");
+		exit (126);
+	}
+        if (access(cli->cmd, X_OK) != 0)
+        {
+            ft_perror_msh(cli->cmd, "Permission denied\n");
+            exit(126);
+        }
+        execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
+        perror("execve");
+        exit(126);
+    }
+    ft_set_sig(PARENT);
+    waitpid(pid, &status, 0);
+    if(WIFSIGNALED(status))
+    	cli->last_status = 128 + WTERMSIG(status);
+    else if(WIFEXITED(status))
+    	cli->last_status = WEXITSTATUS(status);
+    else
+	cli->last_status = 1;
+    return (cli->last_status);
+}
+
+/*
+int execute_command(t_cli *cli)
+{
+    pid_t pid;
+    int status;
+
+    pid = fork();
+    if (pid < 0)
+    {
+        perror("fork");
+        return (1);
+    }
+
+    if (pid == CHILD)
+    {
         ft_set_sig(CHILD);
         if (apply_redirs(cli))
             exit(1);
 
-        // Usar directamente cli->cmd
         if (access(cli->cmd, X_OK) != 0)
         {
             ft_perror_msh(cli->cmd, "command not found\n");
@@ -137,12 +188,36 @@ int execute_command(t_cli *cli)
         perror("execve");
         exit(126);
     }
+
+    // Proceso padre
     ft_set_sig(PARENT);
     waitpid(pid, &status, 0);
-    cli->last_status = WEXITSTATUS(status);
+
+    printf("DEBUG: status raw = %d\n", status);
+    printf("DEBUG: WIFSIGNALED = %d\n", WIFSIGNALED(status));
+    printf("DEBUG: WIFEXITED = %d\n", WIFEXITED(status));
+
+    if (WIFSIGNALED(status))
+    {
+        printf("DEBUG: Señal = %d\n", WTERMSIG(status));
+        cli->last_status = 128 + WTERMSIG(status);
+    }
+    else if (WIFEXITED(status))
+    {
+        printf("DEBUG: Exit code = %d\n", WEXITSTATUS(status));
+        cli->last_status = WEXITSTATUS(status);
+    }
+    else
+    {
+        printf("DEBUG: Estado desconocido\n");
+        cli->last_status = 1;
+    }
+
+    printf("DEBUG: cli->last_status = %d\n", cli->last_status);
+
     return (cli->last_status);
 }
-
+*/
 int execute_pipeline(t_cli *cli)
 {
     int fd[2];
@@ -155,8 +230,11 @@ int execute_pipeline(t_cli *cli)
     while (cli)
     {
         if (cli->next && pipe(fd) < 0)
-            return (perror("pipe"), 1);
-        
+	{
+	    if (prev_fd != -1)
+            	close(prev_fd);
+	    return (perror("pipe"), 1);
+        }
         pid = fork();
         if (pid < 0)
             return (perror("fork"), 1);
@@ -181,12 +259,23 @@ int execute_pipeline(t_cli *cli)
                 exit(exec_builtin_child(cli));
 
             // Usar directamente cli->cmd que ya tiene el path del parsing
-            if (access(cli->cmd, X_OK) != 0)
+            if (access(cli->cmd, F_OK) != 0)
             {
                 ft_perror_msh(cli->cmd, "command not found\n");
                 exit(127);
             }
-            execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
+	    struct stat st;
+	    if (stat(cli->cmd, &st) == 0 && S_ISDIR(st.st_mode))
+	    {
+		ft_perror_msh(cli->cmd, "Is a directory\n");
+		exit(126);
+	    }
+	    if(access(cli->cmd, X_OK) != 0) 
+	    {
+	    	ft_perror_msh(cli->cmd, "Permission denied\n");
+		exit(126);
+            }
+	    execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
             perror("execve");
             exit(126);
         }
@@ -208,5 +297,10 @@ int execute_pipeline(t_cli *cli)
         if (pid == last_pid)
             last_status = status;
     }
-    return (WEXITSTATUS(last_status));
+    if (WIFSIGNALED(last_status))
+    	return (128 + WTERMSIG(last_status));
+    else if (WIFEXITED(last_status))
+    	return (WEXITSTATUS(last_status));
+    else
+    	return (1);
 }
