@@ -31,7 +31,7 @@ char	*trim_delim(char *token, int *option)
 		}
 		i++;
 	}
-	delim = ft_strdup(token + i);
+	delim = ft_strdup(token);
 	return (delim);
 }
 
