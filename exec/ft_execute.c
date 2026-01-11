@@ -70,10 +70,40 @@ int	ft_execute(t_cli *cli)
 }
 */
 
+static int handle_redirs(t_cli *cli)
+{
+	int	stdin_save;
+	int	stdout_save;
+
+	stdin_save = dup(STDIN_FILENO);
+	stdout_save = dup(STDOUT_FILENO);
+	if (apply_redirs(cli))
+	{
+		dup2(stdin_save, STDIN_FILENO);
+		dup2(stdout_save, STDOUT_FILENO);
+		close(stdin_save);
+		close(stdout_save);
+		return (1);
+	}
+	dup2(stdin_save, STDIN_FILENO);
+	dup2(stdout_save, STDOUT_FILENO);
+	close(stdin_save);
+	close(stdout_save);
+	return (0);
+}
+
 int	ft_execute(t_cli *cli)
 {
-	if(!cli || !cli->cmd)
+	int	status;
+
+	if(!cli)
 		return (cli->last_status);
+	if (!cli->cmd)
+	{
+		if (cli->heredoc || cli->infile || cli->outfile)
+			return handle_redirs(cli);
+		return (cli->last_status);
+	}
 	if(get_builtin(cli->cmd) && !has_pipe(cli))
 		return (execute_builtin(cli));
 	if(has_pipe(cli))
@@ -256,6 +286,8 @@ int execute_pipeline(t_cli *cli)
             }
             if (apply_redirs(cli))
                 exit(1);
+            if (!cli->cmd)
+                exit(0);
             if (get_builtin(cli->cmd))
                 exit(exec_builtin_child(cli));
 
