@@ -12,12 +12,12 @@
 
 #include "../../minishell.h"
 
-int	ft_pwd(char **args, t_shenv **env)
+int	ft_pwd(char **args, t_shenv **ft_env)
 {
 	char	*cwd;
 
 	(void)args;
-	(void)env;
+	(void)ft_env;
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (perror("pwd"), 1);

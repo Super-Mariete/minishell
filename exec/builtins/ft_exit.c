@@ -32,9 +32,9 @@ static	bool is_number_str(const char *s)
 	return (true);
 }
 
-int	ft_exit(char **args, t_shenv **env)
+int	ft_exit(char **args, t_shenv **ft_env)
 {
-	(void)env;
+	(void)ft_env;
 	
 	if(!args)
 	{

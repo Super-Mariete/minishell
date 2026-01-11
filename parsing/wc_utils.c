@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int	ft_init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after)
+int	init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after)
 {
 	*i = 0;
 	*j = 0;

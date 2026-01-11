@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_unsetenv.c                                      :+:      :+:    :+:   */
+/*   unset_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: made-ped <made-ped@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,16 +12,16 @@
 
 #include "../../minishell.h"
 
-int	ft_unsetenv(t_shenv **env, char *key)
+int	unset_env(t_shenv **ft_env, char *key)
 {
 	t_shenv *cur;
 	t_shenv *prev;
 	size_t	len;
 
-	if (!env || !key)
+	if (!ft_env || !key)
 		return (0);
 	len = ft_strlen(key);
-	cur = *env;
+	cur = *ft_env;
 	prev = NULL;
 	while (cur)
 	{
@@ -31,7 +31,7 @@ int	ft_unsetenv(t_shenv **env, char *key)
 			if (prev)
 				prev->next = cur->next;
 			else
-				*env = cur->next;
+				*ft_env = cur->next;
 			cur = cur->next;
 			free(tofree->var);
 			free(tofree);

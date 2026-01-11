@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int     ft_args(char *token, t_cli *cli, int pos)
+int     add_args(char *token, t_cli *cli, int pos)
 {
 	char	**t;
 
@@ -40,7 +40,7 @@ int     ft_args(char *token, t_cli *cli, int pos)
 	return (1);
 }
 
-t_cli	*ft_parse_op(char *token, t_cli *cli)
+t_cli	*parse_op(char *token, t_cli *cli)
 {
 	char	*pipe;
 	t_cli	*next_cli;
@@ -58,13 +58,13 @@ t_cli	*ft_parse_op(char *token, t_cli *cli)
 	else
 		return (perror("invalid token parse_op"), NULL);
 	cli->op = op;
-	next_cli = ft_init_node(cli->n_tokens, cli->env, 0);
+	next_cli = init_node(cli->n_tokens, cli->ft_env, 0);
 	if (!next_cli)
 		return (perror("malloc : "), cli->status = 2, NULL);
 	return (next_cli);
 }
 
-char	*ft_cmd_path(char *env_path, char *cmd)
+char	*cmd_path(char *env_path, char *cmd)
 {
 	int		i;
 	char	**path;
@@ -93,7 +93,7 @@ char	*ft_cmd_path(char *env_path, char *cmd)
 }
 
 
-int	ft_cmd(char	*token, t_cli *cli)
+int	set_cmd(char	*token, t_cli *cli)
 {
 	if (!token)
 		return (0);
@@ -105,7 +105,7 @@ int	ft_cmd(char	*token, t_cli *cli)
 	if (token && ft_strchr(token, '/'))
 		cli->cmd = ft_strdup(token);
 	else
-		cli->cmd = ft_cmd_path(getenv("PATH"), token);
+		cli->cmd = cmd_path(getenv("PATH"), token);
 	if (!cli->cmd)
 		cli->cmd = ft_strdup(token);
 	return (1);

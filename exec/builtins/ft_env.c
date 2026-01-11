@@ -27,13 +27,13 @@ static void print_env_var(t_shenv *node)
 /*
 ** Implementación de ft_env: imprime las variables del entorno.
 */
-int ft_env(char **args, t_shenv **env)
+int ft_env(char **args, t_shenv **ft_env)
 {
 	t_shenv *tmp;
 	(void)args;
-	if (!env || !*env)
+	if (!ft_env || !*ft_env)
 		return (0);
-	tmp = *env;
+	tmp = *ft_env;
 	while (tmp)
 	{
 		print_env_var(tmp);

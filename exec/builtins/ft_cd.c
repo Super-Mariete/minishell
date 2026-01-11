@@ -12,13 +12,13 @@
 
 #include "../../minishell.h"
 
-int	ft_cd(char **args, t_shenv **env)
+int	ft_cd(char **args, t_shenv **ft_env)
 {
 	char *path;
 	char cwd[1024];
 
 	if(!args[1])
-		path = ft_getenv(*env, "HOME");
+		path = ft_getenv(*ft_env, "HOME");
 	else
 		path = args[1];
 	if (chdir(path) != 0)
@@ -27,6 +27,6 @@ int	ft_cd(char **args, t_shenv **env)
 		return (1);
 	}
 	getcwd(cwd, sizeof(cwd));
-	ft_setenv(env, "PWD", cwd);
+	set_env(ft_env, "PWD", cwd);
 	return (0);
 }

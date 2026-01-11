@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_setenv.c                                        :+:      :+:    :+:   */
+/*   set_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: made-ped <made-ped@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,18 +12,18 @@
 
 #include "../../minishell.h"
 
-int	ft_setenv(t_shenv **env, char *key, char *value)
+int	set_env(t_shenv **ft_env, char *key, char *value)
 {
 	t_shenv *cur;
 	char	*newvar;
 	char	*tmp;
 
-	if (!env || !key)
+	if (!ft_env || !key)
 		return (1);
 	if (!value)
 		value = "";
 
-	cur = *env;
+	cur = *ft_env;
 	while(cur)
 	{
 		if(cur->var && ft_strncmp(cur->var, key, ft_strlen(key)) == 0
@@ -53,7 +53,7 @@ int	ft_setenv(t_shenv **env, char *key, char *value)
 		return (1);
 	}
 	cur->var = newvar;
-	cur->next = *env;
-	*env = cur;
+	cur->next = *ft_env;
+	*ft_env = cur;
 	return (0);
 }

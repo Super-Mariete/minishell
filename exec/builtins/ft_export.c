@@ -35,7 +35,7 @@ static void	print_export_var(const char *var)
 	}
 }
 
-int	ft_export(char **args, t_shenv **env)
+int	ft_export(char **args, t_shenv **ft_env)
 {
 	int	i;
 	char	*eq;
@@ -47,7 +47,7 @@ int	ft_export(char **args, t_shenv **env)
 		return(1);
 	if(!args[1])
 	{
-		t_shenv	*cur = *env;
+		t_shenv	*cur = *ft_env;
 		while(cur)
 		{
 			print_export_var(cur->var);
@@ -71,15 +71,15 @@ int	ft_export(char **args, t_shenv **env)
 				free(key);
 				return (1);
 			}
-			if(ft_setenv(env, key, val) != 0)
+			if(set_env(ft_env, key, val) != 0)
 				ret = 1;
 			free(key);
 			free(val);
 		}
 		else
 		{
-			if(!ft_getenv(*env, args[i]))
-				if(ft_setenv(env, args[i], "") != 0)
+			if(!ft_getenv(*ft_env, args[i]))
+				if(set_env(ft_env, args[i], "") != 0)
 					ret = 1;
 		}
 		i++;

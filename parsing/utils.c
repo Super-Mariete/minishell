@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	ft_print_list(t_cli *cli)
+void	print_list(t_cli *cli)
 {
 	int	i = 0;
 	int	node = 0;
@@ -43,9 +43,9 @@ void	ft_print_list(t_cli *cli)
 			i++;
 		}
 		i = 0;
-		// while (cli->env && cli->env[i])
+		// while (cli->ft_env && cli->ft_env[i])
 		// {
-		// 	printf("env[%d] %d = %s\n", i, node, cli->env[i]);
+		// 	printf("env[%d] %d = %s\n", i, node, cli->ft_env[i]);
 		// 	i++;
 		// }
 		cli = cli->next;
@@ -53,7 +53,7 @@ void	ft_print_list(t_cli *cli)
 	}
 }
 
-void	ft_perror_msh(char *problem, char *mssg)
+void	perror_msh(char *problem, char *mssg)
 {
 	write(2, "minishell: ", 11);
 	if (problem)
@@ -63,7 +63,7 @@ void	ft_perror_msh(char *problem, char *mssg)
 		write(2, mssg, ft_strlen(mssg));
 }
 
-void	ft_perror_token(char *token, char *msg)
+void	perror_token(char *token, char *msg)
 {
 	char	*t;
 	char	*err;
@@ -76,7 +76,7 @@ void	ft_perror_token(char *token, char *msg)
 	free(err);
 }
 
-void	ft_free_tokens(char **tokens, int n)
+void	free_tokens(char **tokens, int n)
 {
 	int	i;
 
@@ -90,7 +90,7 @@ void	ft_free_tokens(char **tokens, int n)
 		free(tokens);
 }
 
-t_cli	*ft_init_node(int len, t_shenv **env, int op)
+t_cli	*init_node(int len, t_shenv **ft_env, int op)
 {
 	t_cli *cli;
 
@@ -101,8 +101,8 @@ t_cli	*ft_init_node(int len, t_shenv **env, int op)
 		return (perror("malloc : "), nullptr);
 	cli->cmd = nullptr;
 	cli->args = nullptr;
-	cli->env = env;
-	if (env && !cli->env)
+	cli->ft_env = ft_env;
+	if (ft_env && !cli->ft_env)
 		perror("malloc : ");
 	cli->infile = nullptr;
 	cli->outfile = nullptr;
@@ -119,7 +119,7 @@ t_cli	*ft_init_node(int len, t_shenv **env, int op)
 	return (cli);
 }
 
-void	ft_free_list(t_cli **cli)
+void	free_list(t_cli **cli)
 {
 	t_cli		*node;
 	t_cli		*next_node;
@@ -146,7 +146,7 @@ void	ft_free_list(t_cli **cli)
 	*cli = nullptr;
 }
 
-void	ft_free_node(t_cli *cli)
+void	free_node(t_cli *cli)
 {
 	if (!cli)
 		return ;
@@ -164,7 +164,7 @@ void	ft_free_node(t_cli *cli)
 	cli = nullptr;
 }
 
-int ft_trim_s_len(char *line)
+int trim_s_len(char *line)
 {
 	int		i;
 	int		len;
@@ -175,10 +175,10 @@ int ft_trim_s_len(char *line)
 	{
 		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
 		{
-			if (ft_quoted_len(line + i, line[i])  <= 0)
+			if (quoted_len(line + i, line[i])  <= 0)
 				return (-1);
-			len += ft_quoted_len(line + i, line[i]);
-			i += ft_quoted_len(line + i, line[i]);
+			len += quoted_len(line + i, line[i]);
+			i += quoted_len(line + i, line[i]);
 			continue ;
 		}
 		while (ft_isspace(line[i]) && (( i + 1) >= ft_strlen(line) || ft_isspace(line[i + 1])))
@@ -189,7 +189,7 @@ int ft_trim_s_len(char *line)
 	return (len);
 }
 
-char	*ft_trim_spaces(char *line)
+char	*trim_spaces(char *line)
 {
 	int		i;
 	int		j;
@@ -197,9 +197,9 @@ char	*ft_trim_spaces(char *line)
 	char	*trimmed;
 
 	i = 0;
-	if (ft_trim_s_len(line) < 0)
+	if (trim_s_len(line) < 0)
 		return (nullptr);
-	trimmed = ft_calloc(ft_trim_s_len(line) + 1, sizeof(char));
+	trimmed = ft_calloc(trim_s_len(line) + 1, sizeof(char));
 	j = 0;
 	while (trimmed && line && i < ft_strlen(line))
 	{

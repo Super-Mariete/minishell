@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	ft_exp_wc_error(DIR *dir_stream, char *wc)
+void	exp_wc_error(DIR *dir_stream, char *wc)
 {
 	if (!dir_stream && !wc)
 	{
@@ -34,7 +34,7 @@ void	ft_exp_wc_error(DIR *dir_stream, char *wc)
 	return ;
 }
 
-char	**ft_expand_wildcard(char **token, int pos, int *wc_len)
+char	**expand_wildcard(char **token, int pos, int *wc_len)
 {
 	DIR				*dir_stream;
 	struct dirent	*dir;
@@ -48,7 +48,7 @@ char	**ft_expand_wildcard(char **token, int pos, int *wc_len)
 		dir = readdir(dir_stream);
 		if (!dir)
 			break ;
-		if (ft_match_wildcard(dir->d_name, wc))
+		if (match_wildcard(dir->d_name, wc))
 		{
 			if (*wc_len == 0)
 				t = (char **)ft_add_re_ptr((void **)token, dir->d_name, pos);
@@ -61,34 +61,34 @@ char	**ft_expand_wildcard(char **token, int pos, int *wc_len)
 	}
 	if (*wc_len == 0)
 		*wc_len = 1;
-	return (ft_exp_wc_error(dir_stream, wc), closedir(dir_stream), token);
+	return (exp_wc_error(dir_stream, wc), closedir(dir_stream), token);
 }
 
-int	ft_match_wildcard(char *str, char *wc)
+int	match_wildcard(const char *str, const char *wildcard)
 {
 	size_t	i;
 	size_t	j;
 	size_t	i_a;
 	size_t	j_s;
 
-	ft_init_var(&i, &j, &i_a, &j_s);
-    while (str[i] && !(str[0] == '.' && wc[0] != '.'))
+	init_var(&i, &j, &i_a, &j_s);
+    while (str[i] && !(str[0] == '.' && wildcard[0] != '.'))
     {
-        if (wc[j] == '*')
+        if (wildcard[j] == '*')
         {
-			while (wc[j] == '*')
+			while (wildcard[j] == '*')
 				j++;
-			if (!wc[j])
+			if (!wildcard[j])
 				return (1);
 			j_s = j;
 			i_a = i;
 			continue ;
         }
-        if ((wc[j] == str[i] && ft_equal(&i, &j)) || (j_s && ft_j_s(&j_s, &i_a, &i, &j)))
+        if ((wildcard[j] == str[i] && ft_equal(&j, &i)) || (j_s && ft_j_s(&j_s, &i_a, &i, &j)))
 			continue ;
 		return (0);
     }
-    while (wc[j] == '*' && !(str[0] == '.' && wc[0] != '.'))
+    while (wildcard[j] == '*' && !(str[0] == '.' && wildcard[0] != '.'))
 		j++;
-    return (wc[j] == '\0');
+    return (wildcard[j] == '\0');
 }

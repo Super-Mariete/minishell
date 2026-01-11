@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_execute.c                                       :+:      :+:    :+:   */
+/*   execute.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -37,7 +37,7 @@ int (*get_builtin(char *cmd))(char **, t_shenv **)
 	return (NULL);
 }
 /*
-int	ft_execute(t_cli *cli)
+int	execute(t_cli *cli)
 {
 	int	stdin_save;
 	int	stdout_save;
@@ -49,7 +49,7 @@ int	ft_execute(t_cli *cli)
 
 //	builtin = get_builtin(cli->cmd);
 //	if (builtin)
-//		return (builtin(cli->args, cli->env));
+//		return (builtin(cli->args, cli->ft_env));
 	if (get_builtin(cli->cmd) && !has_pipe(cli))
 	{
 		stdin_save = dup(STDIN_FILENO);
@@ -92,7 +92,7 @@ static int handle_redirs(t_cli *cli)
 	return (0);
 }
 
-int	ft_execute(t_cli *cli)
+int	execute(t_cli *cli)
 {
 	if(!cli)
 		return (cli->last_status);
@@ -135,7 +135,7 @@ int	exec_builtin_child(const t_cli *cli)
 	builtin = get_builtin(cli->cmd);
 	if (!builtin)
 		return (1);
-	return (builtin(cli->args, cli->env));
+	return (builtin(cli->args, cli->ft_env));
 }
 
 int execute_command(t_cli *cli)
@@ -154,32 +154,32 @@ int execute_command(t_cli *cli)
     	printf("DEBUG CHILD: cmd = [%s]\n", cli->cmd);
 //	printf("DEBUG CHILD: access X_OK = %d\n", access(cli->cmd, X_OK));
 //	printf("DEBUG CHILD: access F_OK = %d\n", access(cli->cmd, F_OK));
-        ft_set_sig(CHILD);
+        set_sig(CHILD);
         if (apply_redirs(cli))
             exit(1);
 	if(access(cli->cmd, F_OK) != 0)
 	{
-		ft_perror_msh(cli->cmd, "command not found\n");
+		perror_msh(cli->cmd, "command not found\n");
 		exit(127);
 	}
 	struct stat st;
 	if (stat(cli->cmd, &st) == 0 && S_ISDIR(st.st_mode))
 	{
-		ft_perror_msh(cli->cmd, "is a directory\n");
+		perror_msh(cli->cmd, "is a directory\n");
 		exit (126);
 	}
         if (access(cli->cmd, X_OK) != 0)
         {
-            ft_perror_msh(cli->cmd, "Permission denied\n");
+            perror_msh(cli->cmd, "Permission denied\n");
             exit(126);
         }
-        execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
+        execve(cli->cmd, cli->args, getshenv(*cli->ft_env));
         perror("execve");
         exit(126);
     }
-    ft_set_sig(IGNORE);
+    set_sig(IGNORE);
     waitpid(pid, &status, 0);
-    ft_set_sig(PARENT);
+    set_sig(PARENT);
     if(WIFSIGNALED(status))
     	cli->last_status = 128 + WTERMSIG(status);
     else if(WIFEXITED(status))
@@ -204,22 +204,22 @@ int execute_command(t_cli *cli)
 
     if (pid == CHILD)
     {
-        ft_set_sig(CHILD);
+        set_sig(CHILD);
         if (apply_redirs(cli))
             exit(1);
 
         if (access(cli->cmd, X_OK) != 0)
         {
-            ft_perror_msh(cli->cmd, "command not found\n");
+            perror_msh(cli->cmd, "command not found\n");
             exit(127);
         }
-        execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
+        execve(cli->cmd, cli->args, getshenv(*cli->ft_env));
         perror("execve");
         exit(126);
     }
 
     // Proceso padre
-    ft_set_sig(PARENT);
+    set_sig(PARENT);
     waitpid(pid, &status, 0);
 
     printf("DEBUG: status raw = %d\n", status);
@@ -270,7 +270,7 @@ int execute_pipeline(t_cli *cli)
 
         if (pid == 0)
         {
-            ft_set_sig(CHILD);
+            set_sig(CHILD);
             if (prev_fd != -1)
             {
                 dup2(prev_fd, STDIN_FILENO);
@@ -292,21 +292,21 @@ int execute_pipeline(t_cli *cli)
             // Usar directamente cli->cmd que ya tiene el path del parsing
             if (access(cli->cmd, F_OK) != 0)
             {
-                ft_perror_msh(cli->cmd, "command not found\n");
+                perror_msh(cli->cmd, "command not found\n");
                 exit(127);
             }
 	    struct stat st;
 	    if (stat(cli->cmd, &st) == 0 && S_ISDIR(st.st_mode))
 	    {
-		ft_perror_msh(cli->cmd, "Is a directory\n");
+		perror_msh(cli->cmd, "Is a directory\n");
 		exit(126);
 	    }
 	    if(access(cli->cmd, X_OK) != 0) 
 	    {
-	    	ft_perror_msh(cli->cmd, "Permission denied\n");
+	    	perror_msh(cli->cmd, "Permission denied\n");
 		exit(126);
             }
-	    execve(cli->cmd, cli->args, ft_getshenv(*cli->env));
+	    execve(cli->cmd, cli->args, getshenv(*cli->ft_env));
             perror("execve");
             exit(126);
         }
@@ -323,13 +323,13 @@ int execute_pipeline(t_cli *cli)
         cli = cli->next;
     }
     
-    ft_set_sig(IGNORE);
+    set_sig(IGNORE);
     while ((pid = wait(&status)) > 0)
     {
         if (pid == last_pid)
             last_status = status;
     }
-    ft_set_sig(PARENT);
+    set_sig(PARENT);
     if (WIFSIGNALED(last_status))
     	return (128 + WTERMSIG(last_status));
     else if (WIFEXITED(last_status))

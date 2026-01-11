@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	ft_heredoc_len(char *line)
+int	heredoc_len(const char *line)
 {
 	char	redir;
 	int		i;
@@ -27,7 +27,7 @@ int	ft_heredoc_len(char *line)
 	{
 		if (i < ft_strlen(line) && ft_strchr(QUOTES, line[i])  && (i == 0 || (i > 0 && line[i - 1] != '\\')))
 		{
-			len = ft_quoted_len(line + i, line[i]);
+			len = quoted_len(line + i, line[i]);
 			if (len <= 0)
 				return (-1);
 			i += (len + 1);
@@ -40,22 +40,22 @@ int	ft_heredoc_len(char *line)
 	return (i);
 }
 
-char	*ft_expand_heredoc(int option, t_cli *cli)
+char	*expand_heredoc(int option, t_cli *cli)
 {
 	char	*t;
 
-	t = NULL;
+	t = nullptr;
 	if (option)
 	{
-		t = ft_expand_line(cli->heredoc, cli);
+		t = expand_line(cli->heredoc, cli);
 		if (!t)
-			return (NULL);
+			return (nullptr);
 		cli->heredoc = t;
 	}
 	return (cli->heredoc);
 }
 
-void	ft_here_error(char *delim)
+void	here_error(char *delim)
 {
 	char	*t;
 	char	*error_msg;
@@ -70,10 +70,9 @@ void	ft_here_error(char *delim)
 	write(2, error_msg, ft_strlen(error_msg));
 	free(error_msg);
 	free(t);
-	return ;
 }
 
-// char	*ft_heredoc_op(char *line, char op)
+// char	*heredoc_op(char *line, char op)
 // {
 // 	char	*new_line;
 // 	char	*t;
@@ -105,25 +104,25 @@ void	ft_here_error(char *delim)
 // 	return (free(new_line), line);
 // }
 
-static void	ft_free_prev(t_cli *cli)
+static void	free_prev(t_cli *cli)
 {
 	free(cli->heredoc);
 	free(cli->infile);
-	cli->infile = NULL;
-	cli->heredoc = NULL;
+	cli->infile = nullptr;
+	cli->heredoc = nullptr;
 }
 
-static int	ft_read_heredoc(t_cli *cli, int *option, char *delim)
+static int	read_heredoc(t_cli *cli, const int *option, char *delim)
 {
 	char	*line;
 	char	*t;
 
-	line = NULL;
+	line = nullptr;
 	while (1)
 	{
 		free(line);
 		line = readline("> ");
-		if (g_sig_rec)
+		if (g_signal)
 			return (free(line), free(delim), cli->status = 130, 130);
 		if (!line || !ft_strncmp(line, delim, ft_strlen(line)))
 			break ;
@@ -133,14 +132,14 @@ static int	ft_read_heredoc(t_cli *cli, int *option, char *delim)
 		free(t);
 	}
 	if (!line)
-		ft_here_error(delim);
-	cli->heredoc = ft_expand_heredoc(*option, cli);
+		here_error(delim);
+	cli->heredoc = expand_heredoc(*option, cli);
 	if (!cli->heredoc)
 		return (cli->status = 2, 2);
 	return (free(line), free(delim), 0);
 }
 
-int	ft_heredoc(char *token, t_cli *cli)
+int	heredoc(char *token, t_cli *cli)
 {
 	char	*delim;
 	int		option;
@@ -148,18 +147,19 @@ int	ft_heredoc(char *token, t_cli *cli)
 
 	if (!cli)
 		return (printf("!cli\n"), 2);
-	ft_free_prev(cli);
+	free_prev(cli);
 	if (!token)
-		return (ft_perror_token("<<", SYN_ERR), 2);
-	delim = ft_trim_delim(token, &option);
+		return (perror_token("<<", SYN_ERR), 2);
+	delim = trim_delim(token, &option);
 	if (!delim)
 		return (cli->status = 2, 2);
 	option = 0;
-	status = ft_read_heredoc(cli, &option, delim);
+	status = read_heredoc(cli, &option, delim);
 	if (status == 130)
 	{
-		ft_set_sig(PARENT);
-		g_sig_rec = 0;
+		set_sig(PARENT);
+		g_signal = 0;
+		cli->last_status = 130;
 	}
 	return (status);
 }

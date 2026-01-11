@@ -12,12 +12,11 @@
 
 #include "minishell.h"
 
-volatile sig_atomic_t	g_sig_rec = 0;
+volatile sig_atomic_t	g_signal = 0;
 
-int	ft_check_prnts(char *line)
+int	check_prnts(char *line)
 {
 	int		i;
-	int		len;
 	int		prnts;
 
 	if (!line)
@@ -28,10 +27,9 @@ int	ft_check_prnts(char *line)
 	{
 		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
 		{
-			len = ft_quoted_len(line + i, line[i]);
-			if (len < 0)
+			if (quoted_len(line + i, line[i]) < 0)
 				return (-1);
-			i += (len - 1);
+			i += (quoted_len(line + i, line[i]) - 1);
 		}
 		if (line[i] == '(')
 			prnts++;
@@ -44,115 +42,28 @@ int	ft_check_prnts(char *line)
 	return (prnts);
 }
 
-void	ft_reset_list(t_cli *cli)
+static int	event_hook(void)
 {
-	t_cli	*next;
-	t_cli	*last;
-
-	if (!cli)
-		return ;
-	last = cli;
-	while (last->next)
-		last = last->next;
-	cli->status = last->status;
-	next = cli->next;
-	if (next)
-	{
-		ft_free_list(&next);
-		cli->next = nullptr;
-	}
-	free(cli->cmd);
-	cli->cmd = nullptr;
-	free(cli->heredoc);
-	cli->heredoc = nullptr;
-	free(cli->infile);
-	cli->infile = nullptr;
-	free(cli->outfile);
-	cli->outfile = nullptr;
-	ft_free_tokens(cli->args, cli->n_tokens - 1);
-	cli->args = nullptr;
-	cli->is_builtin = 0;
-	cli->r_mode = 0;
-	cli->group = 0;
-	cli->op = 0;
-}
-
-int	ft_reset_signal(t_cli *cli)
-{
-	g_sig_rec = 0;
-	ft_reset_list(cli);
-	cli->last_status = 130;
-	return (1);
-}
-
-static int	is_empty(char *s)
-{
-	if (!s)
-		return (1);
-	while (*s)
-	{
-		if (!ft_isspace(*s))
-			return (0);
-		s++;
-	}
-	return (1);
-}
-
-int	ft_read_line(t_shenv **env, t_cli *cli)
-{
-	char	*cl;
-	char	**tokens;
-
-	cl = NULL;
-	while (1)
-	{
-		free(cl);
-		cl = NULL;
-		cl = readline("\033[1;32mminishell\033[0m$ ");
-		if (!cl)
-			return (rl_clear_history(), write(1, "exit\n", 5), 2);
-		if (g_sig_rec && ft_reset_signal(cli))
-			continue ;
-		if (is_empty(cl))
-			continue ;
-		add_history(cl);
-		tokens = ft_tokens(cl, *env, cli);
-		if (!tokens)
-		{
-			cli->last_status = 2;
-			continue ;
-		}
-		cli->status = ft_parse(tokens, cli);
-		cli->status = ft_execute(cli);
-		cli->last_status = cli->status;
-		ft_reset_list(cli);
-	}
-	// return (free(cl), rl_clear_history(), cli->last_status);
-}
-
-int	ft_event_hook(void)
-{
-	if (g_sig_rec)
+	if (g_signal)
 		rl_done = 1;
 	return (0);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_shenv		*env;
-	extern int 	rl_catch_signals;
+	t_shenv		*ft_env;
 	t_cli		*cli;
 	int			status;
-	
-	ft_set_sig(PARENT);
+
+	set_sig(PARENT);
 	rl_catch_signals = 0;
-	rl_event_hook = ft_event_hook;
-	env = ft_load_env(envp);
-	cli = ft_init_node(1, &env, 0);
+	rl_event_hook = event_hook;
+	ft_env = load_env(envp);
+	cli = init_node(1, &ft_env, 0);
 	if (!cli)
-		return (ft_free_env(&env), 2);
-	status = ft_read_line(&env, cli);
-	ft_free_list(&cli);
-	ft_free_env(&env);
+		return (free_env(&ft_env), 2);
+	status = read_input_line(&ft_env, cli);
+	free_list(&cli);
+	free_env(&ft_env);
 	return (status);
 }

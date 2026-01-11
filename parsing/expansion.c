@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	*ft_trim_delim(char *token, int *option)
+char	*trim_delim(char *token, int *option)
 {
 	char	*delim;
 	int		i;
@@ -20,18 +20,22 @@ char	*ft_trim_delim(char *token, int *option)
 	if (!token)
 		return (nullptr);
 	i = 0;
-	if (ft_strchr(QUOTES, token[i]) && (i == 0 || (i > 0 && token[i - 1] != '\\')))
+	while (token[i])
 	{
-		if (token[i] == '\"')
-			*option = 1;
-		delim = ft_escape_quotes(token + i);
+		if (ft_strchr(QUOTES, token[i]))
+		{
+			if (token[i] == '\"')
+				*option = 1;
+			delim = escape_quotes(token + i);
+			return (delim);
+		}
+		i++;
 	}
-	else
-		delim = ft_strdup(token + i);
+	delim = ft_strdup(token + i);
 	return (delim);
 }
 
-size_t	ft_var_len(char	*var)
+size_t	var_len(char	*var)
 {
 	size_t	i;
 	size_t	len;
@@ -49,7 +53,7 @@ size_t	ft_var_len(char	*var)
 	return (i);
 }
 
-char	*ft_expand_exit_status(const int status, const char *line, int i)
+char	*expand_exit_status(const int status, const char *line, const size_t i)
 {
 	char *before;
 	char *after;
@@ -69,7 +73,7 @@ char	*ft_expand_exit_status(const int status, const char *line, int i)
 	return (new_line);
 }
 
-char	*ft_expand_var(char	*token, int start, int end)
+char	*expand_var(char *token, const size_t start, const size_t end)
 {
 	char	*s;
 	char	*t;
@@ -94,40 +98,40 @@ char	*ft_expand_var(char	*token, int start, int end)
 	return (s);
 }
 
-char	*ft_expand_line(char *line, t_cli *cli)
+char	*expand_line(char *token, const t_cli *cli)
 {
-	int		i;
+	size_t	i;
 	char	*t;
 
 	i = 0;
-	while (line && i < ft_strlen(line))
+	while (token && i < ft_strlen(token))
 	{
-		if (line[i] == '\'' && i > 0 && line[i - 1] != '\\')
-			i += (ft_quoted_len(line + i, '\'') + 1);
-		if (i < ft_strlen(line) && line[i] == '<' && line[i + 1] == '<')
+		if (token[i] == '\'' && i > 0 && token[i - 1] != '\\')
+			i += (quoted_len(token + i, '\'') + 1);
+		if (i < ft_strlen(token) && token[i] == '<' && token[i + 1] == '<')
 		{
-			if (ft_heredoc_len(line + i) <= 0)
-				return (free(line), nullptr);
-			i += (ft_heredoc_len(line + i) - 1);
+			if (heredoc_len(token + i) <= 0)
+				return (free(token), nullptr);
+			i += (heredoc_len(token + i) - 1);
 		}
-		if (i < ft_strlen(line) && line[i] == '$' && line[i + 1] && !ft_strchr(NO_VAL_VAR,
-				line[i + 1]))
+		if (i < ft_strlen(token) && token[i] == '$' && token[i + 1] && !ft_strchr(NO_VAL_VAR,
+				token[i + 1]))
 		{
-			if (line[i + 1] == '?')
-				t = ft_expand_exit_status(cli->last_status, line, i);
+			if (token[i + 1] == '?')
+				t = expand_exit_status(cli->last_status, token, i);
 			else
-				t = ft_expand_var(line, i, ft_var_len(line + i));
-			if (line != t)
-				free(line);
-			line = t;
+				t = expand_var(token, i, var_len(token + i));
+			if (token != t)
+				free(token);
+			token = t;
 		}
 		i++;
 	}
-	t = ft_strtrim(line, " ");
-	return (free(line), t);
+	t = ft_strtrim(token, " ");
+	return (free(token), t);
 }
 
-char	**ft_expand_tokens(char **tokens, int *len, t_cli *cli)
+char	**expand_tokens(char **tokens, int *len, const t_cli *cli)
 {
 	char	*t;
 	int		i;
@@ -141,16 +145,16 @@ char	**ft_expand_tokens(char **tokens, int *len, t_cli *cli)
 		wc_len = 0;
 		if (ft_strchr(tokens[i], '*') && !ft_strchr(QUOTES, tokens[i][0]))
 		{
-			tokens = ft_expand_wildcard(tokens, i, &wc_len);
+			tokens = expand_wildcard(tokens, i, &wc_len);
 			i = i + wc_len;
 			*len = *len + wc_len - 1;
 			continue ;
 		}
-		t = ft_expand_line(tokens[i], cli);
+		t = expand_line(tokens[i], cli);
 		if (t && t[0] == '<' && t[1] == '<')
 			tokens[i] = ft_strdup(t);
 		else
-			tokens[i] = ft_escape_quotes(t);
+			tokens[i] = escape_quotes(t);
 		free(t);
 		i++;
 	}

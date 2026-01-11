@@ -12,17 +12,17 @@
 
 #include "../../minishell.h"
 
-int	ft_unset(char **args, t_shenv **env)
+int	ft_unset(char **args, t_shenv **ft_env)
 {
 	int i;
 
-	(void)env;
+	(void)ft_env;
 	if(!args)
 		return(1);
 	i = 1;
 	while(args[i])
 	{
-		ft_unsetenv(env, args[i]);
+		unset_env(ft_env, args[i]);
 		i++;
 	}
 	return(0);

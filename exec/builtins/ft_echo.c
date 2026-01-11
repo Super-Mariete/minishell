@@ -28,12 +28,12 @@ static int	is_n_option(char *arg)
 	return (i > 1);
 }
 
-int	ft_echo(char **args, t_shenv **env)
+int	ft_echo(char **args, t_shenv **ft_env)
 {
 	int	i;
 	int	newline;
 
-	(void)env;
+	(void)ft_env;
 	i = 1;
 	newline = 1;
 	while (args[i] && is_n_option(args[i]))

@@ -20,5 +20,5 @@ int	exec_builtin(t_cli *cli)
 	builtin = get_builtin(cli->cmd);
 	if (!builtin)
 		return (cli->last_status);
-	return (builtin(cli->args, cli->env));
+	return (builtin(cli->args, cli->ft_env));
 }
