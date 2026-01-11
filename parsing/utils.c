@@ -61,7 +61,6 @@ void	ft_perror_msh(char *problem, char *mssg)
 	write(2, ": ", 2);
 	if (mssg)
 		write(2, mssg, ft_strlen(mssg));
-	return ;
 }
 
 void	ft_perror_token(char *token, char *msg)
@@ -96,21 +95,21 @@ t_cli	*ft_init_node(int len, t_shenv **env, int op)
 	t_cli *cli;
 
 	if (len <= 0)
-		return (NULL);
+		return (nullptr);
 	cli = (t_cli *)ft_calloc(1, sizeof(t_cli));
 	if (!cli)
-		return (perror("malloc : "), NULL);
-	cli->cmd = NULL;
-	cli->args = NULL;
+		return (perror("malloc : "), nullptr);
+	cli->cmd = nullptr;
+	cli->args = nullptr;
 	cli->env = env;
 	if (env && !cli->env)
 		perror("malloc : ");
-	cli->infile = NULL;
-	cli->outfile = NULL;
-	cli->heredoc = NULL;
+	cli->infile = nullptr;
+	cli->outfile = nullptr;
+	cli->heredoc = nullptr;
 	cli->heredoc_fd = -1;
 	cli->is_builtin = 0;
-	cli->next = NULL;
+	cli->next = nullptr;
 	cli->r_mode = WRITE;
 	cli->n_tokens = len;
 	cli->group = 1;
@@ -132,20 +131,19 @@ void	ft_free_list(t_cli **cli)
 	{
 		next_node = node->next;
 		free(node->cmd);
-		node->cmd = NULL;
+		node->cmd = nullptr;
 		free(node->heredoc);
-		node->heredoc = NULL;
+		node->heredoc = nullptr;
 		free(node->infile);
-		node->infile = NULL;
+		node->infile = nullptr;
 		free(node->outfile);
-		node->outfile = NULL;
+		node->outfile = nullptr;
 		ft_free_d(node->args);
-		node->args = NULL;
+		node->args = nullptr;
 		free(node);
 		node = next_node;
 	}
-	*cli = NULL;
-	return ;
+	*cli = nullptr;
 }
 
 void	ft_free_node(t_cli *cli)
@@ -153,18 +151,17 @@ void	ft_free_node(t_cli *cli)
 	if (!cli)
 		return ;
 	free(cli->cmd);
-	cli->cmd = NULL;
+	cli->cmd = nullptr;
 	free(cli->heredoc);
-	cli->heredoc = NULL;
+	cli->heredoc = nullptr;
 	free(cli->infile);
-	cli->infile = NULL;
+	cli->infile = nullptr;
 	free(cli->outfile);
-	cli->outfile = NULL;
+	cli->outfile = nullptr;
 	ft_free_d(cli->args);
-	cli->args = NULL;
+	cli->args = nullptr;
 	free(cli);
-	cli = NULL;
-	return ;
+	cli = nullptr;
 }
 
 int ft_trim_s_len(char *line)
@@ -201,7 +198,7 @@ char	*ft_trim_spaces(char *line)
 
 	i = 0;
 	if (ft_trim_s_len(line) < 0)
-		return (NULL);
+		return (nullptr);
 	trimmed = ft_calloc(ft_trim_s_len(line) + 1, sizeof(char));
 	j = 0;
 	while (trimmed && line && i < ft_strlen(line))

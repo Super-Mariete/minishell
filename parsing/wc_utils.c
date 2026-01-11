@@ -16,7 +16,7 @@ int	ft_equal(size_t *j, size_t *i)
 	return (1);
 }
 
-int	ft_j_s(size_t *j_s, size_t *i_a, size_t *i, size_t *j)
+int	ft_j_s(const size_t *j_s, size_t *i_a, size_t *i, size_t *j)
 {
 	*i_a = *i_a + 1;
 	*i = *i_a;

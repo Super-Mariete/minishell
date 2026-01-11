@@ -22,21 +22,20 @@ void    ft_set_sig(int option)
     if (option == PARENT)
     {
         sa.sa_handler = ft_sig_int_parent;
-        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGINT, &sa, nullptr);
 		sa.sa_handler = SIG_IGN;
-        sigaction(SIGQUIT, &sa, NULL);
+        sigaction(SIGQUIT, &sa, nullptr);
     }
     if (option == CHILD)
     {
         sa.sa_handler = SIG_DFL;
-        sigaction(SIGINT, &sa, NULL);
-        sigaction(SIGQUIT, &sa, NULL);
+        sigaction(SIGINT, &sa, nullptr);
+        sigaction(SIGQUIT, &sa, nullptr);
 	}
     if (option == IGNORE)
     {
         sa.sa_handler = SIG_IGN;
-        sigaction(SIGINT, &sa, NULL);
-        sigaction(SIGQUIT, &sa, NULL);
+        sigaction(SIGINT, &sa, nullptr);
+        sigaction(SIGQUIT, &sa, nullptr);
     }
-	return ;
 }

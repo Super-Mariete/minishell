@@ -18,7 +18,7 @@ char	*ft_trim_delim(char *token, int *option)
 	int		i;
 
 	if (!token)
-		return (NULL);
+		return (nullptr);
 	i = 0;
 	if (ft_strchr(QUOTES, token[i]) && (i == 0 || (i > 0 && token[i - 1] != '\\')))
 	{
@@ -31,10 +31,10 @@ char	*ft_trim_delim(char *token, int *option)
 	return (delim);
 }
 
-int	ft_var_len(char	*var)
+size_t	ft_var_len(char	*var)
 {
-	int	i;
-	int	len;
+	size_t	i;
+	size_t	len;
 
 	if (!var)
 		return (0);
@@ -49,7 +49,7 @@ int	ft_var_len(char	*var)
 	return (i);
 }
 
-char	*ft_expand_exit_status(int status, char *line, int i)
+char	*ft_expand_exit_status(const int status, const char *line, int i)
 {
 	char *before;
 	char *after;
@@ -69,30 +69,28 @@ char	*ft_expand_exit_status(int status, char *line, int i)
 	return (new_line);
 }
 
-char	*ft_expand_var(char	*line, int start, int end)
+char	*ft_expand_var(char	*token, int start, int end)
 {
 	char	*s;
 	char	*t;
 	char	*var;
 
-	if (!line)
-		return (NULL);
-	if (end > ft_strlen(line))
-		return (ft_strndup(line, end));
-	s = ft_strndup(line + start, end);
+	if (!token)
+		return (nullptr);
+	if (end > ft_strlen(token))
+		return (ft_strndup(token, end));
+	s = ft_strndup(token + start, end);
 	t = ft_strtrim(s, NO_VAL_VAR);
 	if (!s || !t)
-		return (free(s), free(t), NULL);
+		return (free(s), free(t), nullptr);
 	free(s);
 	var = getenv(t);
 	free(t);
-	s = ft_strndup(line, start);
+	s = ft_strndup(token, start);
 	t = ft_strjoin(s, var);
 	free(s);
-	s = NULL;
-	s = ft_strjoin(t, line + start + end);
+	s = ft_strjoin(t, token + start + end);
 	free(t);
-	t = NULL;
 	return (s);
 }
 
@@ -109,7 +107,7 @@ char	*ft_expand_line(char *line, t_cli *cli)
 		if (i < ft_strlen(line) && line[i] == '<' && line[i + 1] == '<')
 		{
 			if (ft_heredoc_len(line + i) <= 0)
-				return (free(line), line = NULL, NULL);
+				return (free(line), nullptr);
 			i += (ft_heredoc_len(line + i) - 1);
 		}
 		if (i < ft_strlen(line) && line[i] == '$' && line[i + 1] && !ft_strchr(NO_VAL_VAR,
@@ -126,7 +124,7 @@ char	*ft_expand_line(char *line, t_cli *cli)
 		i++;
 	}
 	t = ft_strtrim(line, " ");
-	return (free(line), line = NULL, t);
+	return (free(line), t);
 }
 
 char	**ft_expand_tokens(char **tokens, int *len, t_cli *cli)
@@ -136,7 +134,7 @@ char	**ft_expand_tokens(char **tokens, int *len, t_cli *cli)
 	int		wc_len;
 
 	if (!tokens)
-		return (NULL);
+		return (nullptr);
 	i = 0;
 	while (i < *len)
 	{

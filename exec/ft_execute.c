@@ -100,7 +100,7 @@ int	execute_builtin(t_cli *cli)
 	return (status);
 }
 
-int	exec_builtin_child(t_cli *cli)
+int	exec_builtin_child(const t_cli *cli)
 {
 	int (*builtin)(char **, t_shenv **);
 
@@ -149,8 +149,9 @@ int execute_command(t_cli *cli)
         perror("execve");
         exit(126);
     }
-    ft_set_sig(PARENT);
+    ft_set_sig(IGNORE);
     waitpid(pid, &status, 0);
+    ft_set_sig(PARENT);
     if(WIFSIGNALED(status))
     	cli->last_status = 128 + WTERMSIG(status);
     else if(WIFEXITED(status))
@@ -292,11 +293,13 @@ int execute_pipeline(t_cli *cli)
         cli = cli->next;
     }
     
+    ft_set_sig(IGNORE);
     while ((pid = wait(&status)) > 0)
     {
         if (pid == last_pid)
             last_status = status;
     }
+    ft_set_sig(PARENT);
     if (WIFSIGNALED(last_status))
     	return (128 + WTERMSIG(last_status));
     else if (WIFEXITED(last_status))

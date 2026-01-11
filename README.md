@@ -2,11 +2,12 @@
 
 ## 1. Análisis arquitectónico
 
-- `minishell.c:195-238` implementa el ciclo principal `ft_read_line`: configura señales (`ft_set_sig`), carga el entorno con `ft_load_env`, obtiene líneas con `readline`, almacena histórico y, tras cada iteración, reutiliza la lista `t_cli`.
-- La fase de **lexing/expansión** (`parsing/lexing.c:120`, `parsing/expansion.c:85`) tokeniza la línea, expande variables/estado de salida y resuelve wildcards (`parsing/wildcards.c:27`), manteniendo compatibilidad con heredocs y comillas.
-- El **parser** (`parsing/parsing.c:101`, `parsing/parsing1.c:77`) transforma los tokens en una lista enlazada de `t_cli`, configurando redirecciones, heredocs y operadores lógicos/pipes (`ft_parse_op`).
-- El **ejecutor** (`exec/exec.c:15`, `exec/exec_pipe.c:173`) decide entre builtins (`exec/builtins.c:15`), pipelines/heredocs y procesos externos (`execute_command`) usando `fork/execve`, controlando señales (`parsing/signals.c:1`) y estado de salida.
-- La **gestión del entorno** (`parsing/shenv.c:1`, `exec/ft_cd.c:63`, `exec/ft_export.c:58`, `exec/ft_unset.c:1`) mantiene un `t_shenv` enlazado y sincroniza variables especiales (`PWD`, `OLDPWD`, etc.).
+- `minishell.c` implementa el ciclo principal `ft_read_line`: configura señales (`ft_set_sig`), carga el entorno con `ft_load_env`, obtiene líneas con `readline`, almacena histórico y, tras cada iteración, reutiliza la lista `t_cli`.
+- La fase de **lexing/expansión** (`parsing/lexing.c`, `parsing/expansion.c`) tokeniza la línea, expande variables/estado de salida y resuelve wildcards (`parsing/wildcards.c`), manteniendo compatibilidad con heredocs y comillas.
+- El **parser** (`parsing/parsing.c`, `parsing/parsing1.c`) transforma los tokens en una lista enlazada de `t_cli`, configurando redirecciones, heredocs y operadores lógicos/pipes.
+- El **ejecutor** (`exec/ft_execute.c`) orquesta la ejecución decidiendo entre builtins (`exec/aux_exec/exec_builtin.c`), pipelines (`execute_pipeline`) y procesos externos (`execute_command`) usando `fork/execve`.
+- Las redirecciones se aplican en `exec/aux_exec/apply_redirs.c` antes de la ejecución del comando.
+- La **gestión del entorno** (`parsing/shenv.c`, `exec/builtins/ft_*.c`) mantiene un `t_shenv` enlazado y sincroniza variables especiales (`PWD`, `OLDPWD`, etc.).
 - Utilidades y memoria recaen en `libft/` (funciones `ft_*` de cadenas, listas y arrays), que actúa como capa de servicios compartidos.
 
 ## 2. Tecnologías utilizadas
@@ -22,30 +23,38 @@
 .
 ├── minishell.c            # Bucle principal, configuración de señales y entrada
 ├── minishell.h            # Definiciones de structs, macros y prototipos
-├── exec/                  # Motor de ejecución (builtins, pipelines, procesos)
-│   ├── builtins.c
-│   ├── exec.c
-│   ├── exec_pipe.c
-│   ├── ft_cd.c
-│   ├── ft_export.c
-│   └── ft_unset.c
+├── exec/                  # Motor de ejecución
+│   ├── ft_execute.c       # Orquestador (ft_execute, execute_pipeline, execute_command)
+│   ├── mac_stub.c         # Stub para compatibilidad (si aplica)
+│   ├── exec.h             # Cabeceras de ejecución
+│   ├── builtins/          # Comandos internos (builtins)
+│   │   ├── ft_cd.c
+│   │   ├── ft_echo.c
+│   │   ├── ft_env.c
+│   │   ├── ft_exit.c
+│   │   ├── ft_export.c
+│   │   ├── ft_pwd.c
+│   │   ├── ft_unset.c
+│   │   └── ...
+│   └── aux_exec/          # Funciones auxiliares de ejecución
+│       ├── apply_redirs.c # Aplicación de redirecciones (<, >, >>)
+│       ├── exec_builtin.c # Wrapper para llamar builtins
+│       └── has_pipe.c     # Detección de pipes
 ├── parsing/               # Lexing, parsing, expansiones, env interno, señales
-│   ├── lexing.c
-│   ├── lexing1.c
-│   ├── parsing.c
-│   ├── parsing1.c
-│   ├── expansion.c
-│   ├── heredoc.c
-│   ├── wildcards.c
-│   ├── wc_utils.c
-│   ├── shenv.c
-│   └── signals.c
+│   ├── lexing.c           # Tokenización
+│   ├── parsing.c          # Construcción del AST / lista de comandos
+│   ├── expansion.c        # Expansión de variables $VAR
+│   ├── heredoc.c          # Gestión de HereDocs
+│   ├── wildcards.c        # Expansión de wildcards (*)
+│   ├── shenv.c            # Gestión de variables de entorno
+│   └── signals.c          # Manejo de señales (Ctrl+C, Ctrl+\)
 ├── libft/                 # Biblioteca auxiliar con funciones reutilizables
 │   ├── libft.h
+│   ├── Makefile
 │   └── ft_*.c
 ├── Makefile               # Objetivo `minishell`, vínculo con `libft` y readline
-├── main.c                 # Programa de pruebas puntual (no integrado en build)
-├── log*.txt               # Ficheros de registro/notas
+├── test_fds.sh            # Script para pruebas de file descriptors
+├── readline.supp          # Supresiones de valgrind para readline
 └── README.md              # Informe arquitectónico del proyecto
 ```
 

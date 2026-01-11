@@ -29,7 +29,7 @@ SRC = minishell.c\
 	exec/aux_exec/exec_builtin.c\
 
 OBJ = $(SRC:.c=.o)
-CFLAGS += -g -Ilibft #-Wall -Wextra -Werror 
+CFLAGS += -g3 -Ilibft #-Wall -Wextra -Werror
 
 all: $(NAME)
 

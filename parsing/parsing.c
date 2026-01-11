@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:42 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/25 20:33:56 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/04 18:46:40 by rafael           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ int	ft_parse(char **token, t_cli *cli)
 	cli->n_tokens = 1;
 	while (i < len)
 	{
-		// printf("parsing token[%d] = %s\n", i, token[i]);
 		if (token[i] && !ft_strncmp(token[i], ">>", 2))
 			ft_append(token[++i], cli);
 		else if (token[i] && !ft_strncmp(token[i], "<<", 2))
