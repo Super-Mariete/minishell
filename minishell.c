@@ -85,6 +85,19 @@ int	ft_reset_signal(t_cli *cli)
 	return (1);
 }
 
+static int	is_empty(char *s)
+{
+	if (!s)
+		return (1);
+	while (*s)
+	{
+		if (!ft_isspace(*s))
+			return (0);
+		s++;
+	}
+	return (1);
+}
+
 int	ft_read_line(t_shenv **env, t_cli *cli)
 {
 	char	*cl;
@@ -94,11 +107,13 @@ int	ft_read_line(t_shenv **env, t_cli *cli)
 	while (1)
 	{
 		free(cl);
-		printf("status = %d\n", cli->last_status);
+		cl = NULL;
 		cl = readline("\033[1;32mminishell\033[0m$ ");
 		if (!cl)
-			return (rl_clear_history(), write(1, "exit\n", 5), 0);
+			return (rl_clear_history(), write(1, "exit\n", 5), 2);
 		if (g_sig_rec && ft_reset_signal(cli))
+			continue ;
+		if (is_empty(cl))
 			continue ;
 		add_history(cl);
 		tokens = ft_tokens(cl, *env, cli);

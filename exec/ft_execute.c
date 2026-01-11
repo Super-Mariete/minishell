@@ -94,8 +94,6 @@ static int handle_redirs(t_cli *cli)
 
 int	ft_execute(t_cli *cli)
 {
-	int	status;
-
 	if(!cli)
 		return (cli->last_status);
 	if (!cli->cmd)
@@ -269,7 +267,7 @@ int execute_pipeline(t_cli *cli)
         pid = fork();
         if (pid < 0)
             return (perror("fork"), 1);
-            
+
         if (pid == 0)
         {
             ft_set_sig(CHILD);
