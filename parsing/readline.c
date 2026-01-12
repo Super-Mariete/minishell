@@ -39,7 +39,7 @@ void	reset_list(t_cli *cli)
 	free_first_node(cli);
 }
 
-int	reset_signal(t_cli *cli)
+static int	reset_signal(t_cli *cli)
 {
 	g_signal = 0;
 	reset_list(cli);

@@ -174,6 +174,8 @@ t_shenv	*load_env(char **envp);
 void	print_list(t_cli *cli);
 char	*trim_spaces(const char *line);
 bool	create_file(const t_cli *cli);
+int		write_to_heredoc(const t_cli *cli, char file[10], int fd);
+int		create_heredoc(const t_cli *cli);
 
 int		has_pipe(t_cli *cli);
 int		apply_redirs(t_cli *cli);

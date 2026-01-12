@@ -95,7 +95,7 @@ static int handle_redirs(t_cli *cli)
 int	execute(t_cli *cli)
 {
 	if(!cli)
-		return (cli->last_status);
+		return (2);
 	if (!cli->cmd)
 	{
 		if (cli->heredoc || cli->infile || cli->outfile)
@@ -181,7 +181,11 @@ int execute_command(t_cli *cli)
     waitpid(pid, &status, 0);
     set_sig(PARENT);
     if(WIFSIGNALED(status))
+    {
+    	if (status == 2)
+    		write(1, "\n", 1);
     	cli->last_status = 128 + WTERMSIG(status);
+    }
     else if(WIFEXITED(status))
     	cli->last_status = WEXITSTATUS(status);
     else
@@ -249,12 +253,13 @@ int execute_command(t_cli *cli)
 */
 int execute_pipeline(t_cli *cli)
 {
-    int fd[2];
-    int prev_fd = -1;
-    pid_t pid;
-    pid_t last_pid = -1;
-    int status;
-    int last_status = 0;
+    int		fd[2];
+    int		prev_fd = -1;
+    pid_t	pid;
+    pid_t	last_pid = -1;
+    int		status;
+    int		last_status = 0;
+	size_t	nl_put;
 
     while (cli)
     {
@@ -322,16 +327,18 @@ int execute_pipeline(t_cli *cli)
             last_pid = pid;
         cli = cli->next;
     }
-    
     set_sig(IGNORE);
+	nl_put = 0;
     while ((pid = wait(&status)) > 0)
     {
+    	if (WIFSIGNALED(status) && status == 2 && !nl_put)
+    		nl_put = write(1, "\n", 1);
         if (pid == last_pid)
             last_status = status;
     }
     set_sig(PARENT);
     if (WIFSIGNALED(last_status))
-    	return (128 + WTERMSIG(last_status));
+	    return (128 + WTERMSIG(last_status));
     else if (WIFEXITED(last_status))
     	return (WEXITSTATUS(last_status));
     else

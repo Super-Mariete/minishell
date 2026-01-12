@@ -13,6 +13,7 @@ SRC = minishell.c\
 	parsing/wildcards.c\
 	parsing/wc_utils.c\
 	parsing/readline.c\
+	parsing/heredoc2.c\
 	exec/ft_execute.c\
 	exec/builtins/ft_echo.c\
 	exec/builtins/ft_cd.c\
@@ -27,7 +28,7 @@ SRC = minishell.c\
 	exec/mac_stub.c\
 	exec/aux_exec/apply_redirs.c\
 	exec/aux_exec/has_pipe.c\
-	exec/aux_exec/exec_builtin.c\
+	exec/aux_exec/exec_builtin.c
 
 OBJ = $(SRC:.c=.o)
 CFLAGS += -g3 -Ilibft #-Wall -Wextra -Werror
