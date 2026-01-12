@@ -12,9 +12,54 @@
 
 #include "../minishell.h"
 
+int write_to_heredoc(const t_cli *cli, char file[10], int fd)
+{
+	int	ret;
+
+	write(fd, cli->heredoc, ft_strlen(cli->heredoc));
+	close(fd);
+	ret = open(file, O_RDONLY, 0444);
+	if (ret == -1)
+	{
+		perror_msh("open", nullptr);
+		perror(nullptr);
+	}
+	unlink(file);
+	return (ret);
+}
+
+int	create_heredoc(const t_cli *cli)
+{
+	int		fd;
+	ssize_t	i;
+	char	file[10];
+
+	i = 0;
+	fd = open("/dev/urandom", O_RDWR | O_EXCL, 0644);
+	if (fd == -1)
+	{
+		while (i++ < 10)
+			file[i - 1] = (char)i;
+	}
+	else
+	{
+		if (read(fd, file, 9) <= 0)
+			while (i++ < 10)
+				file[i - 1] = (char)i;
+	}
+	fd = open(file, O_RDWR | O_CREAT, 0644);
+	if (fd == -1)
+	{
+		perror_msh("open", nullptr);
+		perror(nullptr);
+		return (-1);
+	}
+	write_to_heredoc(cli, file, fd);
+	return (fd);
+}
+
 int	heredoc_len(const char *line)
 {
-	char	redir;
 	int		i;
 	int		len;
 	
@@ -44,7 +89,6 @@ char	*expand_heredoc(int option, t_cli *cli)
 {
 	char	*t;
 
-	t = nullptr;
 	if (option)
 	{
 		t = expand_line(cli->heredoc, cli);
@@ -55,7 +99,7 @@ char	*expand_heredoc(int option, t_cli *cli)
 	return (cli->heredoc);
 }
 
-void	here_error(char *delim)
+void	here_error(const char *delim)
 {
 	char	*t;
 	char	*error_msg;
@@ -71,38 +115,6 @@ void	here_error(char *delim)
 	free(error_msg);
 	free(t);
 }
-
-// char	*heredoc_op(char *line, char op)
-// {
-// 	char	*new_line;
-// 	char	*t;
-// 	int		i;
-
-// 	if (!line)
-// 		return (NULL);
-// 	new_line = NULL;
-// 	while (1)
-// 	{
-// 		i = 0;
-// 		free(new_line);
-// 		new_line = readline("> ");
-// 		if (g_sig_rec)
-// 			return (free(new_line), line);
-// 		if (!new_line)
-// 			return (free(line), line = NULL, write(2, HERE_PIPE_ERR, 53), NULL);
-// 		while (new_line && ft_isspace(new_line[i]))
-// 			i++;
-// 		if (!new_line[i] || new_line[i] == '\n')
-// 			continue ;
-// 		t = ft_strjoin(line, new_line);
-// 		free(line);
-// 		line = t;
-// 		if (ft_strchr(OP_STR2, line[ft_strlen(line) - 1]))
-// 			continue ;
-// 		break ;
-// 	}
-// 	return (free(new_line), line);
-// }
 
 static void	free_prev(t_cli *cli)
 {
@@ -139,14 +151,14 @@ static int	read_heredoc(t_cli *cli, const int *option, char *delim)
 	return (free(line), free(delim), 0);
 }
 
-int	heredoc(char *token, t_cli *cli)
+int	get_heredoc(char *token, t_cli *cli)
 {
 	char	*delim;
 	int		option;
 	int		status;
 
 	if (!cli)
-		return (printf("!cli\n"), 2);
+		return (2);
 	free_prev(cli);
 	if (!token)
 		return (perror_token("<<", SYN_ERR), 2);
@@ -161,5 +173,6 @@ int	heredoc(char *token, t_cli *cli)
 		g_signal = 0;
 		cli->last_status = 130;
 	}
+	cli->heredoc_fd = create_heredoc(cli);
 	return (status);
 }

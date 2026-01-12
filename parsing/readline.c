@@ -6,6 +6,7 @@ static void	free_first_node(t_cli *cli)
 	cli->cmd = nullptr;
 	free(cli->heredoc);
 	cli->heredoc = nullptr;
+	cli->heredoc_fd = -1;
 	free(cli->infile);
 	cli->infile = nullptr;
 	free(cli->outfile);
@@ -74,15 +75,18 @@ int	read_input_line(t_shenv **ft_env, t_cli *cli)
 		if  ((g_signal && reset_signal(cli)) || is_empty(cl))
 			continue ;
 		add_history(cl);
-		tokens = tokenize(cl, *ft_env, cli);
+		tokens = tokenize(cl, cli);
 		if (!tokens)
 		{
 			cli->last_status = 2;
 			continue ;
 		}
 		cli->status = parse_input(tokens, cli);
-		cli->status = execute(cli);
-		cli->last_status = cli->status;
+		if (cli->status != 130)
+		{
+			cli->status = execute(cli);
+			cli->last_status = cli->status;
+		}
 		reset_list(cli);
 	}
 }

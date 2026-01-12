@@ -57,7 +57,7 @@ char	*escaped_line(char *line, int start, int end)
 	free(t);
 	t = ft_strjoin(s, line + end);
 	free(s);
-	return (s = nullptr, escaped = nullptr, t);
+	return (t);
 }
 
 char *esc_line(char *line, int i, int len)
@@ -74,10 +74,7 @@ char *esc_line(char *line, int i, int len)
 			return (t);
 		esc = ft_strjoin(t, line + i + 2);
 		if (esc != t)
-		{
 			free(t);
-			t = nullptr;
-		}
 		if (!esc)
 			return (perror("malloc : "), nullptr);
 		return (esc);
@@ -117,14 +114,14 @@ char	*escape_quotes(char *line)
 	return (s);
 }
 
-char	**tokenize(char *line, t_shenv *env, t_cli *cli)
+char	**tokenize(char *line, t_cli *cli)
 {
 	char	**tokens;
 
 	if (!line)
 		return (nullptr);
 	if (check_prnts(line))
-		return (printf("prnts error\n"), nullptr);
+		return ( nullptr);
 	cli->n_tokens = num_s_tokens(line);
 	tokens = token_sep(trim_spaces(line));
 	if (!tokens)

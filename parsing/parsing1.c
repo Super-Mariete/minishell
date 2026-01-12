@@ -12,7 +12,25 @@
 
 #include "../minishell.h"
 
-int     add_args(char *token, t_cli *cli, int pos)
+bool	create_file(const t_cli *cli)
+{
+	int fd;
+	int mode;
+
+	mode = O_TRUNC;
+	if (cli->r_mode == APPEND)
+		mode = O_APPEND;
+	fd = open(cli->outfile, O_WRONLY | O_CREAT | mode, 0644);
+	if (fd < 0)
+	{
+		perror(cli->outfile);
+		return (true);
+	}
+	close(fd);
+	return (false);
+}
+
+int     add_args(char *token, t_cli *cli, const int pos)
 {
 	char	**t;
 
@@ -23,7 +41,7 @@ int     add_args(char *token, t_cli *cli, int pos)
 		cli->args = (char **)ft_calloc(2, sizeof(char *));
 		if (!cli->args)
 			return (perror("malloc"), 0);
-		cli->args[1] = NULL;
+		cli->args[1] = nullptr;
 		cli->args[0] = ft_strdup(token);
 		if (!cli->args[0])
 			return (perror("malloc"), 0);
@@ -40,31 +58,30 @@ int     add_args(char *token, t_cli *cli, int pos)
 	return (1);
 }
 
-t_cli	*parse_op(char *token, t_cli *cli)
+t_cli	*parse_op(const char *token, t_cli *cli)
 {
-	char	*pipe;
 	t_cli	*next_cli;
 	int		op;
 
 	op = 0;
 	if (!token || !cli)
-		return (perror("parse op !token || !cli"), NULL);
+		return (perror("parse op !token || !cli"), nullptr);
 	if (token[0] == '|' && token[1] == '|')
 		op = OR;
 	else if (token[0] == '|' )
 		op = PIPE;
-	else if (token[0] == '&' && token[0] == '&')
+	else if (token[0] == '&' && token[1] == '&')
 		op = AND;
 	else
-		return (perror("invalid token parse_op"), NULL);
+		return (perror_token(token, SYN_ERR), nullptr);
 	cli->op = op;
 	next_cli = init_node(cli->n_tokens, cli->ft_env, 0);
 	if (!next_cli)
-		return (perror("malloc : "), cli->status = 2, NULL);
+		return (perror("malloc : "), cli->status = 2, nullptr);
 	return (next_cli);
 }
 
-char	*cmd_path(char *env_path, char *cmd)
+static char	*cmd_path(char *env_path, const char *cmd)
 {
 	int		i;
 	char	**path;
@@ -74,26 +91,26 @@ char	*cmd_path(char *env_path, char *cmd)
 	i = 0;
 	path = ft_split(env_path, ':');
 	if (!path)
-		return (perror("malloc"), NULL);
+		return (perror("malloc"), nullptr);
 	while (path[i])
 	{
 		t = ft_strjoin(path[i], "/");
 		if (!t)
-			return (ft_free_d(path), perror("malloc"), NULL);
+			return (ft_free_d(path), perror("malloc"), nullptr);
 		cmd_path = ft_strjoin(t, cmd);
 		free(t);
 		if (!cmd_path)
-		    return (ft_free_d(path), perror("malloc"), NULL);
+		    return (ft_free_d(path), perror("malloc"), nullptr);
 		if (!access(cmd_path, X_OK))
 			return (ft_free_d(path), cmd_path);
 		free(cmd_path);
 		i++;
 	}
-	return (ft_free_d(path), NULL);
+	return (ft_free_d(path), nullptr);
 }
 
 
-int	set_cmd(char	*token, t_cli *cli)
+int	set_cmd(char *token, t_cli *cli)
 {
 	if (!token)
 		return (0);
@@ -102,7 +119,7 @@ int	set_cmd(char	*token, t_cli *cli)
 	|| !ft_strcmp(token, "export") || !ft_strcmp(token, "unset")
 	|| !ft_strcmp(token, "env") || !ft_strcmp(token, "exit"))
 		return (cli->is_builtin = 1, cli->cmd = ft_strdup(token), 1);
-	if (token && ft_strchr(token, '/'))
+	if (ft_strchr(token, '/'))
 		cli->cmd = ft_strdup(token);
 	else
 		cli->cmd = cmd_path(getenv("PATH"), token);

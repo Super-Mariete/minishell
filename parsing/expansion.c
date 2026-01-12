@@ -131,7 +131,7 @@ char	*expand_line(char *token, const t_cli *cli)
 	return (free(token), t);
 }
 
-char	**expand_tokens(char **tokens, int *len, const t_cli *cli)
+char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli)
 {
 	char	*t;
 	int		i;

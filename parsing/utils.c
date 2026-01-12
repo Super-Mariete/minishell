@@ -21,8 +21,6 @@ void	print_list(t_cli *cli)
 		return ;
 	while (cli)
 	{
-		if (!cli)
-			return ;
 		if (cli->cmd)
 			printf("cmd %d = %s\n", node, cli->cmd);
 		if (cli->infile)
@@ -35,8 +33,8 @@ void	print_list(t_cli *cli)
 			printf("r_mode %d = %d\n", node, cli->r_mode);
 		if (cli->heredoc)
 			printf("heredoc %d = %s\n", node, cli->heredoc);
-		printf("op = %d\n", cli->op);
-		printf("group = %d\n", cli->group);
+		printf("op %d = %d\n", i, cli->op);
+		printf("group %d = %zu\n", i, cli->group);
 		while (cli->args && i < ft_doubleptr_len((void **)cli->args))
 		{
 			printf("args[%d] %d = %s\n", i, node, cli->args[i]);
@@ -53,7 +51,7 @@ void	print_list(t_cli *cli)
 	}
 }
 
-void	perror_msh(char *problem, char *mssg)
+void	perror_msh(const char *problem, const char *mssg)
 {
 	write(2, "minishell: ", 11);
 	if (problem)
@@ -63,20 +61,16 @@ void	perror_msh(char *problem, char *mssg)
 		write(2, mssg, ft_strlen(mssg));
 }
 
-void	perror_token(char *token, char *msg)
+void	perror_token(const char *token, const char *msg)
 {
-	char	*t;
-	char	*err;
-
-	t = ft_strjoin(msg, token);
-	err = ft_strjoin(t, "'\n");
-	if (err)
-		write(2, err, ft_strlen(err));
-	free(t);
-	free(err);
+	if (msg)
+		write(2, msg, ft_strlen(msg));
+	if (token)
+		write(2, token, ft_strlen(token));
+	write(2, "\n", 1);
 }
 
-void	free_tokens(char **tokens, int n)
+void	free_tokens(char **tokens, const size_t n)
 {
 	int	i;
 
@@ -90,7 +84,7 @@ void	free_tokens(char **tokens, int n)
 		free(tokens);
 }
 
-t_cli	*init_node(int len, t_shenv **ft_env, int op)
+t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 {
 	t_cli *cli;
 
@@ -101,8 +95,8 @@ t_cli	*init_node(int len, t_shenv **ft_env, int op)
 		return (perror("malloc : "), nullptr);
 	cli->cmd = nullptr;
 	cli->args = nullptr;
-	cli->ft_env = ft_env;
-	if (ft_env && !cli->ft_env)
+	cli->ft_env = env;
+	if (env && !cli->ft_env)
 		perror("malloc : ");
 	cli->infile = nullptr;
 	cli->outfile = nullptr;
@@ -161,10 +155,9 @@ void	free_node(t_cli *cli)
 	ft_free_d(cli->args);
 	cli->args = nullptr;
 	free(cli);
-	cli = nullptr;
 }
 
-int trim_s_len(char *line)
+int trim_s_len(const char *line)
 {
 	int		i;
 	int		len;
@@ -189,7 +182,7 @@ int trim_s_len(char *line)
 	return (len);
 }
 
-char	*trim_spaces(char *line)
+char	*trim_spaces(const char *line)
 {
 	int		i;
 	int		j;

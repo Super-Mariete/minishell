@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	append(char *token, t_cli *cli)
+static int	append_file(char *token, t_cli *cli)
 {
 	int	i;
 	int fd;
@@ -40,10 +40,9 @@ int	append(char *token, t_cli *cli)
 	return (1);
 }
 
-int	outfile(char *token, t_cli *cli)
+static int	outfile(char *token, t_cli *cli)
 {
 	int	i;
-	int fd;
 
 	if (!token)
 		return (perror_token(">", SYN_ERR), 0);
@@ -52,14 +51,12 @@ int	outfile(char *token, t_cli *cli)
 	i = 0;
 	if (cli->outfile)
 	{
-		fd = open(cli->outfile, O_WRONLY | O_CREAT | (cli->r_mode == APPEND ? O_APPEND : O_TRUNC), 0644);
-		if (fd < 0)
-			return (perror(cli->outfile), 0);
-		close(fd);
+		if (create_file(cli))
+			return (0);
 	}
 	free(cli->outfile);
 	cli->r_mode = 0;
-	if (ft_strchr(QUOTES, token[i]) && (i == 0 || (i > 0 && token[i - 1] != '\\')))
+	if (ft_strchr(QUOTES, token[i]))
 		cli->outfile = ft_strndup(token + i + 1, ft_strlen(token) - i - 2);
 	else
 		cli->outfile = ft_strdup(token + i);
@@ -68,7 +65,7 @@ int	outfile(char *token, t_cli *cli)
 	return (1);
 }
 
-int	infile(char *token, t_cli *cli)
+static int	infile(char *token, t_cli *cli)
 {
 	int	i;
 
@@ -94,7 +91,7 @@ int	infile(char *token, t_cli *cli)
 	return (1);
 }
 
-int	parse_token(char **token, int i, t_cli *cli, int *group)
+static size_t	parse_token(char **token, size_t i, t_cli *cli, size_t *group)
 {
 	if (token[i] && token[i][0] == '<')
 		infile(token[++i], cli);
@@ -118,14 +115,13 @@ int	parse_token(char **token, int i, t_cli *cli, int *group)
 	return (i);
 }
 
-int	parse_input(char **token, t_cli *cli)
+int	parse_input(char **tokens, t_cli *cli)
 {
-	int		i;
-	int		len;
-	int		status;
-	int		group;
+	size_t	i;
+	size_t	len;
+	size_t	group;
 
-	if (!token || !cli)
+	if (!tokens || !cli)
 		return (2);
 	i = 0;
 	group = 1;
@@ -133,23 +129,23 @@ int	parse_input(char **token, t_cli *cli)
 	cli->n_tokens = 1;
 	while (i < len)
 	{
-		if (token[i] && !ft_strncmp(token[i], ">>", 2))
-			append(token[++i], cli);
-		else if (token[i] && !ft_strncmp(token[i], "<<", 2))
+		if (tokens[i] && !ft_strncmp(tokens[i], ">>", 2))
+			append_file(tokens[++i], cli);
+		else if (tokens[i] && !ft_strncmp(tokens[i], "<<", 2))
 		{
-			if (heredoc(token[++i], cli) == 130)
+			if (get_heredoc(tokens[++i], cli) == 130)
 				return (130);
 		}
-		else if (token[i] && ft_strchr(OP_STR2, token[i][0]))
+		else if (tokens[i] && ft_strchr(OP_STR2, tokens[i][0]))
 		{
-			cli->next = parse_op(token[i], cli);
+			cli->next = parse_op(tokens[i], cli);
 			if (!cli->next)
 				return (2);
 			cli = cli->next;
 		}
 		else
-			i = parse_token(token, i, cli, &group);
+			i = parse_token(tokens, i, cli, &group);
 		i++;
 	}
-	return (free_tokens(token, len), 0);
+	return (free_tokens(tokens, len), 0);
 }

@@ -31,7 +31,6 @@ void	exp_wc_error(DIR *dir_stream, char *wc)
 		return ;
 	}
 	free(wc);
-	return ;
 }
 
 char	**expand_wildcard(char **token, int pos, int *wc_len)
