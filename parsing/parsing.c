@@ -15,7 +15,6 @@
 static int	append_file(char *token, t_cli *cli)
 {
 	int	i;
-	int fd;
 
 	if (!token)
 		return (perror_token(">>", SYN_ERR), 0);
@@ -24,10 +23,8 @@ static int	append_file(char *token, t_cli *cli)
 	i = 0;
 	if (cli->outfile)
 	{
-		fd = open(cli->outfile, O_WRONLY | O_CREAT | (cli->r_mode == APPEND ? O_APPEND : O_TRUNC), 0644);
-		if (fd < 0)
-			return (perror(cli->outfile), 0);
-		close(fd);
+		if (!create_file(cli))
+			return (0);
 		free(cli->outfile);
 	}
 	cli->r_mode = APPEND;
@@ -91,7 +88,7 @@ static int	infile(char *token, t_cli *cli)
 	return (1);
 }
 
-static size_t	parse_token(char **token, size_t i, t_cli *cli, size_t *group)
+static size_t	parse_input2(char **token, size_t i, t_cli *cli, size_t *group)
 {
 	if (token[i] && token[i][0] == '<')
 		infile(token[++i], cli);
@@ -115,16 +112,14 @@ static size_t	parse_token(char **token, size_t i, t_cli *cli, size_t *group)
 	return (i);
 }
 
-int	parse_input(char **tokens, t_cli *cli)
+int	parse_input(char **tokens, t_cli *cli, size_t group)
 {
-	size_t	i;
-	size_t	len;
-	size_t	group;
+	size_t  i;
+	size_t  len;
 
 	if (!tokens || !cli)
 		return (2);
 	i = 0;
-	group = 1;
 	len = cli->n_tokens;
 	cli->n_tokens = 1;
 	while (i < len)
@@ -144,7 +139,7 @@ int	parse_input(char **tokens, t_cli *cli)
 			cli = cli->next;
 		}
 		else
-			i = parse_token(tokens, i, cli, &group);
+			i = parse_input2(tokens, i, cli, &group);
 		i++;
 	}
 	return (free_tokens(tokens, len), 0);

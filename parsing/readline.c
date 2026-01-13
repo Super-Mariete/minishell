@@ -72,7 +72,7 @@ int	read_input_line(t_shenv **ft_env, t_cli *cli)
 		cl = readline("\033[1;32mminishell\033[0m$ ");
 		if (!cl)
 			return (rl_clear_history(), write(1, "exit\n", 5), 2);
-		if  ((g_signal && reset_signal(cli)) || is_empty(cl))
+		if ((g_signal && reset_signal(cli)) || is_empty(cl))
 			continue ;
 		add_history(cl);
 		tokens = tokenize(cl, cli);
@@ -81,12 +81,7 @@ int	read_input_line(t_shenv **ft_env, t_cli *cli)
 			cli->last_status = 2;
 			continue ;
 		}
-		cli->status = parse_input(tokens, cli);
-		if (cli->status != 130)
-		{
-			cli->status = execute(cli);
-			cli->last_status = cli->status;
-		}
-		reset_list(cli);
+		cli->status = parse_input(tokens, cli, 1);
+		ft_exec(cli);
 	}
 }

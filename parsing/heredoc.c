@@ -12,33 +12,6 @@
 
 #include "../minishell.h"
 
-int	heredoc_len(const char *line)
-{
-	int		i;
-	int		len;
-	
-	i = 0;
-	while (i < ft_strlen(line) && i < 2 && ft_strchr(REDIR_S, line[i]))
-		i++;
-	while (line[i] && ft_isspace(line[i]))
-		i++;
-	while (i < ft_strlen(line) && line[i])
-	{
-		if (i < ft_strlen(line) && ft_strchr(QUOTES, line[i])  && (i == 0 || (i > 0 && line[i - 1] != '\\')))
-		{
-			len = quoted_len(line + i, line[i]);
-			if (len <= 0)
-				return (-1);
-			i += (len + 1);
-			continue ;
-		}	
-		if (ft_strchr(SEP_STR, line [i]))
-			return (i);
-		i++;
-	}
-	return (i);
-}
-
 char	*expand_heredoc(int option, t_cli *cli)
 {
 	char	*t;

@@ -28,34 +28,6 @@ int	check_redirs(char **token, const int i)
 	return (0);
 }
 
-int	check_errors(char **token, const size_t len)
-{
-	int	i;
-
-	if (!token)
-		return (1);
-	if (token[0] && ft_strchr(OP_STR2, token[0][0]))
-		return (perror_token(token[0], SYN_ERR), 1);
-	i = 0;
-	while (i < len)
-	{
-		if (token[i] && ft_strchr(OP_STR2, token[i][0]) && (token[i + 1] && ft_strchr(OP_STR2, token[i + 1][0])))
-			return (perror_token(token[i + 1], SYN_ERR), 1);
-		else if (token[i] && token[i][0] == ')' && (token[i + 1] && !ft_strchr(OP_STR, token[i + 1][0])))
-			return (perror_token(token[i + 1], SYN_ERR), 1);
-		else if (token[i] && token[i][0] == '(' && i > 0 && (!ft_strchr(OP_STR, token[i - 1][0])))
-			return ( perror_token(token[i + 1], SYN_ERR), 1);
-		else if (token[i] && token[i][0] == '(' && token[i + 1] && token[i + 1][0] == ')')
-			return (perror_token(token[i + 1], SYN_ERR), 1);
-		else if (token[i] && ft_strchr(OP_STR, token[i][0]) && !token[i + 1])
-			return (perror_token(token[i], SYN_ERR), 1);
-		else if (token[i] && ft_strchr(SEP_STR, token[i][0]) && token[i + 1] && ft_strchr(SEP_STR, token[i + 1][0]))
-			return (perror_token(token[i + 1], SYN_ERR), 1);
-		i++;
-	}
-	return (0);
-}
-
 static size_t	sep_len(char *line, const size_t pos)
 {
 	if (!line)

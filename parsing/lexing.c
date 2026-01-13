@@ -12,31 +12,7 @@
 
 #include "../minishell.h"
 
-int	quoted_len(const char *line, char quote)
-{
-	int	i;
-
-	if (!line)
-		return (0);
-	i = 1;
-	while (line[i])
-	{
-		if (line[i] == quote)
-		{
-			if(quote == '\'')
-				return (i + 1);
-			else if (quote == '\"')
-			{
-				if (line[i - 1] != '\\')
-					return (i + 1);
-			}
-		}
-		i++;
-	}
-	return (-1);
-}
-
-char	*escaped_line(char *line, int start, int end)
+char	*ft_escape(char *line, int start, int end)
 {
 	char	*escaped;
 	char	*t;
@@ -60,7 +36,7 @@ char	*escaped_line(char *line, int start, int end)
 	return (t);
 }
 
-char *esc_line(char *line, int i, int len)
+char	*esc_line(char *line, int i, int len)
 {
 	char	*esc;
 	char	*t;
@@ -79,15 +55,31 @@ char *esc_line(char *line, int i, int len)
 			return (perror("malloc : "), nullptr);
 		return (esc);
 	}
-	esc = escaped_line(line, i, len);
+	esc = ft_escape(line, i, len);
+	return (esc);
+}
+
+static char	*escape_q(int *i, char **str)
+{
+	int		len;
+	char	*esc;
+	char	*s;
+
+	s = *str;
+	len = quoted_len(s + *i, s[(*i)]);
+	if (len < 0)
+		return (free(s), nullptr);
+	esc = esc_line(s, *i, *i + len);
+	if (!*esc)
+		return (free(s), nullptr);
+	*i += (len - 3);
+	free(*str);
 	return (esc);
 }
 
 char	*escape_quotes(char *line)
 {
 	int		i;
-	int		len;
-	char	*esc;
 	char	*s;
 
 	if (!line)
@@ -98,16 +90,9 @@ char	*escape_quotes(char *line)
 	{
 		if (ft_strchr(QUOTES, s[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
 		{
-			len = quoted_len(s + i,  s[i]);
-			if (len < 0)
-				return (free(s), nullptr);
-			esc = esc_line(s, i , i + len);
-			if (!esc)
-				return (free(s), nullptr);
-			i += (len - 2);
-			free(s);
-			s = esc;
-			continue ;
+			s = escape_q(&i, &s);
+			if (!s)
+				return (nullptr);
 		}
 		i++;
 	}
@@ -121,7 +106,7 @@ char	**tokenize(char *line, t_cli *cli)
 	if (!line)
 		return (nullptr);
 	if (check_prnts(line))
-		return ( nullptr);
+		return (nullptr);
 	cli->n_tokens = num_s_tokens(line);
 	tokens = token_sep(trim_spaces(line));
 	if (!tokens)

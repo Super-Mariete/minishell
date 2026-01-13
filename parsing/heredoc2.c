@@ -12,7 +12,34 @@
 
 #include "../minishell.h"
 
-int write_to_heredoc(const t_cli *cli, char file[10], const int fd)
+int	heredoc_len(const char *line)
+{
+	int		i;
+	int		len;
+
+	i = 0;
+	while (i < ft_strlen(line) && i < 2 && ft_strchr(REDIR_S, line[i]))
+		i++;
+	while (line[i] && ft_isspace(line[i]))
+		i++;
+	while (i < ft_strlen(line) && line[i])
+	{
+		if (i < ft_strlen(line) && ft_strchr(QUOTES, line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		{
+			len = quoted_len(line + i, line[i]);
+			if (len <= 0)
+				return (-1);
+			i += (len + 1);
+			continue ;
+		}
+		if (ft_strchr(SEP_STR, line [i]))
+			return (i);
+		i++;
+	}
+	return (i);
+}
+
+int	write_to_heredoc(const t_cli *cli, char file[10], const int fd)
 {
 	int	ret;
 
@@ -51,8 +78,7 @@ int	create_heredoc(const t_cli *cli)
 	if (fd == -1)
 	{
 		perror_msh("open", nullptr);
-		perror(nullptr);
-		return (-1);
+		return (perror(nullptr), -1);
 	}
 	write_to_heredoc(cli, file, fd);
 	return (fd);

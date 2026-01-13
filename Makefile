@@ -14,6 +14,9 @@ SRC = minishell.c\
 	parsing/wc_utils.c\
 	parsing/readline.c\
 	parsing/heredoc2.c\
+	parsing/lexing2.c\
+	parsing/readline1.c\
+	parsing/utils2.c\
 	exec/ft_execute.c\
 	exec/builtins/ft_echo.c\
 	exec/builtins/ft_cd.c\
@@ -39,17 +42,17 @@ $(NAME): $(LIBFT_A) $(OBJ)
 	@cc $(CFLAGS) $(OBJ) $(LIBFT_A) -lreadline -o $(NAME)
 
 $(LIBFT_A):
-	@$(MAKE) bonus -C libft
+	@$(MAKE) -s bonus -C libft
 
 %.o: %.c
 	@cc $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm  -f $(OBJ)
-	@$(MAKE) clean -C libft
+	@$(MAKE) -s clean -C libft
 
 fclean: clean
 	@rm -f $(NAME)
-	@$(MAKE) fclean -C libft
+	@$(MAKE) -s fclean -C libft
 
 re: fclean all

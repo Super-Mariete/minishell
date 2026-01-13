@@ -14,8 +14,8 @@
 
 bool	create_file(const t_cli *cli)
 {
-	int fd;
-	int mode;
+	int	fd;
+	int	mode;
 
 	mode = O_TRUNC;
 	if (cli->r_mode == APPEND)
@@ -30,7 +30,7 @@ bool	create_file(const t_cli *cli)
 	return (false);
 }
 
-int     add_args(char *token, t_cli *cli, const int pos)
+int	add_args(char *token, t_cli *cli, const int pos)
 {
 	char	**t;
 
@@ -48,7 +48,7 @@ int     add_args(char *token, t_cli *cli, const int pos)
 	}
 	else
 	{
-		t = (char **)ft_add_ptr((void *)cli->args, (char *)token, pos);
+		t = (char **)ft_add_ptr((void **)cli->args, (char *)token, pos);
 		if (!t)
 			return (perror("malloc"), 0);
 		ft_free_d(cli->args);
@@ -88,6 +88,8 @@ static char	*cmd_path(char *env_path, const char *cmd)
 	char	*cmd_path;
 	char	*t;
 
+	if (!env_path)
+		return (nullptr);
 	i = 0;
 	path = ft_split(env_path, ':');
 	if (!path)
@@ -100,7 +102,7 @@ static char	*cmd_path(char *env_path, const char *cmd)
 		cmd_path = ft_strjoin(t, cmd);
 		free(t);
 		if (!cmd_path)
-		    return (ft_free_d(path), perror("malloc"), nullptr);
+			return (ft_free_d(path), perror("malloc"), nullptr);
 		if (!access(cmd_path, X_OK))
 			return (ft_free_d(path), cmd_path);
 		free(cmd_path);
@@ -109,15 +111,14 @@ static char	*cmd_path(char *env_path, const char *cmd)
 	return (ft_free_d(path), nullptr);
 }
 
-
 int	set_cmd(char *token, t_cli *cli)
 {
 	if (!token)
 		return (0);
 	if (!ft_strcmp(token, "echo")
-	|| !ft_strcmp(token, "cd") || !ft_strcmp(token, "pwd")
-	|| !ft_strcmp(token, "export") || !ft_strcmp(token, "unset")
-	|| !ft_strcmp(token, "env") || !ft_strcmp(token, "exit"))
+		|| !ft_strcmp(token, "cd") || !ft_strcmp(token, "pwd")
+		|| !ft_strcmp(token, "export") || !ft_strcmp(token, "unset")
+		|| !ft_strcmp(token, "env") || !ft_strcmp(token, "exit"))
 		return (cli->is_builtin = 1, cli->cmd = ft_strdup(token), 1);
 	if (ft_strchr(token, '/'))
 		cli->cmd = ft_strdup(token);

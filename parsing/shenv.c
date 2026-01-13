@@ -2,8 +2,8 @@
 
 void	free_env(t_shenv **ft_env)
 {
-	t_shenv *node;
-	t_shenv *next;
+	t_shenv	*node;
+	t_shenv	*next;
 
 	if (!ft_env || !*ft_env)
 		return ;
@@ -18,22 +18,22 @@ void	free_env(t_shenv **ft_env)
 	*ft_env = nullptr;
 }
 
-int     shenv_len(t_shenv *ft_env)
+int	shenv_len(t_shenv *ft_env)
 {
-        int     len;
+	int	len;
 
-        len = 0;
-        if (!ft_env)
-                return (0);
-        while (ft_env)
-        {
-                len++;
-                ft_env = ft_env->next;
-        }
-        return (len);
+	len = 0;
+	if (!ft_env)
+		return (0);
+	while (ft_env)
+	{
+		len++;
+		ft_env = ft_env->next;
+	}
+	return (len);
 }
 
-char    **getshenv(t_shenv *ft_env)
+char	**getshenv(t_shenv *ft_env)
 {
 	t_shenv	*node;
 	char	**r;
@@ -60,11 +60,11 @@ char    **getshenv(t_shenv *ft_env)
 	return (r);
 }
 
-t_shenv *load_env(char **envp)
+t_shenv	*load_env(char **envp)
 {
 	int		i;
-	t_shenv *ft_env;
-	t_shenv *node;
+	t_shenv	*ft_env;
+	t_shenv	*node;
 
 	if (!envp)
 		return (nullptr);
