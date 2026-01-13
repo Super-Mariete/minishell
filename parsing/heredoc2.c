@@ -12,6 +12,29 @@
 
 #include "../minishell.h"
 
+char	*trim_delim(char *token, int *option)
+{
+	char	*delim;
+	int		i;
+
+	if (!token)
+		return (nullptr);
+	i = 0;
+	while (token[i])
+	{
+		if (ft_strchr(QUOTES, token[i]))
+		{
+			if (token[i] == '\"')
+				*option = 1;
+			delim = escape_quotes(token + i);
+			return (delim);
+		}
+		i++;
+	}
+	delim = ft_strdup(token);
+	return (delim);
+}
+
 int	heredoc_len(const char *line)
 {
 	int		i;
@@ -39,7 +62,7 @@ int	heredoc_len(const char *line)
 	return (i);
 }
 
-int	write_to_heredoc(const t_cli *cli, char file[10], const int fd)
+static int	write_to_heredoc(const t_cli *cli, char file[10], const int fd)
 {
 	int	ret;
 

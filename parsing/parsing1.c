@@ -81,12 +81,11 @@ t_cli	*parse_op(const char *token, t_cli *cli)
 	return (next_cli);
 }
 
-static char	*cmd_path(char *env_path, const char *cmd)
+static char	*cmd_path(char *env_path, const char *cmd, char *t)
 {
 	int		i;
 	char	**path;
 	char	*cmd_path;
-	char	*t;
 
 	if (!env_path)
 		return (nullptr);
@@ -123,7 +122,7 @@ int	set_cmd(char *token, t_cli *cli)
 	if (ft_strchr(token, '/'))
 		cli->cmd = ft_strdup(token);
 	else
-		cli->cmd = cmd_path(getenv("PATH"), token);
+		cli->cmd = cmd_path(getenv("PATH"), token, nullptr);
 	if (!cli->cmd)
 		cli->cmd = ft_strdup(token);
 	return (1);

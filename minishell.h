@@ -65,7 +65,7 @@ elimited by end-of-file (wanted `"
 # define UNEX_EOF "minishell: syntax error: unexpected end of file\n"
 # define MAX_CMDS 64
 # ifndef PATH_MAX
-# define PATH_MAX 4096
+#  define PATH_MAX 4096
 # endif
 
 //solo por la compatibilidad con mac, luego se elimina
@@ -111,7 +111,7 @@ char	**expand_wildcard(char **token, int pos, int *wc_len);
 char	**token_sep(char *line);
 char	**insert_s_tokens(char **tokens);
 char	**lex_pipe(char **token, int *len);
-char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli);
+char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i);
 char	**tokenize(char *line, t_cli *cli);
 char	**getshenv(t_shenv *ft_env);
 char	*prompt(char **envp);
@@ -130,9 +130,9 @@ int		ft_export(char **args, t_shenv **ft_env);
 int		ft_unset(char **args, t_shenv **ft_env);
 int		unset_env(t_shenv **ft_env, char *key);
 int		init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after);
-int		ft_equal(size_t *j, size_t *i);
+int		equal(size_t *j, size_t *i);
 int		ft_j_s(const size_t *j_s, size_t *i_a, size_t *i, size_t *j);
-int		parse_input(char **tokens, t_cli *cli, size_t group);
+int		parse_input(char **tokens, t_cli *cli, size_t group, size_t i);
 int		check_prnts(char *line);
 int		check_errors(char **token, size_t len);
 int		ft_pwd(char **args, t_shenv **ft_env);
@@ -149,7 +149,6 @@ int		num_quoted(char *line);
 int		quoted_len(const char *line, char quote);
 int		read_input_line(t_shenv **ft_env, t_cli *cli);
 size_t	num_s_tokens(char *line);
-size_t	var_len(char	*var);
 int		trim_s_len(const char *line);
 int		heredoc_len(const char *line);
 int		get_heredoc(char *token, t_cli *cli);
@@ -173,7 +172,6 @@ t_shenv	*load_env(char **envp);
 void	print_list(t_cli *cli);
 char	*trim_spaces(const char *line);
 bool	create_file(const t_cli *cli);
-int		write_to_heredoc(const t_cli *cli, char file[10], int fd);
 int		create_heredoc(const t_cli *cli);
 void	ft_exec(t_cli *cli);
 

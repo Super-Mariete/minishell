@@ -112,14 +112,10 @@ static size_t	parse_input2(char **token, size_t i, t_cli *cli, size_t *group)
 	return (i);
 }
 
-int	parse_input(char **tokens, t_cli *cli, size_t group)
+int	parse_input(char **tokens, t_cli *cli, size_t group, size_t i)
 {
-	size_t  i;
-	size_t  len;
+	size_t	len;
 
-	if (!tokens || !cli)
-		return (2);
-	i = 0;
 	len = cli->n_tokens;
 	cli->n_tokens = 1;
 	while (i < len)

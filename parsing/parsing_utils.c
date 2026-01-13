@@ -1,37 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   wc_utils.c                                         :+:      :+:    :+:   */
+/*   readline1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/13 11:11:14 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/13 10:09:47 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after)
+void	ft_exec(t_cli *cli)
 {
-	*i = 0;
-	*j = 0;
-	*i_a = 0;
-	*j_after = 0;
-	return (1);
+	if (cli->status != 130)
+	{
+		cli->status = execute(cli);
+		cli->last_status = cli->status;
+	}
+	reset_list(cli);
 }
 
-int	equal(size_t *j, size_t *i)
+char	*expand_exit_status(const int status, const char *line, const size_t i)
 {
-	*j = *j + 1;
-	*i = *i + 1;
-	return (1);
-}
+	char	*before;
+	char	*after;
+	char	*status_str;
+	char	*tmp;
+	char	*new_line;
 
-int	ft_j_s(const size_t *j_s, size_t *i_a, size_t *i, size_t *j)
-{
-	*i_a = *i_a + 1;
-	*i = *i_a;
-	*j = *j_s;
-	return (1);
+	before = ft_strndup(line, i);
+	after = ft_strdup(line + i + 2);
+	status_str = ft_itoa(status);
+	tmp = ft_strjoin(before, status_str);
+	new_line = ft_strjoin(tmp, after);
+	free(before);
+	free(after);
+	free(status_str);
+	free(tmp);
+	return (new_line);
 }

@@ -12,30 +12,7 @@
 
 #include "../minishell.h"
 
-char	*trim_delim(char *token, int *option)
-{
-	char	*delim;
-	int		i;
-
-	if (!token)
-		return (nullptr);
-	i = 0;
-	while (token[i])
-	{
-		if (ft_strchr(QUOTES, token[i]))
-		{
-			if (token[i] == '\"')
-				*option = 1;
-			delim = escape_quotes(token + i);
-			return (delim);
-		}
-		i++;
-	}
-	delim = ft_strdup(token);
-	return (delim);
-}
-
-size_t	var_len(char	*var)
+static size_t	var_len(char	*var)
 {
 	size_t	i;
 	size_t	len;
@@ -51,26 +28,6 @@ size_t	var_len(char	*var)
 		i++;
 	}
 	return (i);
-}
-
-char	*expand_exit_status(const int status, const char *line, const size_t i)
-{
-	char *before;
-	char *after;
-	char *status_str;
-	char *tmp;
-	char *new_line;
-
-	before = ft_strndup(line, i);
-	after = ft_strdup(line + i + 2);
-	status_str = ft_itoa(status);
-	tmp = ft_strjoin(before, status_str);
-	new_line = ft_strjoin(tmp, after);
-	free(before);
-	free(after);
-	free(status_str);
-	free(tmp);
-	return (new_line);
 }
 
 char	*expand_var(char *token, const size_t start, const size_t end)
@@ -98,24 +55,34 @@ char	*expand_var(char *token, const size_t start, const size_t end)
 	return (s);
 }
 
+static bool	expanding_line(char *token, size_t *i, char **value)
+{
+	if (token[(*i)] == '\'' && *i > 0 && token[*i - 1] != '\\')
+		*i += (quoted_len(token + *i, '\'') + 1);
+	if (*i < ft_strlen(token) && token[(*i)] == '<' && token[*i + 1] == '<')
+	{
+		if (heredoc_len(token + *i) <= 0)
+		{
+			*value = (free(token), nullptr);
+			return (true);
+		}
+		*i += (heredoc_len(token + *i) - 1);
+	}
+	return (false);
+}
+
 char	*expand_line(char *token, const t_cli *cli)
 {
 	size_t	i;
 	char	*t;
+	char	*value;
 
 	i = 0;
 	while (token && i < ft_strlen(token))
 	{
-		if (token[i] == '\'' && i > 0 && token[i - 1] != '\\')
-			i += (quoted_len(token + i, '\'') + 1);
-		if (i < ft_strlen(token) && token[i] == '<' && token[i + 1] == '<')
-		{
-			if (heredoc_len(token + i) <= 0)
-				return (free(token), nullptr);
-			i += (heredoc_len(token + i) - 1);
-		}
-		if (i < ft_strlen(token) && token[i] == '$' && token[i + 1] && !ft_strchr(NO_VAL_VAR,
-				token[i + 1]))
+		if (expanding_line(token, &i, &value))
+			return (value);
+		if (i < ft_strlen(token) && token[i] == '$' && token[i + 1] && !ft_strchr(NO_VAL_VAR, token[i + 1]))
 		{
 			if (token[i + 1] == '?')
 				t = expand_exit_status(cli->last_status, token, i);
@@ -131,15 +98,13 @@ char	*expand_line(char *token, const t_cli *cli)
 	return (free(token), t);
 }
 
-char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli)
+char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i)
 {
 	char	*t;
-	int		i;
 	int		wc_len;
 
 	if (!tokens)
 		return (nullptr);
-	i = 0;
 	while (i < *len)
 	{
 		wc_len = 0;

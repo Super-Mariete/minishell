@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   readline.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
+/*   Updated: 2026/01/13 10:09:47 by rafael-m         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static void	free_first_node(t_cli *cli)
@@ -81,7 +93,7 @@ int	read_input_line(t_shenv **ft_env, t_cli *cli)
 			cli->last_status = 2;
 			continue ;
 		}
-		cli->status = parse_input(tokens, cli, 1);
+		cli->status = parse_input(tokens, cli, 1, 0);
 		ft_exec(cli);
 	}
 }
