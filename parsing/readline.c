@@ -6,7 +6,7 @@
 /*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/13 10:09:47 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/13 12:48:20 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,18 @@ static int	reset_signal(t_cli *cli)
 	return (1);
 }
 
-static int	is_empty(char *s)
+static int	is_empty(const char *s)
 {
+	size_t	i;
+
+	i = 0;
 	if (!s)
 		return (1);
-	while (*s)
+	while (s[i])
 	{
-		if (!ft_isspace(*s))
+		if (!ft_isspace(s[i]))
 			return (0);
-		s++;
+		i++;
 	}
 	return (1);
 }

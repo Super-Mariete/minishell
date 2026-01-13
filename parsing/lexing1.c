@@ -6,7 +6,7 @@
 /*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:18:55 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/02 18:18:17 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/13 12:55:01 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	check_redirs(char **token, const int i)
 	return (0);
 }
 
-static size_t	sep_len(char *line, const size_t pos)
+static int	sep_len(const char *line, const size_t pos)
 {
 	if (!line)
 		return (-1);
@@ -41,9 +41,9 @@ static size_t	sep_len(char *line, const size_t pos)
 	return (1);
 }
 
-static size_t	token_len(char *line)
+static int	token_len(const char *line)
 {
-	size_t	i;
+	int		i;
 	size_t	len;
 
 	i = 0;
@@ -68,15 +68,13 @@ static size_t	token_len(char *line)
 	return (i);
 }
 
-size_t	num_s_tokens(char *line)
+int	num_s_tokens(const char *line)
 {
 	size_t	i;
-	size_t	len;
+	int		len;
 	size_t	line_len;
-	size_t	num_token;
+	int		num_token;
 
-	if (!line)
-		return (0);
 	i = 0;
 	num_token = 0;
 	line_len = ft_strlen(line);
@@ -100,7 +98,7 @@ char	**token_sep(char *line)
 {
 	size_t	i;
 	size_t	j;
-	size_t	len;
+	int		len;
 	char	**tokens;
 
 	if (!line)

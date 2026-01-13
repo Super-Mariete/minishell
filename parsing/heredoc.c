@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	*expand_heredoc(int option, t_cli *cli)
+static char	*expand_heredoc(int option, t_cli *cli)
 {
 	char	*t;
 
@@ -78,7 +78,7 @@ static int	read_heredoc(t_cli *cli, const int *option, char *delim)
 	return (free(line), free(delim), 0);
 }
 
-int	get_heredoc(char *token, t_cli *cli)
+int	get_heredoc(const char *token, t_cli *cli)
 {
 	char	*delim;
 	int		option;

@@ -12,12 +12,12 @@
 
 #include "../../minishell.h"
 
-char	*ft_getenv(t_shenv *ft_env, char *key)
+char	*ft_getenv(const t_shenv *ft_env, char *key)
 {
 	size_t	len;
 
 	if(!key)
-		return (NULL);
+		return (nullptr);
 	len = ft_strlen(key);
 	while(ft_env)
 	{
@@ -25,5 +25,5 @@ char	*ft_getenv(t_shenv *ft_env, char *key)
 			return (ft_env->var + len + 1);
 		ft_env = ft_env->next;
 	}
-	return (NULL);
+	return (nullptr);
 }

@@ -51,19 +51,19 @@ static int	event_hook(void)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_shenv		*ft_env;
+	t_shenv		*env;
 	t_cli		*cli;
 	int			status;
 
 	set_sig(PARENT);
 	rl_catch_signals = 0;
 	rl_event_hook = event_hook;
-	ft_env = load_env(envp);
-	cli = init_node(1, &ft_env, 0);
+	env = load_env(envp);
+	cli = init_node(1, &env, 0);
 	if (!cli)
-		return (free_env(&ft_env), 2);
-	status = read_input_line(&ft_env, cli);
+		return (free_env(&env), 2);
+	status = read_input_line(&env, cli);
 	free_list(&cli);
-	free_env(&ft_env);
+	free_env(&env);
 	return (status);
 }

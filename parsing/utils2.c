@@ -56,7 +56,7 @@ void	free_node(t_cli *cli)
 	free(cli);
 }
 
-int	trim_s_len(const char *line)
+static int	trim_s_len(const char *line)
 {
 	int		i;
 	int		len;

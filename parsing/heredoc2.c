@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	*trim_delim(char *token, int *option)
+char	*trim_delim(const char *token, int *option)
 {
 	char	*delim;
 	int		i;

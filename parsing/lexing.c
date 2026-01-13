@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	*ft_escape(char *line, int start, int end)
+static char	*ft_escape(char *line, int start, int end)
 {
 	char	*escaped;
 	char	*t;
@@ -77,7 +77,7 @@ static char	*escape_q(int *i, char **str)
 	return (esc);
 }
 
-char	*escape_quotes(char *line)
+char	*escape_quotes(const char *line)
 {
 	int		i;
 	char	*s;

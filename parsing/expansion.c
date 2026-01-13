@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-static size_t	var_len(char	*var)
+static size_t	var_len(const char *var)
 {
 	size_t	i;
 	size_t	len;
@@ -30,11 +30,11 @@ static size_t	var_len(char	*var)
 	return (i);
 }
 
-char	*expand_var(char *token, const size_t start, const size_t end)
+static char	*expand_var(char *token, const size_t start, const size_t end)
 {
-	char	*s;
-	char	*t;
-	char	*var;
+	char		*s;
+	char		*t;
+	const char	*var;
 
 	if (!token)
 		return (nullptr);

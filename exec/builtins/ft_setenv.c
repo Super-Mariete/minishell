@@ -22,7 +22,8 @@ int	set_env(t_shenv **ft_env, char *key, char *value)
 		return (1);
 	if (!value)
 		value = "";
-
+	tmp = nullptr;
+	newvar = nullptr;
 	cur = *ft_env;
 	while(cur)
 	{

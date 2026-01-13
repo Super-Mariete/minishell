@@ -88,7 +88,7 @@ t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 {
 	t_cli	*cli;
 
-	if (len <= 0)
+	if (len == 0)
 		return (nullptr);
 	cli = (t_cli *)ft_calloc(1, sizeof(t_cli));
 	if (!cli)
