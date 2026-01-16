@@ -14,8 +14,9 @@
 
 int	exec_builtin(t_cli *cli)
 {
-	int(*builtin)(char **, t_shenv **);
-	if(!cli || !cli->cmd)
+	int	(*builtin)(char **, t_shenv **);
+
+	if (!cli || !cli->cmd)
 		return (1);
 	builtin = get_builtin(cli->cmd);
 	if (!builtin)

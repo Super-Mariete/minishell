@@ -16,12 +16,13 @@ char	*ft_getenv(const t_shenv *ft_env, char *key)
 {
 	size_t	len;
 
-	if(!key)
+	if (!key)
 		return (nullptr);
 	len = ft_strlen(key);
-	while(ft_env)
+	while (ft_env)
 	{
-		if(ft_env->var && ft_strncmp(ft_env->var, key, len) == 0 && ft_env->var[len] == '=')
+		if (ft_env->var && ft_strncmp(ft_env->var,
+				key, len) == 0 && ft_env->var[len] == '=')
 			return (ft_env->var + len + 1);
 		ft_env = ft_env->next;
 	}

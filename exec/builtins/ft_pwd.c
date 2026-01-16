@@ -25,4 +25,3 @@ int	ft_pwd(char **args, t_shenv **ft_env)
 	free(cwd);
 	return (0);
 }
-

@@ -12,25 +12,6 @@
 
 #include "../minishell.h"
 
-static void	free_first_node(t_cli *cli)
-{
-	free(cli->cmd);
-	cli->cmd = nullptr;
-	free(cli->heredoc);
-	cli->heredoc = nullptr;
-	cli->heredoc_fd = -1;
-	free(cli->infile);
-	cli->infile = nullptr;
-	free(cli->outfile);
-	cli->outfile = nullptr;
-	ft_free_d(cli->args);
-	cli->args = nullptr;
-	cli->is_builtin = 0;
-	cli->r_mode = 0;
-	cli->group = 0;
-	cli->op = 0;
-}
-
 void	reset_list(t_cli *cli)
 {
 	t_cli	*next;
@@ -75,10 +56,25 @@ static int	is_empty(const char *s)
 	return (1);
 }
 
+void	process_input(char *line, t_cli *cli)
+{
+	char	**tokens;
+
+	if (is_empty(line))
+		return ;
+	tokens = tokenize(line, cli);
+	if (!tokens)
+	{
+		cli->last_status = 2;
+		return ;
+	}
+	cli->status = parse_input(tokens, cli, 1, 0);
+	ft_exec(cli);
+}
+
 int	read_input_line(t_shenv **ft_env, t_cli *cli)
 {
 	char	*cl;
-	char	**tokens;
 
 	cl = nullptr;
 	while (1)
@@ -90,13 +86,6 @@ int	read_input_line(t_shenv **ft_env, t_cli *cli)
 		if ((g_signal && reset_signal(cli)) || is_empty(cl))
 			continue ;
 		add_history(cl);
-		tokens = tokenize(cl, cli);
-		if (!tokens)
-		{
-			cli->last_status = 2;
-			continue ;
-		}
-		cli->status = parse_input(tokens, cli, 1, 0);
-		ft_exec(cli);
+		process_input(cl, cli);
 	}
 }

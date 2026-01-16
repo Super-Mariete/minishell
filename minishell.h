@@ -68,11 +68,6 @@ elimited by end-of-file (wanted `"
 #  define PATH_MAX 4096
 # endif
 
-//solo por la compatibilidad con mac, luego se elimina
-# ifndef rl_clear_history
-#  define rl_clear_history() clear_history()
-# endif
-
 extern volatile sig_atomic_t	g_signal;
 
 typedef struct s_shenv
@@ -117,32 +112,31 @@ char	*escape_quotes(const char *line);
 char	*trim_delim(const char *token, int *option);
 char	*ft_getenv(const t_shenv *ft_env, char *key);
 char	*expand_exit_status(int status, const char *line, size_t i);
-int		ft_export(char **args, t_shenv **ft_env);
+int		ft_export(char **args, t_shenv **env);
 int		ft_unset(char **args, t_shenv **ft_env);
-int		unset_env(t_shenv **ft_env, char *key);
+int		unset_env(t_shenv **env, char *key);
 int		init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after);
-int		equal(size_t *j, size_t *i);
-int		ft_j_s(const size_t *j_s, size_t *i_a, size_t *i, size_t *j);
+int		equ(size_t *j, size_t *i);
+int		ft_js(const size_t *j_s, size_t *ia, size_t *i, size_t *j);
 int		parse_input(char **tokens, t_cli *cli, size_t group, size_t i);
 int		check_prnts(char *line);
 int		check_errors(char **token, size_t len);
 int		ft_pwd(char **args, t_shenv **ft_env);
-int		ft_echo(char **args, t_shenv **ft_env);
-int		ft_env(char **args, t_shenv **ft_env);
-int		ft_exit(char **args, t_shenv **ft_env);
-int		ft_cd(char **args, t_shenv **ft_env);
+int		ft_echo(char **args, t_shenv **env);
+int		ft_env(char **args, t_shenv **env);
+int		ft_exit(char **args, t_shenv **env);
+int		ft_cd(char **args, t_shenv **env);
 int		set_env(t_shenv **ft_env, char *key, char *value);
-int		execute_command(t_cli *cli);
-int		execute_builtin(t_cli *cmd);
+int		execute_builtin(t_cli *cli);
 int		execute(t_cli *cli);
-int		execute_pipeline(t_cli *cli);
 int		quoted_len(const char *line, char quote);
+void	process_input(char *line, t_cli *cli);
 int		read_input_line(t_shenv **ft_env, t_cli *cli);
 int		heredoc_len(const char *line);
 int		get_heredoc(const char *token, t_cli *cli);
 int		set_cmd(char *token, t_cli *cli);
 int		add_args(char *token, t_cli *cli, int pos);
-int		(*get_builtin(char *cmd))(char **, t_shenv **);
+int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
 void	set_sig(int option);
 void	free_list(t_cli **cli);
 void	free_node(t_cli *cli);
@@ -152,6 +146,7 @@ void	perror_token(const char *token, const char *msg);
 void	perror_msh(const char *problem, const char *mssg);
 void	free_env(t_shenv **ft_env);
 void	reset_list(t_cli *cli);
+void	free_first_node(t_cli *cli);
 t_cli	*init_node(size_t len, t_shenv **env, int op);
 t_cli	*parse_op(const char *token, t_cli *cli);
 t_shenv	*load_env(char **envp);
@@ -160,14 +155,12 @@ char	*trim_spaces(const char *line);
 bool	create_file(const t_cli *cli);
 int		create_heredoc(const t_cli *cli);
 void	ft_exec(t_cli *cli);
+int		execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid);
+int		exec_child(t_cli *cli);
+int		exec_builtin_child(const t_cli *cli);
+int		handle_redirs(t_cli *cli);
 
 int		has_pipe(t_cli *cli);
 int		apply_redirs(t_cli *cli);
 int		exec_builtin(t_cli *cli);
-
-#ifdef _APPLE_
-int	rl_catch_signals = 0;
-//solo para aple, después eliminar
-#endif
-
 #endif

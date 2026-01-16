@@ -84,6 +84,25 @@ void	free_tokens(char **tokens, const size_t n)
 		free(tokens);
 }
 
+void	free_first_node(t_cli *cli)
+{
+	free(cli->cmd);
+	cli->cmd = nullptr;
+	free(cli->heredoc);
+	cli->heredoc = nullptr;
+	cli->heredoc_fd = -1;
+	free(cli->infile);
+	cli->infile = nullptr;
+	free(cli->outfile);
+	cli->outfile = nullptr;
+	ft_free_d(cli->args);
+	cli->args = nullptr;
+	cli->is_builtin = 0;
+	cli->r_mode = 0;
+	cli->group = 0;
+	cli->op = 0;
+}
+
 t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 {
 	t_cli	*cli;

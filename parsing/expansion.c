@@ -82,7 +82,8 @@ char	*expand_line(char *token, const t_cli *cli)
 	{
 		if (expanding_line(token, &i, &value))
 			return (value);
-		if (i < ft_strlen(token) && token[i] == '$' && token[i + 1] && !ft_strchr(NO_VAL_VAR, token[i + 1]))
+		if (i < ft_strlen(token) && token[i] == '$'
+			&& token[i + 1] && !ft_strchr(NO_VAL_VAR, token[i + 1]))
 		{
 			if (token[i + 1] == '?')
 				t = expand_exit_status(cli->last_status, token, i);

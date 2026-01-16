@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-static int	is_n_option(char *arg)
+static int	is_n_option(const char *arg)
 {
 	int	i;
 
@@ -28,12 +28,12 @@ static int	is_n_option(char *arg)
 	return (i > 1);
 }
 
-int	ft_echo(char **args, t_shenv **ft_env)
+int	ft_echo(char **args, t_shenv **env)
 {
 	int	i;
 	int	newline;
 
-	(void)ft_env;
+	(void)env;
 	i = 1;
 	newline = 1;
 	while (args[i] && is_n_option(args[i]))
@@ -52,4 +52,3 @@ int	ft_echo(char **args, t_shenv **ft_env)
 		ft_putchar_fd('\n', 1);
 	return (0);
 }
-

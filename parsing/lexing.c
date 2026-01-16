@@ -70,7 +70,7 @@ static char	*escape_q(int *i, char **str)
 	if (len < 0)
 		return (free(s), nullptr);
 	esc = esc_line(s, *i, *i + len);
-	if (!*esc)
+	if (!esc)
 		return (free(s), nullptr);
 	*i += (len - 3);
 	free(*str);
@@ -88,7 +88,8 @@ char	*escape_quotes(const char *line)
 	s = ft_strdup(line);
 	while (i < ft_strlen(s))
 	{
-		if (ft_strchr(QUOTES, s[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		if (ft_strchr(QUOTES, s[i])
+			&& (i == 0 || (i > 0 && line[i - 1] != '\\')))
 		{
 			s = escape_q(&i, &s);
 			if (!s)

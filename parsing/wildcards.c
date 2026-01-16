@@ -37,10 +37,10 @@ static int	match_wildcard(const char *s, const char *wc)
 {
 	size_t	i;
 	size_t	j;
-	size_t	i_a;
+	size_t	ia;
 	size_t	j_s;
 
-	init_var(&i, &j, &i_a, &j_s);
+	init_var(&i, &j, &ia, &j_s);
 	while (s[i] && !(s[0] == '.' && wc[0] != '.'))
 	{
 		if (wc[j] == '*')
@@ -50,10 +50,10 @@ static int	match_wildcard(const char *s, const char *wc)
 			if (!wc[j])
 				return (1);
 			j_s = j;
-			i_a = i;
+			ia = i;
 			continue ;
 		}
-		if ((wc[j] == s[i] && equal(&j, &i)) || (j_s && ft_j_s(&j_s, &i_a, &i, &j)))
+		if ((wc[j] == s[i] && equ(&j, &i)) || (j_s && ft_js(&j_s, &ia, &i, &j)))
 			continue ;
 		return (0);
 	}
@@ -62,7 +62,8 @@ static int	match_wildcard(const char *s, const char *wc)
 	return (wc[j] == '\0');
 }
 
-static void	get_wildcard(char ***token, int pos, int *wc_len, struct dirent *dir)
+static void	get_wildcard(char ***token, const int pos,\
+		int *wc_len, struct dirent *dir)
 {
 	char	**t;
 

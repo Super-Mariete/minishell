@@ -14,10 +14,10 @@
 
 static void	print_export_var(const char *var)
 {
-	char *eq;
+	char	*eq;
 
-	if(!var)
-		return;
+	if (!var)
+		return ;
 	eq = ft_strchr(var, '=');
 	if (eq)
 	{
@@ -35,54 +35,67 @@ static void	print_export_var(const char *var)
 	}
 }
 
-int	ft_export(char **args, t_shenv **ft_env)
+static int	export_error(t_shenv **env, char **args)
 {
-	int	i;
-	char	*eq;
+	t_shenv	*cur;
+
+	if (!args)
+		return (1);
+	cur = *env;
+	while (cur)
+	{
+		print_export_var(cur->var);
+		cur = cur->next;
+	}
+	return (0);
+}
+
+static bool	export_arg(const char *arg, t_shenv **env, const char *eq, int *ret)
+{
 	char	*key;
 	char	*val;
-	int	ret;
 
-	if(!args)
-		return(1);
-	if(!args[1])
+	key = ft_substr(arg, 0, eq - arg);
+	if (!key)
+		return (true);
+	val = ft_strdup(eq + 1);
+	if (!val)
 	{
-		t_shenv	*cur = *ft_env;
-		while(cur)
-		{
-			print_export_var(cur->var);
-			cur = cur->next;
-		}
-		return (0);
+		free(key);
+		return (true);
 	}
+	if (set_env(env, key, val) != 0)
+		*ret = 1;
+	free(key);
+	free(val);
+	return (false);
+}
+
+int	ft_export(char **args, t_shenv **env)
+{
+	int		i;
+	char	*eq;
+	int		ret;
+
+	if (!args || !args[1])
+		return (export_error(env, args));
 	i = 1;
 	ret = 0;
-	while(args[i])
+	while (args[i])
 	{
 		eq = ft_strchr(args[i], '=');
 		if (eq)
 		{
-			key = ft_substr(args[i], 0, eq - args[i]);
-			if(!key)
+			if (export_arg(args[i], env, eq, &ret))
 				return (1);
-			val = ft_strdup(eq + 1);
-			if(!val)
-			{
-				free(key);
-				return (1);
-			}
-			if(set_env(ft_env, key, val) != 0)
-				ret = 1;
-			free(key);
-			free(val);
 		}
 		else
 		{
-			if(!ft_getenv(*ft_env, args[i]))
-				if(set_env(ft_env, args[i], "") != 0)
+			if (!ft_getenv(*env, args[i]))
+				if (set_env(env, args[i], "") != 0)
 					ret = 1;
 		}
 		i++;
 	}
-	return(ret);
+	return (ret);
 }

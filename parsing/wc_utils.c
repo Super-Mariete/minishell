@@ -21,17 +21,17 @@ int	init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after)
 	return (1);
 }
 
-int	equal(size_t *j, size_t *i)
+int	equ(size_t *j, size_t *i)
 {
 	*j = *j + 1;
 	*i = *i + 1;
 	return (1);
 }
 
-int	ft_j_s(const size_t *j_s, size_t *i_a, size_t *i, size_t *j)
+int	ft_js(const size_t *j_s, size_t *ia, size_t *i, size_t *j)
 {
-	*i_a = *i_a + 1;
-	*i = *i_a;
+	*ia = *ia + 1;
+	*i = *ia;
 	*j = *j_s;
 	return (1);
 }

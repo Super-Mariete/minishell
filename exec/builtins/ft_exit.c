@@ -12,45 +12,31 @@
 
 #include "../../minishell.h"
 
-static	bool is_number_str(const char *s)
+static bool	is_number_str(const char *s)
 {
-	int i;
+	int	i;
 
 	if (!s)
 		return (false);
 	i = 0;
-	if(s[0] == '+' || s[0] == '-')
+	if (s[0] == '+' || s[0] == '-')
 		i++;
-	if(!s[i])
+	if (!s[i])
 		return (false);
-	while(s[i])
+	while (s[i])
 	{
-		if(!ft_isdigit((int)s[i]))
+		if (!ft_isdigit((int)s[i]))
 			return (false);
 		i++;
 	}
 	return (true);
 }
 
-int	ft_exit(char **args, t_shenv **ft_env)
+static int	ft_exit2(char **args)
 {
-	(void)ft_env;
-	
-	if(!args)
-	{
-		printf("exit\n");
-		exit(0);
-	}
-	if(!args[1])
-	{
-		printf("exit\n");
-		exit(0);
-	}
-	if(args[1] && args[2])
-	{
-		ft_putstr_fd("minishell: exit too many arguments\n", 2);
-		return (1);
-	}
+	int		exitcode;
+	long	status;
+
 	if (!is_number_str(args[1]))
 	{
 		ft_putstr_fd("minishell: exit: ", 2);
@@ -58,13 +44,31 @@ int	ft_exit(char **args, t_shenv **ft_env)
 		ft_putstr_fd(": numeric argument required\n", 2);
 		exit(2);
 	}
+	status = ft_atol(args[1]);
+	exitcode = (int)(status % 256);
+	if (exitcode < 0)
+		exitcode = (exitcode + 256) % 256;
+	printf("exit\n");
+	exit(exitcode);
+}
+
+int	ft_exit(char **args, t_shenv **env)
+{
+	(void)env;
+	if (!args)
 	{
-		long status = ft_atol(args[1]);
-		int exitcode = (int)(status % 256);
-		if(exitcode < 0)
-			exitcode = (exitcode + 256) % 256;
 		printf("exit\n");
-		exit(exitcode);
+		exit(0);
 	}
-	return (0);
+	if (!args[1])
+	{
+		printf("exit\n");
+		exit(0);
+	}
+	if (args[1] && args[2])
+	{
+		ft_putstr_fd("minishell: exit too many arguments\n", 2);
+		return (1);
+	}
+	return (ft_exit2(args));
 }

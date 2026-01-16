@@ -12,30 +12,38 @@
 
 #include "../../minishell.h"
 
-int	unset_env(t_shenv **ft_env, char *key)
+static void	unset_var(t_shenv **env, t_shenv **cur, t_shenv *prev)
 {
-	t_shenv *cur;
-	t_shenv *prev;
+	t_shenv	*tofree;
+
+	tofree = *cur;
+	if (prev)
+		prev->next = (*cur)->next;
+	else
+		*env = (*cur)->next;
+	*cur = (*cur)->next;
+	free(tofree->var);
+	free(tofree);
+}
+
+int	unset_env(t_shenv **env, char *key)
+{
+	t_shenv	*cur;
+	t_shenv	*prev;
 	size_t	len;
 
-	if (!ft_env || !key)
+	if (!env || !key)
 		return (0);
 	len = ft_strlen(key);
-	cur = *ft_env;
+	cur = *env;
 	prev = NULL;
 	while (cur)
 	{
-		if(cur->var && ft_strncmp(cur->var, key, len) == 0 && cur ->var[len] == '=')
+		if (cur->var && ft_strncmp(cur->var,
+				key, len) == 0 && cur ->var[len] == '=')
 		{
-			t_shenv *tofree = cur;
-			if (prev)
-				prev->next = cur->next;
-			else
-				*ft_env = cur->next;
-			cur = cur->next;
-			free(tofree->var);
-			free(tofree);
-			continue;
+			unset_var(env, &cur, prev);
+			continue ;
 		}
 		prev = cur;
 		cur = cur->next;

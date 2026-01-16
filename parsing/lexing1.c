@@ -16,7 +16,8 @@ int	check_redirs(char **token, const int i)
 {
 	char	*s;
 
-	if (token[i] && ft_strchr(REDIR_S, token[i][0]) && (!token[i][1] || (token[i][1] == token[i][0] && !token[i][2])))
+	if (token[i] && ft_strchr(REDIR_S, token[i][0])
+			&& (!token[i][1] || (token[i][1] == token[i][0] && !token[i][2])))
 	{
 		if (!token[i + 1])
 			return (perror_token("newline", SYN_ERR), 1);
@@ -116,7 +117,7 @@ char	**token_sep(char *line)
 		while (ft_isspace(line[i]))
 			i++;
 		if (token_len(line + i) <= 0)
-			return (tokens[len] = nullptr, ft_free_d(tokens), free(line), nullptr);
+			return (tokens[len] = NULL, ft_free_d(tokens), free(line), NULL);
 		tokens[j++] = ft_strndup(line + i, token_len(line + i));
 		i += token_len(line + i);
 	}

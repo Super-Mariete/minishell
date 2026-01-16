@@ -25,7 +25,8 @@ int	check_prnts(char *line)
 	prnts = 0;
 	while (i < ft_strlen(line))
 	{
-		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		if (ft_strchr(QUOTES, line[i])
+			&& (i == 0 || (i > 0 && line[i - 1] != '\\')))
 		{
 			if (quoted_len(line + i, line[i]) < 0)
 				return (-1);
@@ -54,6 +55,7 @@ int	main(int argc, char **argv, char **envp)
 	t_shenv		*env;
 	t_cli		*cli;
 	int			status;
+	int			i;
 
 	set_sig(PARENT);
 	rl_catch_signals = 0;
@@ -62,7 +64,18 @@ int	main(int argc, char **argv, char **envp)
 	cli = init_node(1, &env, 0);
 	if (!cli)
 		return (free_env(&env), 2);
-	status = read_input_line(&env, cli);
+	if (argc >= 2)
+	{
+		i = 1;
+		while (i < argc)
+		{
+			process_input(argv[i], cli);
+			i++;
+		}
+		status = cli->last_status;
+	}
+	else
+		status = read_input_line(&env, cli);
 	free_list(&cli);
 	free_env(&env);
 	return (status);

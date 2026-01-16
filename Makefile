@@ -31,7 +31,9 @@ SRC = minishell.c\
 	exec/mac_stub.c\
 	exec/aux_exec/apply_redirs.c\
 	exec/aux_exec/has_pipe.c\
-	exec/aux_exec/exec_builtin.c
+	exec/aux_exec/exec_builtin.c\
+	exec/exec_pipe.c\
+	exec/exec_utils.c
 
 OBJ = $(SRC:.c=.o)
 CFLAGS += -g3 -Ilibft #-Wall -Wextra -Werror

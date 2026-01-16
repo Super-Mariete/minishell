@@ -16,24 +16,25 @@
 ** Función callback para imprimir una variable de entorno.
 ** Se adapta a ft_lstiter (recibe un void *content).
 */
-static void print_env_var(t_shenv *node)
+static void	print_env_var(t_shenv *node)
 {
-    if (!node || !node->var)
-        return;
-    if (ft_strchr(node->var, '='))
-        printf("%s\n", node->var);
+	if (!node || !node->var)
+		return ;
+	if (ft_strchr(node->var, '='))
+		printf("%s\n", node->var);
 }
 
 /*
 ** Implementación de ft_env: imprime las variables del entorno.
 */
-int ft_env(char **args, t_shenv **ft_env)
+int	ft_env(char **args, t_shenv **env)
 {
-	t_shenv *tmp;
+	t_shenv	*tmp;
+
 	(void)args;
-	if (!ft_env || !*ft_env)
+	if (!env || !*env)
 		return (0);
-	tmp = *ft_env;
+	tmp = *env;
 	while (tmp)
 	{
 		print_env_var(tmp);

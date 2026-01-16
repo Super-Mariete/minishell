@@ -12,9 +12,41 @@
 
 #include "../../minishell.h"
 
+static int	get_var(const char *value, t_shenv *cur, char *newvar, char **tmp)
+{
+	*tmp = ft_strjoin(*tmp, value);
+	free(*tmp);
+	if (!newvar)
+		return (1);
+	free(cur->var);
+	cur->var = newvar;
+	return (0);
+}
+
+static bool	set_var(const char *key, const char *value, t_shenv **cur)
+{
+	char	*newvar;
+	char	*tmp;
+
+	tmp = ft_strjoin(key, "=");
+	if (!tmp)
+		return (true);
+	newvar = ft_strjoin(tmp, value);
+	free(tmp);
+	if (!*newvar)
+		return (true);
+	*cur = malloc(sizeof(t_shenv));
+	if (!*cur)
+	{
+		free(newvar);
+		return (true);
+	}
+	return (false);
+}
+
 int	set_env(t_shenv **ft_env, char *key, char *value)
 {
-	t_shenv *cur;
+	t_shenv	*cur;
 	char	*newvar;
 	char	*tmp;
 
@@ -25,34 +57,15 @@ int	set_env(t_shenv **ft_env, char *key, char *value)
 	tmp = nullptr;
 	newvar = nullptr;
 	cur = *ft_env;
-	while(cur)
+	while (cur)
 	{
-		if(cur->var && ft_strncmp(cur->var, key, ft_strlen(key)) == 0
+		if (cur->var && ft_strncmp(cur->var, key, ft_strlen(key)) == 0
 			&& cur->var[ft_strlen(key)] == '=')
-		{
-			tmp = ft_strjoin(tmp, value);
-			free(tmp);
-			if(!newvar)
-				return(1);
-			free(cur->var);
-			cur->var = newvar;
-			return(0);
-		}
+			return (get_var(value, cur, newvar, &tmp));
 		cur = cur->next;
 	}
-	tmp = ft_strjoin(key, "=");
-	if(!tmp)
+	if (set_var(key, value, &cur))
 		return (1);
-	newvar = ft_strjoin(tmp, value);
-	free(tmp);
-	if (!newvar)
-		return (1);
-	cur = malloc(sizeof(t_shenv));
-	if(!cur)
-	{
-		free(newvar);
-		return (1);
-	}
 	cur->var = newvar;
 	cur->next = *ft_env;
 	*ft_env = cur;

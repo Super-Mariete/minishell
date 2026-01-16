@@ -14,16 +14,16 @@
 
 int	ft_unset(char **args, t_shenv **ft_env)
 {
-	int i;
+	int	i;
 
 	(void)ft_env;
-	if(!args)
-		return(1);
+	if (!args)
+		return (1);
 	i = 1;
-	while(args[i])
+	while (args[i])
 	{
 		unset_env(ft_env, args[i]);
 		i++;
 	}
-	return(0);
+	return (0);
 }
