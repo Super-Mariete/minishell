@@ -72,7 +72,7 @@ void	perror_token(const char *token, const char *msg)
 
 void	free_tokens(char **tokens, const size_t n)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (tokens && i < n)

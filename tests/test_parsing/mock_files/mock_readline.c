@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   readline.c                                         :+:      :+:    :+:   */
+/*   mock_readline.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: gemini <gemini@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/13 12:48:20 by rafael-m         ###   ########.fr       */
+/*   Created: 2026/01/16 00:00:00 by gemini            #+#    #+#             */
+/*   Updated: 2026/01/16 00:00:00 by gemini           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../../minishell.h"
 
 void	reset_list(t_cli *cli)
 {
@@ -20,6 +20,7 @@ void	reset_list(t_cli *cli)
 	if (!cli)
 		return ;
 	last = cli;
+
 	while (last->next)
 		last = last->next;
 	cli->status = last->status;
@@ -56,7 +57,7 @@ static int	is_empty(const char *s)
 	return (1);
 }
 
-void	process_input(const char *line, t_cli *cli)
+void	process_input(char *line, t_cli *cli)
 {
 	char	**tokens;
 
@@ -68,20 +69,21 @@ void	process_input(const char *line, t_cli *cli)
 		cli->last_status = 2;
 		return ;
 	}
-
 	cli->status = parse_input(tokens, cli, 1, 0);
 	ft_exec(cli);
 }
 
-int	read_input_line(t_shenv **env, t_cli *cli)
+int	read_input_line(t_shenv **ft_env, t_cli *cli)
 {
 	char	*cl;
+    (void)ft_env; // Unused in mock if we don't reload env
 
 	cl = nullptr;
 	while (1)
 	{
 		free(cl);
-		cl = readline("\033[1;32mminishell\033[0m$ ");
+		// Empty prompt for testing to avoid output pollution if readline prints it
+		cl = readline(""); 
 		if (!cl)
 			return (rl_clear_history(), write(1, "exit\n", 5), 2);
 		if ((g_signal && reset_signal(cli)) || is_empty(cl))

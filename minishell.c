@@ -23,7 +23,7 @@ int	check_prnts(char *line)
 		return (-1);
 	i = 0;
 	prnts = 0;
-	while (i < ft_strlen(line))
+	while (i < (int)ft_strlen(line))
 	{
 		if (ft_strchr(QUOTES, line[i])
 			&& (i == 0 || (i > 0 && line[i - 1] != '\\')))
@@ -50,7 +50,7 @@ static int	event_hook(void)
 	return (0);
 }
 
-int	main(int argc, char **argv, char **envp)
+int	main(const int argc, char **argv, char **envp)
 {
 	t_shenv		*env;
 	t_cli		*cli;

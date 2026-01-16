@@ -41,7 +41,7 @@
 # define WRITE 0
 # define PIPE_WRITE 1
 # define SEP_STR " \n\t<>|&()"
-# define SEP_STR2 " \n\t<>|\"\'"
+# define SEP_STR2 " \n\t<>|\"'"
 # define OP_STR "&|()"
 # define OP_STR2 "&|"
 # define PRNTS "()"
@@ -49,11 +49,11 @@
 # define AND 2
 # define OR 3
 # define IFS " \t\n"
-# define REDIR_S "<>"
-# define QUOTES "\"\'"
+# define REDIR_S "< >"
+# define QUOTES "\"'"
 # define NO_VAL_VAR " !\"#$%&'()*+,-./:;<=>@[]^`{|}~ "
 # define ERR_OPEN_Q "minishell: syntax error: quotes not closed\n"
-# define ESC_CHARS1 "\\\"\?$"
+# define ESC_CHARS1 "\\\"?$"
 # define PIPE_ERR "minishell: syntax error near unexpected token `|'\n"
 # define UNEX_T1 "minishell: syntax error near unexpected token '<'\n"
 # define UNEX_T2 "minishell: syntax error near unexpected token '>'\n"
@@ -68,19 +68,19 @@ elimited by end-of-file (wanted `"
 #  define PATH_MAX 4096
 # endif
 
-extern volatile sig_atomic_t	g_signal;
+extern volatile sig_atomic_t	 g_signal;
 
 typedef struct s_shenv
 {
 	char			*var;
 	struct s_shenv	*next;
-}	t_shenv;
+}t_shenv;
 
 typedef struct s_builtin
 {
 	char	*name;
 	int		(*func)(char **args, t_shenv **);
-}	t_builtin;
+}t_builtin;
 
 typedef struct s_cli
 {
@@ -99,68 +99,119 @@ typedef struct s_cli
 	size_t			group;
 	int				op;
 	struct s_cli	*next;
-}	t_cli;
+}t_cli;
 
-char	**expand_wildcard(char **token, int pos, int *wc_len);
+/* minishell.c */
+
+int		check_prnts(char *line);
+
+/* parsing/lexing.c */
+
 char	**token_sep(char *line);
 int		num_s_tokens(const char *line);
-char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i);
 char	**tokenize(char *line, t_cli *cli);
-char	**getshenv(const t_shenv *env);
+int		check_errors(char **token, size_t len);
+
+/* parsing/parsing.c */
+
+int		parse_input(char **tokens, t_cli *cli, size_t group, size_t i);
+t_cli	*parse_op(const char *token, t_cli *cli);
+int		set_cmd(char *token, t_cli *cli);
+int		add_args(char *token, t_cli *cli, int pos);
+
+/* parsing/parsing_utils.c */
+
+void	ft_exec(t_cli *cli);
+char	*expand_exit_status(int status, const char *line, size_t i);
+
+/* parsing/utils*.c */
+
+t_cli	*init_node(size_t len, t_shenv **env, int op);
+void	free_list(t_cli **cli);
+void	free_node(t_cli *cli);
+void	free_first_node(t_cli *cli);
+void	reset_list(t_cli *cli);
+void	print_list(t_cli *cli);
+void	free_tokens(char **tokens, size_t n);
+void	perror_token(const char *token, const char *msg);
+void	perror_msh(const char *problem, const char *mssg);
+char	*trim_spaces(const char *line);
+int		quoted_len(const char *line, char quote);
+
+/* parsing/expansion.c */
+
+char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i);
 char	*expand_line(char *token, const t_cli *cli);
 char	*escape_quotes(const char *line);
 char	*trim_delim(const char *token, int *option);
-char	*ft_getenv(const t_shenv *ft_env, char *key);
-char	*expand_exit_status(int status, const char *line, size_t i);
-int		ft_export(char **args, t_shenv **env);
-int		ft_unset(char **args, t_shenv **ft_env);
-int		unset_env(t_shenv **env, char *key);
+
+/* parsing/wildcards.c */
+
+char	**expand_wildcard(char **token, int pos, int *wc_len);
 int		init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after);
 int		equ(size_t *j, size_t *i);
 int		ft_js(const size_t *j_s, size_t *ia, size_t *i, size_t *j);
-int		parse_input(char **tokens, t_cli *cli, size_t group, size_t i);
-int		check_prnts(char *line);
-int		check_errors(char **token, size_t len);
+
+/* parsing/heredoc*.c */
+
+int		get_heredoc(const char *token, t_cli *cli);
+int		create_heredoc(const t_cli *cli);
+int		heredoc_len(const char *line);
+void	here_error(const char *delim);
+
+/* parsing/shenv.c */
+
+t_shenv	*load_env(char **envp);
+char	**getshenv(const t_shenv *env);
+char	*ft_getenv(const t_shenv *ft_env, char *key);
+int		set_env(t_shenv **ft_env, char *key, char *value);
+int		unset_env(t_shenv **env, char *key);
+void	free_env(t_shenv **ft_env);
+
+/* parsing/signals.c */
+
+void	set_sig(int option);
+
+/* parsing/readline.c */
+
+int		read_input_line(t_shenv **env, t_cli *cli);
+
+void	process_input(const char *line, t_cli *cli);
+
+/* exec/ft_execute.c */
+
+int		execute(t_cli *cli);
+int		execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid);
+int		exec_child(t_cli *cli);
+int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
+
+/* exec/exec_utils.c */
+
+bool	create_file(const t_cli *cli);
+int		handle_redirs(t_cli *cli);
+int		exec_builtin_child(const t_cli *cli);
+int		execute_builtin(t_cli *cli);
+
+/* exec/aux_exec/apply_redirs.c */
+
+int		apply_redirs(t_cli *cli);
+
+/* exec/aux_exec/has_pipe.c */
+
+int		has_pipe(t_cli *cli);
+
+/* exec/aux_exec/exec_builtin.c */
+
+int		exec_builtin(t_cli *cli);
+
+/* exec/builtins/ *.c */
+
 int		ft_pwd(char **args, t_shenv **ft_env);
 int		ft_echo(char **args, t_shenv **env);
 int		ft_env(char **args, t_shenv **env);
 int		ft_exit(char **args, t_shenv **env);
 int		ft_cd(char **args, t_shenv **env);
-int		set_env(t_shenv **ft_env, char *key, char *value);
-int		execute_builtin(t_cli *cli);
-int		execute(t_cli *cli);
-int		quoted_len(const char *line, char quote);
-void	process_input(char *line, t_cli *cli);
-int		read_input_line(t_shenv **ft_env, t_cli *cli);
-int		heredoc_len(const char *line);
-int		get_heredoc(const char *token, t_cli *cli);
-int		set_cmd(char *token, t_cli *cli);
-int		add_args(char *token, t_cli *cli, int pos);
-int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
-void	set_sig(int option);
-void	free_list(t_cli **cli);
-void	free_node(t_cli *cli);
-void	here_error(const char *delim);
-void	free_tokens(char **tokens, size_t n);
-void	perror_token(const char *token, const char *msg);
-void	perror_msh(const char *problem, const char *mssg);
-void	free_env(t_shenv **ft_env);
-void	reset_list(t_cli *cli);
-void	free_first_node(t_cli *cli);
-t_cli	*init_node(size_t len, t_shenv **env, int op);
-t_cli	*parse_op(const char *token, t_cli *cli);
-t_shenv	*load_env(char **envp);
-void	print_list(t_cli *cli);
-char	*trim_spaces(const char *line);
-bool	create_file(const t_cli *cli);
-int		create_heredoc(const t_cli *cli);
-void	ft_exec(t_cli *cli);
-int		execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid);
-int		exec_child(t_cli *cli);
-int		exec_builtin_child(const t_cli *cli);
-int		handle_redirs(t_cli *cli);
+int		ft_export(char **args, t_shenv **env);
+int		ft_unset(char **args, t_shenv **ft_env);
 
-int		has_pipe(t_cli *cli);
-int		apply_redirs(t_cli *cli);
-int		exec_builtin(t_cli *cli);
 #endif

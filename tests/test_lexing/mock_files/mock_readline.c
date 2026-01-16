@@ -10,7 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../../minishell.h"
+
+static void	print_tokens(char **tokens)
+{
+	size_t	i;
+
+	i = 0;
+
+	while (tokens[i])
+	{
+		printf("%s\n", tokens[i]);
+		i++;
+	}
+}
 
 void	reset_list(t_cli *cli)
 {
@@ -20,10 +33,13 @@ void	reset_list(t_cli *cli)
 	if (!cli)
 		return ;
 	last = cli;
+
 	while (last->next)
 		last = last->next;
+
 	cli->status = last->status;
 	next = cli->next;
+
 	if (next)
 	{
 		free_list(&next);
@@ -59,34 +75,48 @@ static int	is_empty(const char *s)
 void	process_input(const char *line, t_cli *cli)
 {
 	char	**tokens;
+	char	*trimmed;
+	int		mock_n;
 
 	if (is_empty(line))
 		return ;
-	tokens = tokenize(line, cli);
+	trimmed = trim_spaces(line);
+	mock_n = num_s_tokens(trimmed);
+	if (!trimmed)
+		return ;
+	tokens = token_sep(trimmed);
 	if (!tokens)
 	{
+		free(trimmed);
 		cli->last_status = 2;
 		return ;
 	}
-
-	cli->status = parse_input(tokens, cli, 1, 0);
-	ft_exec(cli);
+	print_tokens(tokens);
+	// Parsing and Execution disabled for Lexing Unit Tests
+	// cli->status = parse_input(tokens, cli, 1, 0);
+	// ft_exec(cli);
+    free_tokens(tokens, mock_n);
+	// free(trimmed); // Removed: token_sep frees the argument 'line' (trimmed)
 }
 
 int	read_input_line(t_shenv **env, t_cli *cli)
 {
-	char	*cl;
+	char	*line = NULL;
+	size_t	len = 0;
+	ssize_t	read;
 
-	cl = nullptr;
-	while (1)
+	(void)env;
+	setbuf(stdout, NULL);
+	while ((read = getline(&line, &len, stdin)) != -1)
 	{
-		free(cl);
-		cl = readline("\033[1;32mminishell\033[0m$ ");
-		if (!cl)
-			return (rl_clear_history(), write(1, "exit\n", 5), 2);
-		if ((g_signal && reset_signal(cli)) || is_empty(cl))
+		if (read > 0 && line[read - 1] == '\n')
+			line[read - 1] = '\0';
+		if ((g_signal && reset_signal(cli)) || is_empty(line))
 			continue ;
-		add_history(cl);
-		process_input(cl, cli);
+		add_history(line);
+		process_input(line, cli);
+		free(line);
 	}
+	write(1, "exit\n", 5);
+	return (2);
 }

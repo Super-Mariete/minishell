@@ -35,7 +35,8 @@ static int	sep_len(const char *line, const size_t pos)
 		return (-1);
 	if (ft_isspace(line[pos]))
 		return (0);
-	if (ft_strchr(SEP_STR, line[pos]) && line[pos + 1] == line[pos])
+	if (ft_strchr(SEP_STR, line[pos]) && line[pos + 1] == line[pos]
+		&& !ft_strchr(PRNTS, line[pos]))
 		return (2);
 	if (ft_strchr(SEP_STR, line[pos]))
 		return (1);
@@ -44,7 +45,7 @@ static int	sep_len(const char *line, const size_t pos)
 
 static int	token_len(const char *line)
 {
-	int		i;
+	size_t		i;
 	size_t	len;
 
 	i = 0;
@@ -52,7 +53,7 @@ static int	token_len(const char *line)
 	while (i < len && ft_isspace(line[i]))
 		i++;
 	if (ft_strchr(SEP_STR, line[i]))
-		return (i + sep_len(line, i));
+		return ((int)i + sep_len(line, i));
 	while (i < len)
 	{
 		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (line[i - 1] != '\\')))
@@ -63,10 +64,10 @@ static int	token_len(const char *line)
 			continue ;
 		}
 		if (ft_strchr(SEP_STR, line[i]))
-			return (i);
+			return ((int)i);
 		i++;
 	}
-	return (i);
+	return ((int)i);
 }
 
 int	num_s_tokens(const char *line)

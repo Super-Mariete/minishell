@@ -12,13 +12,13 @@
 
 #include "../minishell.h"
 
-static char	*ft_escape(char *line, int start, int end)
+static char	*ft_escape(char *line, const size_t start, const size_t end)
 {
 	char	*escaped;
 	char	*t;
 	char	*s;
 
-	if (!line || start < 0 || end < start)
+	if (!line || end < start)
 		return (nullptr);
 	if (end == 0)
 		return (ft_strdup(line));
@@ -36,7 +36,7 @@ static char	*ft_escape(char *line, int start, int end)
 	return (t);
 }
 
-char	*esc_line(char *line, int i, int len)
+static char	*esc_line(char *line, const size_t i, const int len)
 {
 	char	*esc;
 	char	*t;
@@ -59,7 +59,7 @@ char	*esc_line(char *line, int i, int len)
 	return (esc);
 }
 
-static char	*escape_q(int *i, char **str)
+static char	*escape_q(size_t *i, char **str)
 {
 	int		len;
 	char	*esc;
@@ -69,7 +69,7 @@ static char	*escape_q(int *i, char **str)
 	len = quoted_len(s + *i, s[(*i)]);
 	if (len < 0)
 		return (free(s), nullptr);
-	esc = esc_line(s, *i, *i + len);
+	esc = esc_line(s, *i, (int)*i + len);
 	if (!esc)
 		return (free(s), nullptr);
 	*i += (len - 3);
@@ -79,7 +79,7 @@ static char	*escape_q(int *i, char **str)
 
 char	*escape_quotes(const char *line)
 {
-	int		i;
+	size_t	i;
 	char	*s;
 
 	if (!line)

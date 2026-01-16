@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	quoted_len(const char *line, char quote)
+int	quoted_len(const char *line, const char quote)
 {
 	int	i;
 
@@ -33,10 +33,13 @@ int	quoted_len(const char *line, char quote)
 		}
 		i++;
 	}
+	write(2, "minishell: expected another ", 28);
+	write(2, &quote, 1);
+	write(2, "\n", 1);
 	return (-1);
 }
 
-static bool	check_each_error(char **token, int i)
+static bool	check_each_error(char **token, const size_t i)
 {
 	if (token[i] && ft_strchr(OP_STR2, token[i][0])
 			&& (token[i + 1] && ft_strchr(OP_STR2, token[i + 1][0])))
@@ -61,7 +64,7 @@ static bool	check_each_error(char **token, int i)
 
 int	check_errors(char **token, const size_t len)
 {
-	int	i;
+	size_t	i;
 
 	if (!token)
 		return (1);
