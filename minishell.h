@@ -57,8 +57,8 @@
 # define PIPE_ERR "minishell: syntax error near unexpected token `|'\n"
 # define UNEX_T1 "minishell: syntax error near unexpected token '<'\n"
 # define UNEX_T2 "minishell: syntax error near unexpected token '>'\n"
-# define HERE_ERR "minishell: warning: here-document\
-elimited by end-of-file (wanted `"
+# define HERE_ERR "minishell: warning: here-document \
+delimited by end-of-file (wanted `"
 # define CMD_ERR ": command not found\n"
 # define HERE_PIPE_ERR "minishell: syntax error: unexpected end of file\nexit\n"
 # define SYN_ERR "minishell: syntax error near unexpected token `"
@@ -85,6 +85,7 @@ typedef struct s_builtin
 typedef struct s_cli
 {
 	char			*cmd;
+	t_shenv			**ft_env;
 	char			**args;
 	char			*infile;
 	char			*outfile;
@@ -92,7 +93,6 @@ typedef struct s_cli
 	int				heredoc_fd;
 	int				is_builtin;
 	int				r_mode;
-	t_shenv			**ft_env;
 	size_t			n_tokens;
 	int				status;
 	int				last_status;
@@ -103,13 +103,13 @@ typedef struct s_cli
 
 /* minishell.c */
 
-int		check_prnts(char *line);
+int		check_prnts(const char *line);
 
 /* parsing/lexing.c */
 
 char	**token_sep(char *line);
 int		num_s_tokens(const char *line);
-char	**tokenize(char *line, t_cli *cli);
+char	**tokenize(const char *line, t_cli *cli);
 int		check_errors(char **token, size_t len);
 
 /* parsing/parsing.c */
@@ -164,7 +164,7 @@ void	here_error(const char *delim);
 t_shenv	*load_env(char **envp);
 char	**getshenv(const t_shenv *env);
 char	*ft_getenv(const t_shenv *ft_env, char *key);
-int		set_env(t_shenv **ft_env, char *key, char *value);
+int		set_env(t_shenv **ft_env, char *key, const char *value);
 int		unset_env(t_shenv **env, char *key);
 void	free_env(t_shenv **ft_env);
 
@@ -175,7 +175,6 @@ void	set_sig(int option);
 /* parsing/readline.c */
 
 int		read_input_line(t_shenv **env, t_cli *cli);
-
 void	process_input(const char *line, t_cli *cli);
 
 /* exec/ft_execute.c */
@@ -188,17 +187,17 @@ int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
 /* exec/exec_utils.c */
 
 bool	create_file(const t_cli *cli);
-int		handle_redirs(t_cli *cli);
+int		handle_redirs(const t_cli *cli);
 int		exec_builtin_child(const t_cli *cli);
 int		execute_builtin(t_cli *cli);
 
 /* exec/aux_exec/apply_redirs.c */
 
-int		apply_redirs(t_cli *cli);
+int		apply_redirs(const t_cli *cli);
 
 /* exec/aux_exec/has_pipe.c */
 
-int		has_pipe(t_cli *cli);
+int		has_pipe(const t_cli *cli);
 
 /* exec/aux_exec/exec_builtin.c */
 

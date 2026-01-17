@@ -67,7 +67,7 @@ static bool	redir_outfile(const t_cli *cli, int *fd)
 	return (false);
 }
 
-int	apply_redirs(t_cli *cli)
+int	apply_redirs(const t_cli *cli)
 {
 	int	fd;
 

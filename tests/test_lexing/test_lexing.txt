@@ -88,6 +88,21 @@ asd&&asd
 asd && asd
 asda||asd
 asda || asd
-asda|asd
 asda||asd
+asda || asd
 "$USER"
+"$USER"
+'$USER'
+'$USER'
+'"$USER"'
+'"$USER"'
+"'$USER'"
+"'$USER'"
+""
+""
+''
+''
+'""'
+'""'
+"''"
+"''"

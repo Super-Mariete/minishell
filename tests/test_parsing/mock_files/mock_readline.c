@@ -12,6 +12,32 @@
 
 #include "../../../minishell.h"
 
+void	print_parser(t_cli *cli)
+{
+	t_cli	*node;
+	size_t	i;
+
+	if (!cli)
+		return ;
+	node = cli;
+	while (node)
+	{
+		printf("%s\n", node->cmd);
+		i = 0;
+		while (node->args &&  node->args[i])
+		{
+			printf("%s\n", node->args[i]);
+			i++;
+		}
+		printf("%s\n", node->heredoc);
+		printf("%s\n", node->outfile);
+		printf("%s\n", node->infile);
+		printf("%d\n", node->is_builtin);
+		printf("%d\n", node->r_mode);
+		node = node->next;
+	}
+}
+
 void	reset_list(t_cli *cli)
 {
 	t_cli	*next;
@@ -57,33 +83,45 @@ static int	is_empty(const char *s)
 	return (1);
 }
 
-void	process_input(char *line, t_cli *cli)
+void	process_input(const char *line, t_cli *cli)
 {
 	char	**tokens;
 
 	if (is_empty(line))
 		return ;
-	tokens = tokenize(line, cli);
+	tokens = tokenize((char *)line, cli);
 	if (!tokens)
 	{
 		cli->last_status = 2;
 		return ;
 	}
 	cli->status = parse_input(tokens, cli, 1, 0);
-	ft_exec(cli);
+	print_parser(cli);
+	reset_list(cli);
 }
 
-int	read_input_line(t_shenv **ft_env, t_cli *cli)
+int	read_input_line(t_shenv **env, t_cli *cli)
 {
 	char	*cl;
-    (void)ft_env; // Unused in mock if we don't reload env
+	size_t	len;
+	ssize_t	n;
+    (void)env;
 
 	cl = nullptr;
+	len = 0;
 	while (1)
 	{
 		free(cl);
-		// Empty prompt for testing to avoid output pollution if readline prints it
-		cl = readline(""); 
+		cl = nullptr;
+		n = getline(&cl, &len, stdin);
+		if (n == -1)
+		{
+			free(cl);
+			cl = nullptr;
+		}
+		else if (n > 0 && cl[n - 1] == '\n')
+			cl[n - 1] = '\0';
+
 		if (!cl)
 			return (rl_clear_history(), write(1, "exit\n", 5), 2);
 		if ((g_signal && reset_signal(cli)) || is_empty(cl))

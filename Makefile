@@ -36,7 +36,7 @@ SRC = minishell.c\
 	exec/exec_utils.c
 
 OBJ = $(SRC:.c=.o)
-CFLAGS += -g3 -Ilibft #-Wall -Wextra -Werror
+CFLAGS += -pg -g3 -Ilibft #-Wall -Wextra -Werror
 
 all: $(NAME)
 

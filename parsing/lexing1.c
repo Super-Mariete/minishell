@@ -45,7 +45,7 @@ static int	sep_len(const char *line, const size_t pos)
 
 static int	token_len(const char *line)
 {
-	size_t		i;
+	size_t	i;
 	size_t	len;
 
 	i = 0;

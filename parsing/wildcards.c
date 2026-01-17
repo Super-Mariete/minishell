@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-static void	exp_wc_error(DIR *dir_stream, char *wc)
+static void	exp_wc_error(const DIR *dir_stream, char *wc)
 {
 	if (!dir_stream && !wc)
 	{

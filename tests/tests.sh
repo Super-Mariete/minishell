@@ -167,6 +167,103 @@ ft_test_lexing()
         cd ..
 }
 
+ft_test_parsing()
+{
+        local	DIR="parsing"
+        local	output
+        local	formatted_output
+        local	expected_output
+        local	status
+        local	expected_status=0
+        local	input_file
+        local	output_file
+        local	filename
+
+        ft_mk_log_dir $DIR
+        local	DEBUG_LOG="$DEBUG_DIR/parsing"
+        local	VAL_LOG="$VAL_DIR/parsing"
+        echo -e "${BLUE}---- Running parsing integration tests ----${RESET}"
+        cd "test_parsing/" || (echo -e "${RED}Can't cd to test_parsing\n${RESET}" && exit)
+        make -s fclean
+        ft_make
+        
+        # Iterate over files in input directory
+        if [ -d "input" ]; then
+                local i=1
+                for input_file in input/*; do
+                        [ -e "$input_file" ] || continue
+                        filename=$(basename "$input_file")
+                        output_file="output/$filename"
+                        
+                        if [ ! -f "$output_file" ]; then
+                                echo -e "${RED}Missing output file for $filename${RESET}"
+                                continue
+                        fi
+                        
+                        expected_output=$(cat "$output_file")
+                        local arg
+                        arg=$(cat "$input_file") # Read content for display/logging if needed, or pass file path?
+                        # We pipe the file content to ./msh
+                        
+                        # --- Normal Execution ---
+                        output=$(cat "$input_file" | ./msh 2>&1)
+                        echo "$output" > "$NORMAL_DIR/parsing_log$i.txt"
+                        
+                        # Normalize output
+                        formatted_output=$(echo "$output" | sed 's/exit//g' | tr '\n' ' ' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/[[:space:]]\+/ /g')
+                        expected_normalized=$(echo "$expected_output" | tr '\n' ' ' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/[[:space:]]\+/ /g')
+
+                        ft_check_line_output "$formatted_output" "$expected_normalized"
+                        status=$?
+                        ft_print_status "$status" "$expected_status" "$i" "|  normal  |"
+                        
+                        # --- Sanitizer Execution ---
+                        local asan_log_prefix="$DEBUG_DIR/asan_log_$i"
+                        rm -f "${asan_log_prefix}".*
+                        export ASAN_OPTIONS="symbolize=1:fast_unwind_on_malloc=0:log_path=$asan_log_prefix"
+                        
+                        output=$(cat "$input_file" | ./san_msh 2>&1)
+                        unset ASAN_OPTIONS
+                        
+                        local asan_log_file
+                        asan_log_file=$(find "$DEBUG_DIR" -name "asan_log_$i.*" -print -quit)
+                        if [ -n "$asan_log_file" ]; then
+                                cat "$asan_log_file" > "$DEBUG_LOG$i.san.txt"
+                                echo -e "${RED}ASan Error Detected (See logs)${RESET}"
+                        else
+                                echo "No ASan errors" > "$DEBUG_LOG$i.san.txt"
+                        fi
+                        echo "$output" >> "$DEBUG_LOG$i.san.txt"
+                        
+                        formatted_output=$(echo "$output" | sed 's/exit//g' | tr '\n' ' ' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/[[:space:]]\+/ /g')
+                        ft_check_line_output "$formatted_output" "$expected_normalized"
+                        status=$?
+                        ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
+                        
+                        # --- Valgrind Execution ---
+                        output=$(cat "$input_file" | valgrind --log-file="$VAL_LOG$i.valgrind.txt" --leak-check=full --error-exitcode=255 --track-origins=yes --show-leak-kinds=all --suppressions=../../readline.supp ./val_msh 2>&1)
+                        val_status=$?
+                        if [ $val_status -eq 255 ]; then
+                                echo -e "${RED}Valgrind Error/Leak Detected (See logs)${RESET}"
+                        fi
+                        cat "$VAL_LOG$i.valgrind.txt" >> "$VAL_LOG$i.txt"
+                        rm "$VAL_LOG$i.valgrind.txt"
+                        
+                        formatted_output=$(echo "$output" | sed 's/exit//g' | tr '\n' ' ' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/[[:space:]]\+/ /g')
+                        ft_check_line_output "$formatted_output" "$expected_normalized"
+                        status=$?
+                        ft_print_status "$status" "$expected_status" "$i" "| valgrind |"
+                        
+                        echo "------------------------------------------------"
+                        ((i++))
+                done
+        else
+                echo "No input directory found"
+        fi
+        make -s fclean
+        cd ..
+}
+
 # make -s fclean
 echo
 echo -e "${BLUE}---- Running static analysis ----${RESET}"
@@ -177,7 +274,7 @@ cppcheck --enable=warning,style,performance,portability \
          --suppress=missingIncludeSystem \
          --error-exitcode=1 \
          --check-level=exhaustive \
-         ../minishell.c ../libft/ ../parsing/ ../exec/ | grep ","
+         ../minishell.c ../parsing/ ../exec/ | grep ","
 echo
 echo -e "${BLUE}---- Running norminette ----${RESET}"
 norminette ../minishell.c ../libft/ ../parsing/ ../exec/ > "$LOG_DIR"/norm_log.txt 2>&1
@@ -190,3 +287,4 @@ fi
 echo
 # ft_make ../main.c
 ft_test_lexing
+ft_test_parsing

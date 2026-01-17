@@ -65,7 +65,7 @@ int	ft_exit(char **args, t_shenv **env)
 		printf("exit\n");
 		exit(0);
 	}
-	if (args[1] && args[2])
+	if (args[2])
 	{
 		ft_putstr_fd("minishell: exit too many arguments\n", 2);
 		return (1);

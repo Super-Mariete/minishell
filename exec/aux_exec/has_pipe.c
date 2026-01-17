@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-int	has_pipe(t_cli *cli)
+int	has_pipe(const t_cli *cli)
 {
 	if (!cli)
 		return (0);

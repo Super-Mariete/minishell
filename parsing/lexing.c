@@ -89,7 +89,7 @@ char	*escape_quotes(const char *line)
 	while (i < ft_strlen(s))
 	{
 		if (ft_strchr(QUOTES, s[i])
-			&& (i == 0 || (i > 0 && line[i - 1] != '\\')))
+			&& (i == 0 || line[i - 1] != '\\'))
 		{
 			s = escape_q(&i, &s);
 			if (!s)
@@ -100,7 +100,7 @@ char	*escape_quotes(const char *line)
 	return (s);
 }
 
-char	**tokenize(char *line, t_cli *cli)
+char	**tokenize(const char *line, t_cli *cli)
 {
 	char	**tokens;
 

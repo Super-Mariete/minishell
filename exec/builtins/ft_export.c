@@ -37,7 +37,7 @@ static void	print_export_var(const char *var)
 
 static int	export_error(t_shenv **env, char **args)
 {
-	t_shenv	*cur;
+	const t_shenv	*cur;
 
 	if (!args)
 		return (1);
@@ -73,9 +73,9 @@ static bool	export_arg(const char *arg, t_shenv **env, const char *eq, int *ret)
 
 int	ft_export(char **args, t_shenv **env)
 {
-	int		i;
-	char	*eq;
-	int		ret;
+	int			i;
+	const char	*eq;
+	int			ret;
 
 	if (!args || !args[1])
 		return (export_error(env, args));

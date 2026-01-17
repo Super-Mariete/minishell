@@ -62,7 +62,7 @@ void	process_input(const char *line, t_cli *cli)
 
 	if (is_empty(line))
 		return ;
-	tokens = tokenize(line, cli);
+	tokens = tokenize((char *)line, cli);
 	if (!tokens)
 	{
 		cli->last_status = 2;

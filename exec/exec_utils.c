@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	handle_redirs(t_cli *cli)
+int	handle_redirs(const t_cli *cli)
 {
 	int	stdin_save;
 	int	stdout_save;

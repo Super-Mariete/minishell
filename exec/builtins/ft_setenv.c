@@ -44,7 +44,7 @@ static bool	set_var(const char *key, const char *value, t_shenv **cur)
 	return (false);
 }
 
-int	set_env(t_shenv **ft_env, char *key, char *value)
+int	set_env(t_shenv **ft_env, char *key, const char *value)
 {
 	t_shenv	*cur;
 	char	*newvar;
