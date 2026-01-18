@@ -46,7 +46,7 @@ int	execute_builtin(t_cli *cli)
 	{
 		close(stdin_save);
 		close(stdout_save);
-		return (reset_free(cli), 1);
+		return (1);
 	}
 	status = exec_builtin(cli);
 	if (ft_strcmp(cli->cmd, "exit") != 0)
@@ -57,7 +57,7 @@ int	execute_builtin(t_cli *cli)
 	close(stdin_save);
 	close(stdout_save);
 	cli->last_status = status;
-	return (reset_free(cli), status);
+	return (status);
 }
 
 int	exec_builtin_child(t_cli *cli)

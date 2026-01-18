@@ -38,7 +38,6 @@ void	ft_exec(t_cli *cli)
 		cli->status = execute(cli);
 		cli->last_status = cli->status;
 	}
-	reset_list(cli);
 }
 
 char	*expand_exit_status(const int status, const char *line, const size_t i)

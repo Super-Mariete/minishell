@@ -15,21 +15,27 @@
 void	reset_list(t_cli *cli)
 {
 	t_cli	*next;
+	t_cli	*t;
 	t_cli	*last;
+	t_cli	*first;
 
 	if (!cli)
 		return ;
 	last = cli;
+	first = cli;
 	while (last->next)
 		last = last->next;
+	while (first->prev)
+		first = first->prev;
 	cli->status = last->status;
 	next = cli->next;
-	if (next)
+	while (next)
 	{
-		free_list(&next);
-		cli->next = nullptr;
+		t = next->next;
+		free_node(next);
+		next = t;
 	}
-	free_first_node(cli);
+	free_first_node(first);
 }
 
 static int	reset_signal(t_cli *cli)

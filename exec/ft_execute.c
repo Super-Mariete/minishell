@@ -101,6 +101,7 @@ static int	execute_command(t_cli *cli)
 int	execute(t_cli *cli)
 {
 	int	piped;
+	int	ret;
 
 	if (!cli)
 		return (2);
@@ -108,12 +109,15 @@ int	execute(t_cli *cli)
 	{
 		if (cli->heredoc || cli->infile || cli->outfile)
 			return (handle_redirs(cli));
-		reset_free(cli);
+		reset_list(cli);
 		return (perror_msh(NULL, "command not found\n"), 2);
 	}
 	piped = has_pipe(cli);
 	if (get_builtin(cli->cmd) && !piped)
-		return (execute_builtin(cli));
+	{
+		ret = execute_builtin(cli);
+		return (reset_list(cli), ret);
+	}
 	if (piped)
 		return (execute_pipeline(cli, -1, -1));
 	return (execute_command(cli));
