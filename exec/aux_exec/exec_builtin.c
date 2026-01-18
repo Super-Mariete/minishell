@@ -14,6 +14,7 @@
 
 int	exec_builtin(t_cli *cli)
 {
+	int	ret;
 	int	(*builtin)(char **, t_shenv **);
 
 	if (!cli || !cli->cmd)
@@ -21,5 +22,6 @@ int	exec_builtin(t_cli *cli)
 	builtin = get_builtin(cli->cmd);
 	if (!builtin)
 		return (cli->last_status);
-	return (builtin(cli->args, cli->env));
+	ret = builtin(cli->args, cli->env);
+	return (ret);
 }

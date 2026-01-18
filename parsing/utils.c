@@ -90,6 +90,8 @@ void	free_first_node(t_cli *cli)
 	cli->cmd = nullptr;
 	free(cli->heredoc);
 	cli->heredoc = nullptr;
+	if (cli->heredoc_fd != -1)
+		close(cli->heredoc_fd);
 	cli->heredoc_fd = -1;
 	free(cli->infile);
 	cli->infile = nullptr;

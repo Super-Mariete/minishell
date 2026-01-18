@@ -26,11 +26,8 @@ static char	*expand_heredoc(const int option, t_cli *cli)
 		if (!herearray)
 			return (NULL);
 		t = convert_to_string(herearray);
-		ft_free_d(herearray);
 		free(cli->heredoc);
 		cli->heredoc = t;
-		if (!t)
-			return (NULL);
 	}
 	return (cli->heredoc);
 }

@@ -23,17 +23,7 @@ void	free_list(t_cli **cli)
 	while (node)
 	{
 		next_node = node->next;
-		free(node->cmd);
-		node->cmd = nullptr;
-		free(node->heredoc);
-		node->heredoc = nullptr;
-		free(node->infile);
-		node->infile = nullptr;
-		free(node->outfile);
-		node->outfile = nullptr;
-		ft_free_d(node->args);
-		node->args = nullptr;
-		free(node);
+		free_node(node);
 		node = next_node;
 	}
 	*cli = nullptr;
@@ -53,6 +43,9 @@ void	free_node(t_cli *cli)
 	cli->outfile = nullptr;
 	ft_free_d(cli->args);
 	cli->args = nullptr;
+	if (cli->heredoc_fd != -1)
+		close(cli->heredoc_fd);
+	cli->heredoc_fd = -1;
 	free(cli);
 }
 

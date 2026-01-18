@@ -90,7 +90,7 @@ int	execute(t_cli *cli)
 	{
 		if (cli->heredoc || cli->infile || cli->outfile)
 			return (handle_redirs(cli));
-		return (cli->last_status);
+		return (perror_msh(NULL, "command not found\n"), 2);
 	}
 	if (get_builtin(cli->cmd) && !has_pipe(cli))
 		return (execute_builtin(cli));

@@ -113,6 +113,8 @@ int	create_heredoc(t_cli *cli)
 	int		fd;
 	char	file[30];
 
+	if (cli->heredoc_fd != -1)
+		close(cli->heredoc_fd);
 	generate_random_filename(file);
 	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
 	if (fd == -1)

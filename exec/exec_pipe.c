@@ -33,13 +33,12 @@ static int	wait_children(pid_t *pid, const pid_t last_pid)
 	set_sig(PARENT);
 	if (WIFSIGNALED(last_status))
 		return (128 + WTERMSIG(last_status));
-	else if (WIFEXITED(last_status))
+	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));
-	else
-		return (1);
+	return (1);
 }
 
-static void	manage_fds(const t_cli *cli, int fd[2], int *prev_fd)
+static void	manage_fds(t_cli *cli, int fd[2], int *prev_fd)
 {
 	if (*prev_fd != -1)
 		close(*prev_fd);

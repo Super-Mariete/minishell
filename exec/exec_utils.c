@@ -43,7 +43,17 @@ int	execute_builtin(t_cli *cli)
 	stdin_save = dup(STDIN_FILENO);
 	stdout_save = dup(STDOUT_FILENO);
 	if (apply_redirs(cli))
+	{
+		close(stdin_save);
+		close(stdout_save);
 		return (1);
+	}
+	if (!ft_strcmp(cli->cmd, "exit") && cli->args && (!cli->args[1] || !cli->args[2]))
+	{
+		close(stdin_save);
+		close(stdout_save);
+		return (exec_builtin(cli));
+	}
 	status = exec_builtin(cli);
 	dup2(stdin_save, STDIN_FILENO);
 	dup2(stdout_save, STDOUT_FILENO);

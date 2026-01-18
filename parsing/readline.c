@@ -87,5 +87,6 @@ int	read_input_line(t_cli *cli)
 			continue ;
 		add_history(cl);
 		process_input(cl, cli);
+		reset_list(cli);
 	}
 }

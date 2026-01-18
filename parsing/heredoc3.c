@@ -84,6 +84,7 @@ char	**expand_array(char **array, const t_cli *cli)
 		if (t && t[0] == '$')
 		{
 			expanded = expand_line(t, cli);
+			free(t);
 			t = reapply_quotes(array[i], expanded);
 			if (!t)
 				return (NULL);
@@ -91,6 +92,8 @@ char	**expand_array(char **array, const t_cli *cli)
 			free(expanded);
 			array[i] = t;
 		}
+		else
+			free(t);
 		i++;
 	}
 	return (array);
@@ -98,19 +101,23 @@ char	**expand_array(char **array, const t_cli *cli)
 
 char	*convert_to_string(char **array)
 {
+	char	*s;
 	char	*str;
-	char	*t;
+	char	*nl;
 	size_t	i;
 
 	i = 0;
 	str = NULL;
 	while (array[i])
 	{
-		str = ft_strjoin(str, array[i]);
-		t = ft_strjoin(str, "\n");
+		s = ft_strjoin(str, array[i]);
+		nl = ft_strjoin(s, "\n");
 		free(str);
-		str = t;
+		free(s);
+		str = nl;
+		free(array[i]);
 		i++;
 	}
+	free(array);
 	return (str);
 }
