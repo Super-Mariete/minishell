@@ -1,6 +1,0 @@
-exit
->
-1.txt
->
-2.txt
-ls
