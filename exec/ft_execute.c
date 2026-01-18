@@ -12,23 +12,29 @@
 
 #include "../minishell.h"
 
-static void	check_access(const t_cli *cli)
+static void	check_access(t_cli *cli)
 {
 	struct stat	st;
 
 	if (access(cli->cmd, F_OK) != 0)
 	{
 		perror_msh(cli->cmd, "command not found\n");
+		free_env(cli->env);
+		reset_free(cli);
 		exit(127);
 	}
 	if (stat(cli->cmd, &st) == 0 && S_ISDIR(st.st_mode))
 	{
+		free_env(cli->env);
 		perror_msh(cli->cmd, "Is a directory\n");
+		reset_free(cli);
 		exit(126);
 	}
 	if (access(cli->cmd, X_OK) != 0)
 	{
+		free_env(cli->env);
 		perror_msh(cli->cmd, "Permission denied\n");
+		reset_free(cli);
 		exit(126);
 	}
 }
@@ -37,14 +43,24 @@ int	exec_child(t_cli *cli)
 {
 	set_sig(CHILD);
 	if (apply_redirs(cli))
+	{
+		reset_free(cli);
+		free_env(cli->env);
 		exit(1);
+	}
 	if (!cli->cmd)
+	{
+		reset_free(cli);
+		free_env(cli->env);
 		exit(0);
+	}
 	if (get_builtin(cli->cmd))
 		exit(exec_builtin_child(cli));
 	check_access(cli);
 	execve(cli->cmd, cli->args, getshenv(*cli->env));
 	perror("execve");
+	free_env(cli->env);
+	reset_free(cli);
 	exit(126);
 }
 
@@ -84,17 +100,21 @@ static int	execute_command(t_cli *cli)
 
 int	execute(t_cli *cli)
 {
+	int	piped;
+
 	if (!cli)
 		return (2);
 	if (!cli->cmd)
 	{
 		if (cli->heredoc || cli->infile || cli->outfile)
 			return (handle_redirs(cli));
+		reset_free(cli);
 		return (perror_msh(NULL, "command not found\n"), 2);
 	}
-	if (get_builtin(cli->cmd) && !has_pipe(cli))
+	piped = has_pipe(cli);
+	if (get_builtin(cli->cmd) && !piped)
 		return (execute_builtin(cli));
-	if (has_pipe(cli))
+	if (piped)
 		return (execute_pipeline(cli, -1, -1));
 	return (execute_command(cli));
 }

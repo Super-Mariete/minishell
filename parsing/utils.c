@@ -12,45 +12,6 @@
 
 #include "../minishell.h"
 
-// void	print_list(t_cli *cli)
-// {
-// 	int	i = 0;
-// 	int	node = 0;
-//
-// 	if (!cli)
-// 		return ;
-// 	while (cli)
-// 	{
-// 		if (cli->cmd)
-// 			printf("cmd %d = %s\n", node, cli->cmd);
-// 		if (cli->infile)
-// 			printf("infile %d = %s\n", node, cli->infile);
-// 		if (cli->outfile)
-// 			printf("outfile %d = %s\n", node, cli->outfile);
-// 		if (cli->is_builtin)
-// 			printf("is_builtin %d = %d\n", node, cli->is_builtin);
-// 		if (cli->r_mode)
-// 			printf("r_mode %d = %d\n", node, cli->r_mode);
-// 		if (cli->heredoc)
-// 			printf("heredoc %d = %s\n", node, cli->heredoc);
-// 		printf("op %d = %d\n", i, cli->op);
-// 		printf("group %d = %zu\n", i, cli->group);
-// 		while (cli->args && i < ft_doubleptr_len((void **)cli->args))
-// 		{
-// 			printf("args[%d] %d = %s\n", i, node, cli->args[i]);
-// 			i++;
-// 		}
-// 		i = 0;
-// 		// while (cli->ft_env && cli->ft_env[i])
-// 		// {
-// 		// 	printf("env[%d] %d = %s\n", i, node, cli->ft_env[i]);
-// 		// 	i++;
-// 		// }
-// 		cli = cli->next;
-// 		node++;
-// 	}
-// }
-
 void	perror_msh(const char *problem, const char *mssg)
 {
 	write(2, "minishell: ", 11);
@@ -131,5 +92,5 @@ t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 	cli->op = op;
 	cli->status = 0;
 	cli->last_status = 0;
-	return (cli);
+	return (cli->prev = NULL, cli);
 }

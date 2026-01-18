@@ -1,0 +1,28 @@
+{
+  "security": {
+    "enablePermanentToolApproval": true
+  },
+  "general": {
+    "previewFeatures": true,
+    "preferredEditor": "vscode"
+  },
+  "ui": {
+    "showStatusInTitle": true,
+    "footer": {
+      "hideContextPercentage": false
+    },
+    "showMemoryUsage": true,
+    "showLineNumbers": false,
+    "showCitations": true,
+    "showModelInfoInChat": false
+  },
+  "tools": {
+    "shell": {
+      "showColor": true
+    },
+    "autoAccept": true
+  },
+  "context": {
+    "loadMemoryFromIncludeDirectories": true
+  }
+}

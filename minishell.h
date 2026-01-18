@@ -90,15 +90,16 @@ typedef struct s_cli
 	char			*infile;
 	char			*outfile;
 	char			*heredoc;
-	int				heredoc_fd;
-	int				is_builtin;
-	int				r_mode;
+	struct s_cli	*next;
+	struct s_cli	*prev;
 	size_t			n_tokens;
+	size_t			group;
 	int				status;
 	int				last_status;
-	size_t			group;
 	int				op;
-	struct s_cli	*next;
+	int				heredoc_fd;
+	bool			is_builtin;
+	bool			r_mode;
 }	t_cli;
 
 /* minishell.c */
@@ -125,6 +126,7 @@ int		add_args(char *token, t_cli *cli, int pos);
 void	ft_exec(t_cli *cli);
 char	*expand_exit_status(int status, const char *line, size_t i);
 bool	expand_t(char ***tokens, size_t *len, size_t *i, int wc_len);
+void	reset_free(t_cli *cli);
 
 /* parsing/utils*.c */
 
@@ -191,7 +193,7 @@ int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
 
 bool	create_file(const t_cli *cli);
 int		handle_redirs(const t_cli *cli);
-int		exec_builtin_child(const t_cli *cli);
+int		exec_builtin_child(t_cli *cli);
 int		execute_builtin(t_cli *cli);
 
 /* exec/aux_exec/apply_redirs.c */

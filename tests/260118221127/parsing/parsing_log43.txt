@@ -1,0 +1,12 @@
+exit
+--- Node 0 ---
+Group: 1
+Op: NONE
+Cmd: echo
+Args: ['echo', '"3 3"']
+Infile: (null)
+Outfile: (null)
+Heredoc: (null)
+R_mode: 0
+Is_builtin: 1
+--- End of List ---

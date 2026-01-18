@@ -1,9 +1,0 @@
-minishell: expected another '
-echo
-echo
-1|2
-(null)
-(null)
-(null)
-1
-0

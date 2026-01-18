@@ -1,0 +1,23 @@
+==12371== Memcheck, a memory error detector
+==12371== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==12371== Using Valgrind-3.25.1 and LibVEX; rerun with -h for copyright info
+==12371== Command: ./val_msh
+==12371== Parent PID: 12369
+==12371== 
+==12371== 
+==12371== HEAP SUMMARY:
+==12371==     in use at exit: 4,067 bytes in 4 blocks
+==12371==   total heap usage: 173 allocs, 169 frees, 13,013 bytes allocated
+==12371== 
+==12371== LEAK SUMMARY:
+==12371==    definitely lost: 0 bytes in 0 blocks
+==12371==    indirectly lost: 0 bytes in 0 blocks
+==12371==      possibly lost: 0 bytes in 0 blocks
+==12371==    still reachable: 0 bytes in 0 blocks
+==12371==         suppressed: 4,067 bytes in 4 blocks
+==12371== 
+==12371== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+--12371-- 
+--12371-- used_suppression:      4 ignore_readline_history_leaks ../../readline.supp:14 suppressed: 4,067 bytes in 4 blocks
+==12371== 
+==12371== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

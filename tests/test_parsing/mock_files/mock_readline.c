@@ -12,30 +12,62 @@
 
 #include "../../../minishell.h"
 
+static void	print_op(int op)
+{
+	if (op == PIPE)
+		printf("PIPE (|)\n");
+	else if (op == AND)
+		printf("AND (&&)\n");
+	else if (op == OR)
+		printf("OR (||)\n");
+	else
+		printf("NONE\n");
+}
+
+static void	print_args(char **args)
+{
+	int		i;
+
+	printf("Args: [");
+	if (args)
+	{
+		i = 0;
+		while (args[i])
+		{
+			printf("'%s'", args[i]);
+			if (args[i + 1])
+				printf(", ");
+			i++;
+		}
+	}
+	printf("]\n");
+}
+
 void	print_parser(t_cli *cli)
 {
 	t_cli	*node;
-	size_t	i;
+	int		index;
 
 	if (!cli)
 		return ;
 	node = cli;
+	index = 0;
 	while (node)
 	{
-		printf("%s\n", node->cmd ? node->cmd : "(null)");
-		i = 0;
-		while (node->args && node->args[i])
-		{
-			printf("%s\n", node->args[i]);
-			i++;
-		}
-		printf("%s\n", node->heredoc ? node->heredoc : "(null)");
-		printf("%s\n", node->outfile ? node->outfile : "(null)");
-		printf("%s\n", node->infile ? node->infile : "(null)");
-		printf("%d\n", node->is_builtin);
-		printf("%d\n", node->r_mode);
+		printf("--- Node %d ---\n", index++);
+		printf("Group: %zu\n", node->group);
+		printf("Op: ");
+		print_op(node->op);
+		printf("Cmd: %s\n", node->cmd ? node->cmd : "(null)");
+		print_args(node->args);
+		printf("Infile: %s\n", node->infile ? node->infile : "(null)");
+		printf("Outfile: %s\n", node->outfile ? node->outfile : "(null)");
+		printf("Heredoc: %s\n", node->heredoc ? node->heredoc : "(null)");
+		printf("R_mode: %d\n", node->r_mode);
+		printf("Is_builtin: %d\n", node->is_builtin);
 		node = node->next;
 	}
+	printf("--- End of List ---\n");
 }
 
 void	reset_list(t_cli *cli)
@@ -99,13 +131,12 @@ void	process_input(const char *line, t_cli *cli)
 	reset_list(cli);
 }
 
-int	read_input_line(t_shenv **env, t_cli *cli)
+int	read_input_line(t_cli *cli)
 {
 	char	*cl;
 	size_t	len;
 	ssize_t	n;
 
-	(void)env;
 	cl = nullptr;
 	len = 0;
 	while (1)

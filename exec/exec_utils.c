@@ -46,31 +46,32 @@ int	execute_builtin(t_cli *cli)
 	{
 		close(stdin_save);
 		close(stdout_save);
-		return (1);
-	}
-	if (!ft_strcmp(cli->cmd, "exit") && cli->args && (!cli->args[1] || !cli->args[2]))
-	{
-		close(stdin_save);
-		close(stdout_save);
-		return (exec_builtin(cli));
+		return (reset_free(cli), 1);
 	}
 	status = exec_builtin(cli);
-	dup2(stdin_save, STDIN_FILENO);
-	dup2(stdout_save, STDOUT_FILENO);
+	if (ft_strcmp(cli->cmd, "exit") != 0)
+	{
+		dup2(stdin_save, STDIN_FILENO);
+		dup2(stdout_save, STDOUT_FILENO);
+	}
 	close(stdin_save);
 	close(stdout_save);
 	cli->last_status = status;
-	return (status);
+	return (reset_free(cli), status);
 }
 
-int	exec_builtin_child(const t_cli *cli)
+int	exec_builtin_child(t_cli *cli)
 {
+	int	ret;
 	int	(*builtin)(char **, t_shenv **);
 
 	builtin = get_builtin(cli->cmd);
 	if (!builtin)
 		return (1);
-	return (builtin(cli->args, cli->env));
+	ret = builtin(cli->args, cli->env);
+	free_env(cli->env);
+	reset_free(cli);
+	return (ret);
 }
 
 /* Busca si el comando es un builtin y devuelve su función si existe */

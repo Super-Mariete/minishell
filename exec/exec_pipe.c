@@ -38,7 +38,7 @@ static int	wait_children(pid_t *pid, const pid_t last_pid)
 	return (1);
 }
 
-static void	manage_fds(t_cli *cli, int fd[2], int *prev_fd)
+static void	manage_fds(const t_cli *cli, int fd[2], int *prev_fd)
 {
 	if (*prev_fd != -1)
 		close(*prev_fd);
@@ -85,10 +85,10 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 	while (cli)
 	{
 		if (manage_fds_at_start(cli, fd, prev_fd))
-			return (1);
+			return (free_env(cli->env), reset_free(cli), 1);
 		pid = fork();
 		if (pid < 0)
-			return (perror("fork"), 1);
+			return (free_env(cli->env), reset_free(cli), perror("fork"), 1);
 		if (pid == 0)
 		{
 			manage_child_fds(cli, fd, prev_fd);
@@ -99,5 +99,6 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 			last_pid = pid;
 		cli = cli->next;
 	}
+	reset_list(cli);
 	return (wait_children(&pid, last_pid));
 }

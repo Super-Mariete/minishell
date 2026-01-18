@@ -60,3 +60,21 @@ char	*expand_exit_status(const int status, const char *line, const size_t i)
 	free(tmp);
 	return (new_line);
 }
+
+void	reset_free(t_cli *cli)
+{
+	t_cli	*node;
+	t_cli	*next_node;
+
+	if (!cli)
+		return ;
+	node = cli;
+	while (node->prev)
+		node = node->prev;
+	while (node)
+	{
+		next_node = node->next;
+		free_node(node);
+		node = next_node;
+	}
+}

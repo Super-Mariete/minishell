@@ -17,6 +17,7 @@ static void	print_tokens(char **tokens)
 	size_t	i;
 
 	i = 0;
+
 	while (tokens[i])
 	{
 		printf("%s\n", tokens[i]);
@@ -32,10 +33,13 @@ void	reset_list(t_cli *cli)
 	if (!cli)
 		return ;
 	last = cli;
+
 	while (last->next)
 		last = last->next;
+
 	cli->status = last->status;
 	next = cli->next;
+
 	if (next)
 	{
 		free_list(&next);
@@ -71,16 +75,10 @@ static int	is_empty(const char *s)
 void	process_input(const char *line, t_cli *cli)
 {
 	char	**tokens;
-	char	*trimmed;
-	int		mock_n;
 
 	if (is_empty(line))
 		return ;
-	trimmed = trim_spaces(line);
-	if (!trimmed)
-		return ;
-	mock_n = num_s_tokens(trimmed);
-	tokens = token_sep(trimmed);
+	tokens = tokenize((char *)line, cli);
 	if (!tokens)
 	{
 		cli->last_status = 2;
@@ -90,16 +88,27 @@ void	process_input(const char *line, t_cli *cli)
 	// Parsing and Execution disabled for Lexing Unit Tests
 	// cli->status = parse_input(tokens, cli, 1, 0);
 	// ft_exec(cli);
-	free_tokens(tokens, mock_n);
+
+	// Assuming free_tokens handles the array from tokenize
+	// We need to know the length if free_tokens requires it, 
+	// or if it's NULL-terminated. 
+	// Minishell.h: void free_tokens(char **tokens, size_t n);
+	// We need 'n'. 
+	// tokenize implementation isn't visible here, but usually it returns a NULL terminated array 
+	// AND sets cli->n_tokens? Or we calculate it?
+	// The original mock used `num_s_tokens`.
+	// Let's count them for freeing if free_tokens needs N.
+	size_t n = 0;
+	while (tokens[n]) n++;
+	free_tokens(tokens, n);
 }
 
-int	read_input_line(t_shenv **env, t_cli *cli)
+int	read_input_line(t_cli *cli)
 {
 	char	*cl;
 	size_t	len;
 	ssize_t	n;
 
-	(void)env;
 	cl = nullptr;
 	len = 0;
 	while (1)

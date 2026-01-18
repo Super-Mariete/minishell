@@ -3,16 +3,16 @@
 ## Phase 1: Environment & Static Analysis
 Goal: Ensure the codebase builds cleanly and meets style standards.
 
-- [ ] Task: Environment Health Check
-    - [ ] Verify `make` compiles the project without errors or warnings.
-    - [ ] Run `make clean`, `make fclean`, and `make re` to ensure build targets work as expected.
-- [ ] Task: Norminette Compliance Audit
-    - [ ] Run `norminette` on `libft/`.
-    - [ ] Fix any style errors in `libft/`.
-    - [ ] Run `norminette` on `parsing/` and `exec/`.
-    - [ ] Fix any style errors in `parsing/` and `exec/`.
-    - [ ] Run `norminette` on `minishell.c` and `minishell.h`.
-    - [ ] Fix any style errors in core files.
+- [x] Task: Environment Health Check
+    - [x] Verify `make` compiles the project without errors or warnings.
+    - [x] Run `make clean`, `make fclean`, and `make re` to ensure build targets work as expected.
+- [x] Task: Norminette Compliance Audit
+    - [x] Run `norminette` on `libft/`.
+    - [x] Fix any style errors in `libft/`.
+    - [x] Run `norminette` on `parsing/` and `exec/`.
+    - [x] Fix any style errors in `parsing/` and `exec/`.
+    - [x] Run `norminette` on `minishell.c` and `minishell.h`.
+    - [x] Fix any style errors in core files.
 
 ## Phase 2: Memory Safety & Leak Detection
 Goal: Eliminate memory leaks and invalid accesses.

@@ -78,6 +78,7 @@ t_cli	*parse_op(const char *token, t_cli *cli)
 	next_cli = init_node(cli->n_tokens, cli->env, 0);
 	if (!next_cli)
 		return (perror("malloc : "), cli->status = 2, nullptr);
+	next_cli->prev = cli;
 	return (next_cli);
 }
 

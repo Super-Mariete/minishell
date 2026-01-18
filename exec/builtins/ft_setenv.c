@@ -25,7 +25,8 @@ static char	*create_env_str(const char *key, const char *value)
 	return (newvar);
 }
 
-static int	update_existing_var(t_shenv *cur, const char *key, const char *value)
+static int	update_existing_var(t_shenv *cur, const char *key,
+				const char *value)
 {
 	char	*newvar;
 
