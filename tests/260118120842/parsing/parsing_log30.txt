@@ -1,9 +1,0 @@
-exit
-/usr/bin/ls
-ls
-.
-(null)
-(null)
-(null)
-0
-0

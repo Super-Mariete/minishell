@@ -96,10 +96,8 @@ int	num_s_tokens(const char *line)
 	return (num_token);
 }
 
-char	**token_sep(char *line)
+char	**token_sep(char *line, size_t j, size_t i)
 {
-	size_t	i;
-	size_t	j;
 	int		len;
 	char	**tokens;
 

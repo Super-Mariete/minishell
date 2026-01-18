@@ -1,9 +1,0 @@
-No ASan errors
-exit
-echo 1
-echo 1
-(null)
-(null)
-(null)
-0
-0

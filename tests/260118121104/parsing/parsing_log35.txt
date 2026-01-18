@@ -1,9 +1,0 @@
-exit
-echo
-echo
-4      4
-(null)
-(null)
-(null)
-1
-0

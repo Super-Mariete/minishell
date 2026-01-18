@@ -21,7 +21,7 @@ static char	*expand_heredoc(const int option, t_cli *cli)
 	{
 		herearray = ft_split(cli->heredoc, '\n');
 		if (!herearray)
-			return  (NULL);
+			return (NULL);
 		herearray = expand_array(herearray, cli);
 		if (!herearray)
 			return (NULL);
@@ -72,7 +72,8 @@ static int	read_heredoc(t_cli *cli, const int *option, char *delim)
 		line = readline("> ");
 		if (g_signal)
 			return (free(line), free(delim), cli->status = 130, 130);
-		if (!line || !ft_strncmp(line, delim, ft_strlen(line)))
+		if (!line || (ft_strlen(line) == ft_strlen(delim)
+				&& !ft_strcmp(line, delim)))
 			break ;
 		t = ft_strjoin(cli->heredoc, line);
 		free(cli->heredoc);

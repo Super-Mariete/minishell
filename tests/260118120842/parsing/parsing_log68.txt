@@ -1,9 +1,0 @@
-exit
-echo
-echo
-ER
-(null)
-(null)
-(null)
-1
-0

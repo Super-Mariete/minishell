@@ -108,13 +108,12 @@ char	**tokenize(const char *line, t_cli *cli)
 	if (check_prnts(line))
 		return (nullptr);
 	cli->n_tokens = num_s_tokens(line);
-	tokens = token_sep(trim_spaces(line));
+	tokens = token_sep(trim_spaces(line), 0, 0);
 	if (!tokens)
 		return (nullptr);
 	tokens = expand_tokens(tokens, &(cli->n_tokens), cli, 0);
 	if (!tokens)
 		return (free_tokens(tokens, cli->n_tokens), nullptr);
-	size_t i = 0;
 	if (check_errors(tokens, cli->n_tokens))
 		return (free_tokens(tokens, cli->n_tokens), nullptr);
 	return (tokens);

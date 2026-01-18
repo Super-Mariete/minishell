@@ -6,7 +6,7 @@
 /*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:18:24 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/09/20 18:41:21 by rms35            ###   ########.fr       */
+/*   Updated: 2026/01/18 12:00:00 by gemini           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static size_t	var_len(const char *var)
 	return (i);
 }
 
-static char	*expand_var(char *token, const size_t start, const size_t end, t_shenv **env)
+static char	*expand_var(char *token,
+		const size_t start, const size_t end, t_shenv **env)
 {
 	char		*s;
 	char		*t;
@@ -55,47 +56,44 @@ static char	*expand_var(char *token, const size_t start, const size_t end, t_she
 	return (s);
 }
 
-static bool	expanding_line(char *token, size_t *i)
+static char	*expand_token(char *token, const t_cli *cli, size_t i)
 {
-	if (token[(*i)] == '\'')
-		*i += (quoted_len(token + *i));
-	if (*i < ft_strlen(token) && token[(*i)] == '<' && token[*i + 1] == '<')
-	{
-		if (heredoc_len(token + *i) == 0)
-		{
-			free(token);
-			return (true);
-		}
-		*i += (heredoc_len(token + *i) - 1);
-	}
-	return (false);
+	char	*t;
+
+	if (token[i + 1] == '?')
+		t = expand_exit_status(cli->last_status, token, i);
+	else
+		t = expand_var(token, i, var_len(token + i), cli->ft_env);
+	return (t);
 }
 
 char	*expand_line(char *token, const t_cli *cli)
 {
 	size_t	i;
+	int		q;
 	char	*t;
 
 	i = 0;
+	q = 0;
 	while (token && i < ft_strlen(token))
 	{
-		if (expanding_line(token, &i))
-			return (NULL);
-		if (i < ft_strlen(token) && token[i] == '$'
-			&& token[i + 1] && !ft_strchr(NO_VAL_VAR, token[i + 1]))
+		if (token[i] == '\'' && q != 2)
+			q = (q == 0);
+		else if (token[i] == '\"' && q != 1)
+			q = (q == 0) * 2;
+		else if (token[i] == '$' && q != 1 && token[i + 1]
+			&& !ft_strchr(NO_VAL_VAR, token[i + 1]))
 		{
-			if (token[i + 1] == '?')
-				t = expand_exit_status(cli->last_status, token, i);
-			else
-				t = expand_var(token, i, var_len(token + i), cli->ft_env);
-			if (token != t)
-				free(token);
+			t = expand_token(token, cli, i);
+			free(token);
 			token = t;
+			if (!token)
+				return (NULL);
+			continue ;
 		}
 		i++;
 	}
-	t = ft_strtrim(token, " ");
-	return (free(token), t);
+	return (t = ft_strtrim(token, " "), free(token), t);
 }
 
 char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i)
@@ -107,19 +105,8 @@ char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i)
 		return (nullptr);
 	while (i < *len)
 	{
-		wc_len = 0;
-		if (!ft_strchr(QUOTES, tokens[i][0]) && ft_strchr(tokens[i], '*'))
-		{
-			tokens = expand_wildcard(tokens, i, &wc_len);
-			i = i + wc_len;
-			*len = *len + wc_len - 1;
+		if (expand_t(&tokens, len, &i, wc_len))
 			continue ;
-		}
-		if (tokens[i][0] && tokens[i][0] == '<' && tokens[i][1] == '<')
-		{
-			i += 2;
-			continue;
-		}
 		t = expand_line(tokens[i], cli);
 		tokens[i] = escape_quotes(t);
 		free(t);

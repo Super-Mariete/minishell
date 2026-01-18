@@ -12,6 +12,25 @@
 
 #include "../minishell.h"
 
+bool	expand_t(char ***tokens, size_t *len, size_t *i, int wc_len)
+{
+	if (!ft_strchr(QUOTES, (*tokens)[(*i)][0])
+			&& ft_strchr((*tokens)[(*i)], '*'))
+	{
+		wc_len = 0;
+		*tokens = expand_wildcard(*tokens, *i, &wc_len);
+		*i += wc_len;
+		*len += wc_len - 1;
+		return (true);
+	}
+	if ((*tokens)[(*i)][0] == '<' && (*tokens)[(*i)][1] == '<')
+	{
+		*i += 2;
+		return (true);
+	}
+	return (false);
+}
+
 void	ft_exec(t_cli *cli)
 {
 	if (cli->status != 130)

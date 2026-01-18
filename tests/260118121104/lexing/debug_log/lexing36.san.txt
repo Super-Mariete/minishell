@@ -1,7 +1,0 @@
-No ASan errors
-exit
-(
-(
-ls
-)
-)

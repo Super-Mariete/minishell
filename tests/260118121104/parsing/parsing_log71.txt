@@ -1,9 +1,0 @@
-exit
-echo
-echo
-/home/rafael'$USER'
-(null)
-(null)
-(null)
-1
-0

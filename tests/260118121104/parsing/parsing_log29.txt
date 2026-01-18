@@ -1,8 +1,0 @@
-exit
-ls|echo
-ls|echo
-(null)
-(null)
-(null)
-0
-0

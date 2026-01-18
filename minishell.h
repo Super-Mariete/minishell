@@ -107,7 +107,7 @@ int		check_prnts(const char *line);
 
 /* parsing/lexing.c */
 
-char	**token_sep(char *line);
+char	**token_sep(char *line, size_t j, size_t i);
 int		num_s_tokens(const char *line);
 char	**tokenize(const char *line, t_cli *cli);
 int		check_errors(char **token, size_t len);
@@ -124,6 +124,7 @@ int		add_args(char *token, t_cli *cli, int pos);
 
 void	ft_exec(t_cli *cli);
 char	*expand_exit_status(int status, const char *line, size_t i);
+bool	expand_t(char ***tokens, size_t *len, size_t *i, int wc_len);
 
 /* parsing/utils*.c */
 

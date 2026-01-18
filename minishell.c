@@ -32,6 +32,7 @@ int	check_prnts(const char *line)
 			if (!len)
 				return (-1);
 			i += len;
+			continue ;
 		}
 		if (line[i] == '(')
 			prnts++;

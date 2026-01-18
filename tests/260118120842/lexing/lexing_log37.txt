@@ -1,6 +1,0 @@
-exit
-(
-ls
-)
->
-text.txt
