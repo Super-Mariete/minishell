@@ -1,0 +1,8 @@
+exit
+/usr/bin/ls
+ls
+(null)
+2.txt
+(null)
+0
+0

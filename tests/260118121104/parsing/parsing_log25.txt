@@ -1,0 +1,9 @@
+exit
+echo
+echo
+aaaaaaaaaaaaaaa
+(null)
+(null)
+(null)
+1
+0

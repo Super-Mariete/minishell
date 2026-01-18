@@ -1,0 +1,10 @@
+exit
+echo
+echo
+asd
+123
+(null)
+(null)
+(null)
+1
+0

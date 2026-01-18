@@ -1,0 +1,1 @@
+(ls && (echo h o l a | wc -l) > text.txt) > text2.txt

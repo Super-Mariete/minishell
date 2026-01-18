@@ -1,0 +1,10 @@
+No ASan errors
+exit
+echo
+echo
+"aaa 000"
+(null)
+(null)
+(null)
+1
+0

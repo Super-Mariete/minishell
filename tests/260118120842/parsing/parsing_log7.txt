@@ -1,0 +1,9 @@
+exit
+/usr/bin/cat
+cat
+3.txt
+(null)
+(null)
+4.txt
+0
+0

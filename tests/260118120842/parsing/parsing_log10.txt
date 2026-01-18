@@ -1,0 +1,7 @@
+exit
+(null)
+(null)
+(null)
+1.txt
+0
+0

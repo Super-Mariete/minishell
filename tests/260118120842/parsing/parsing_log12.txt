@@ -1,0 +1,15 @@
+exit
+echo
+echo
+(null)
+(null)
+(null)
+1
+0
+/usr/bin/ls
+ls
+(null)
+(null)
+(null)
+0
+0

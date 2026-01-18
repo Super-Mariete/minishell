@@ -1,0 +1,4 @@
+No ASan errors
+exit
+''1
+1''

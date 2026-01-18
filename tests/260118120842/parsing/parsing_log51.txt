@@ -1,0 +1,10 @@
+minishell: expected another '
+exit
+echo
+echo
+'
+(null)
+(null)
+(null)
+1
+0

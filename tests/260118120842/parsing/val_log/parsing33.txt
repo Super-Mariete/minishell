@@ -1,0 +1,23 @@
+==43011== Memcheck, a memory error detector
+==43011== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==43011== Using Valgrind-3.25.1 and LibVEX; rerun with -h for copyright info
+==43011== Command: ./val_msh
+==43011== Parent PID: 43010
+==43011== 
+==43011== 
+==43011== HEAP SUMMARY:
+==43011==     in use at exit: 4,061 bytes in 4 blocks
+==43011==   total heap usage: 225 allocs, 221 frees, 18,957 bytes allocated
+==43011== 
+==43011== LEAK SUMMARY:
+==43011==    definitely lost: 0 bytes in 0 blocks
+==43011==    indirectly lost: 0 bytes in 0 blocks
+==43011==      possibly lost: 0 bytes in 0 blocks
+==43011==    still reachable: 0 bytes in 0 blocks
+==43011==         suppressed: 4,061 bytes in 4 blocks
+==43011== 
+==43011== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+--43011-- 
+--43011-- used_suppression:      4 ignore_readline_history_leaks ../../readline.supp:14 suppressed: 4,061 bytes in 4 blocks
+==43011== 
+==43011== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

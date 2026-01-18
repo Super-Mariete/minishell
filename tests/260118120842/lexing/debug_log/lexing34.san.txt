@@ -1,0 +1,7 @@
+No ASan errors
+exit
+(
+ls
+&&
+echo
+)

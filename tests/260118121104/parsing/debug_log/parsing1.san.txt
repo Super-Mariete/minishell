@@ -1,0 +1,8 @@
+No ASan errors
+exit
+(null)
+(null)
+1.txt
+(null)
+0
+0

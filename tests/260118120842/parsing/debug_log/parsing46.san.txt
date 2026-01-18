@@ -1,0 +1,4 @@
+No ASan errors
+minishell: expected another '
+minishell: expected another '
+exit

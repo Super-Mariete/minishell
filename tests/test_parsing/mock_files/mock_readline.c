@@ -22,16 +22,16 @@ void	print_parser(t_cli *cli)
 	node = cli;
 	while (node)
 	{
-		printf("%s\n", node->cmd);
+		printf("%s\n", node->cmd ? node->cmd : "(null)");
 		i = 0;
-		while (node->args &&  node->args[i])
+		while (node->args && node->args[i])
 		{
 			printf("%s\n", node->args[i]);
 			i++;
 		}
-		printf("%s\n", node->heredoc);
-		printf("%s\n", node->outfile);
-		printf("%s\n", node->infile);
+		printf("%s\n", node->heredoc ? node->heredoc : "(null)");
+		printf("%s\n", node->outfile ? node->outfile : "(null)");
+		printf("%s\n", node->infile ? node->infile : "(null)");
 		printf("%d\n", node->is_builtin);
 		printf("%d\n", node->r_mode);
 		node = node->next;
@@ -46,7 +46,6 @@ void	reset_list(t_cli *cli)
 	if (!cli)
 		return ;
 	last = cli;
-
 	while (last->next)
 		last = last->next;
 	cli->status = last->status;
@@ -105,28 +104,29 @@ int	read_input_line(t_shenv **env, t_cli *cli)
 	char	*cl;
 	size_t	len;
 	ssize_t	n;
-    (void)env;
 
+	(void)env;
 	cl = nullptr;
 	len = 0;
 	while (1)
 	{
 		free(cl);
 		cl = nullptr;
+		len = 0;
 		n = getline(&cl, &len, stdin);
 		if (n == -1)
 		{
 			free(cl);
 			cl = nullptr;
+			break ;
 		}
-		else if (n > 0 && cl[n - 1] == '\n')
+		if (n > 0 && cl[n - 1] == '\n')
 			cl[n - 1] = '\0';
-
-		if (!cl)
-			return (rl_clear_history(), write(1, "exit\n", 5), 2);
 		if ((g_signal && reset_signal(cli)) || is_empty(cl))
 			continue ;
 		add_history(cl);
 		process_input(cl, cli);
 	}
+	write(1, "exit\n", 5);
+	return (2);
 }

@@ -1,0 +1,9 @@
+exit
+echo
+echo
+$USER
+(null)
+(null)
+(null)
+1
+0

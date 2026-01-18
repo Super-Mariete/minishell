@@ -1,0 +1,23 @@
+==39631== Memcheck, a memory error detector
+==39631== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==39631== Using Valgrind-3.25.1 and LibVEX; rerun with -h for copyright info
+==39631== Command: ./val_msh
+==39631== Parent PID: 39629
+==39631== 
+==39631== 
+==39631== HEAP SUMMARY:
+==39631==     in use at exit: 4,058 bytes in 4 blocks
+==39631==   total heap usage: 162 allocs, 158 frees, 17,073 bytes allocated
+==39631== 
+==39631== LEAK SUMMARY:
+==39631==    definitely lost: 0 bytes in 0 blocks
+==39631==    indirectly lost: 0 bytes in 0 blocks
+==39631==      possibly lost: 0 bytes in 0 blocks
+==39631==    still reachable: 0 bytes in 0 blocks
+==39631==         suppressed: 4,058 bytes in 4 blocks
+==39631== 
+==39631== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+--39631-- 
+--39631-- used_suppression:      4 ignore_readline_history_leaks ../../readline.supp:14 suppressed: 4,058 bytes in 4 blocks
+==39631== 
+==39631== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

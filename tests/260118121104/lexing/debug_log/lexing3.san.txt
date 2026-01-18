@@ -1,0 +1,6 @@
+No ASan errors
+exit
+>
+1.txt
+>
+2.txt

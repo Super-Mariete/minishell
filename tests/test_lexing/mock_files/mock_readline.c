@@ -17,7 +17,6 @@ static void	print_tokens(char **tokens)
 	size_t	i;
 
 	i = 0;
-
 	while (tokens[i])
 	{
 		printf("%s\n", tokens[i]);
@@ -33,13 +32,10 @@ void	reset_list(t_cli *cli)
 	if (!cli)
 		return ;
 	last = cli;
-
 	while (last->next)
 		last = last->next;
-
 	cli->status = last->status;
 	next = cli->next;
-
 	if (next)
 	{
 		free_list(&next);
@@ -81,13 +77,12 @@ void	process_input(const char *line, t_cli *cli)
 	if (is_empty(line))
 		return ;
 	trimmed = trim_spaces(line);
-	mock_n = num_s_tokens(trimmed);
 	if (!trimmed)
 		return ;
+	mock_n = num_s_tokens(trimmed);
 	tokens = token_sep(trimmed);
 	if (!tokens)
 	{
-		free(trimmed);
 		cli->last_status = 2;
 		return ;
 	}
@@ -95,27 +90,36 @@ void	process_input(const char *line, t_cli *cli)
 	// Parsing and Execution disabled for Lexing Unit Tests
 	// cli->status = parse_input(tokens, cli, 1, 0);
 	// ft_exec(cli);
-    free_tokens(tokens, mock_n);
-	// free(trimmed); // Removed: token_sep frees the argument 'line' (trimmed)
+	free_tokens(tokens, mock_n);
 }
 
 int	read_input_line(t_shenv **env, t_cli *cli)
 {
-	char	*line = NULL;
-	size_t	len = 0;
-	ssize_t	read;
+	char	*cl;
+	size_t	len;
+	ssize_t	n;
 
 	(void)env;
-	setbuf(stdout, NULL);
-	while ((read = getline(&line, &len, stdin)) != -1)
+	cl = nullptr;
+	len = 0;
+	while (1)
 	{
-		if (read > 0 && line[read - 1] == '\n')
-			line[read - 1] = '\0';
-		if ((g_signal && reset_signal(cli)) || is_empty(line))
+		free(cl);
+		cl = nullptr;
+		len = 0;
+		n = getline(&cl, &len, stdin);
+		if (n == -1)
+		{
+			free(cl);
+			cl = nullptr;
+			break ;
+		}
+		if (n > 0 && cl[n - 1] == '\n')
+			cl[n - 1] = '\0';
+		if ((g_signal && reset_signal(cli)) || is_empty(cl))
 			continue ;
-		add_history(line);
-		process_input(line, cli);
-		free(line);
+		add_history(cl);
+		process_input(cl, cli);
 	}
 	write(1, "exit\n", 5);
 	return (2);

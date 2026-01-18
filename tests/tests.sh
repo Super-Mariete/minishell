@@ -206,7 +206,7 @@ ft_test_parsing()
                         # We pipe the file content to ./msh
                         
                         # --- Normal Execution ---
-                        output=$(cat "$input_file" | ./msh 2>&1)
+                        output=$(cat "$input_file" | timeout 2s ./msh 2>&1)
                         echo "$output" > "$NORMAL_DIR/parsing_log$i.txt"
                         
                         # Normalize output
@@ -222,7 +222,7 @@ ft_test_parsing()
                         rm -f "${asan_log_prefix}".*
                         export ASAN_OPTIONS="symbolize=1:fast_unwind_on_malloc=0:log_path=$asan_log_prefix"
                         
-                        output=$(cat "$input_file" | ./san_msh 2>&1)
+                        output=$(cat "$input_file" | timeout 2s ./san_msh 2>&1)
                         unset ASAN_OPTIONS
                         
                         local asan_log_file
@@ -241,7 +241,7 @@ ft_test_parsing()
                         ft_print_status "$status" "$expected_status" "$i" "|  debug   |"
                         
                         # --- Valgrind Execution ---
-                        output=$(cat "$input_file" | valgrind --log-file="$VAL_LOG$i.valgrind.txt" --leak-check=full --error-exitcode=255 --track-origins=yes --show-leak-kinds=all --suppressions=../../readline.supp ./val_msh 2>&1)
+                        output=$(cat "$input_file" | timeout 5s valgrind --log-file="$VAL_LOG$i.valgrind.txt" --leak-check=full --error-exitcode=255 --track-origins=yes -s --show-leak-kinds=all --suppressions=../../readline.supp ./val_msh 2>&1)
                         val_status=$?
                         if [ $val_status -eq 255 ]; then
                                 echo -e "${RED}Valgrind Error/Leak Detected (See logs)${RESET}"

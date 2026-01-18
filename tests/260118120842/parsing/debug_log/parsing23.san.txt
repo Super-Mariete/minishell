@@ -1,0 +1,10 @@
+No ASan errors
+minishell: syntax error near unexpected token `>
+exit
+/usr/bin/ls
+ls
+(null)
+(null)
+(null)
+0
+0

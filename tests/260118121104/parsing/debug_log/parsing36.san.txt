@@ -1,0 +1,11 @@
+No ASan errors
+exit
+echo
+echo
+5
+5
+(null)
+(null)
+(null)
+1
+0
