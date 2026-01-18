@@ -61,7 +61,7 @@ size_t	heredoc_len(const char *line)
 	return (i);
 }
 
-static int	write_to_heredoc(t_cli *cli, char *file, const int fd)
+static int	write_to_heredoc(t_cli *cli, const char *file, const int fd)
 {
 	int	ret;
 

@@ -14,6 +14,14 @@
 
 volatile sig_atomic_t	g_signal = 0;
 
+static void	add_sub_prnts(const char *line, size_t i, int *prnts)
+{
+	if (line[i] == '(')
+		(*prnts)++;
+	if (line[i] == ')')
+		(*prnts)--;
+}
+
 int	check_prnts(const char *line)
 {
 	size_t	i;
@@ -34,10 +42,7 @@ int	check_prnts(const char *line)
 			i += len;
 			continue ;
 		}
-		if (line[i] == '(')
-			prnts++;
-		if (line[i] == ')')
-			prnts--;
+		add_sub_prnts(line, i, &prnts);
 		i++;
 	}
 	if (prnts)

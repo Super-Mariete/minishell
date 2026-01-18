@@ -12,10 +12,24 @@
 
 #include "../../minishell.h"
 
-static int	get_var(const char *value, t_shenv *cur, char *newvar, char **tmp)
+static char	*create_env_str(const char *key, const char *value)
 {
-	*tmp = ft_strjoin(*tmp, value);
-	free(*tmp);
+	char	*tmp;
+	char	*newvar;
+
+	tmp = ft_strjoin(key, "=");
+	if (!tmp)
+		return (NULL);
+	newvar = ft_strjoin(tmp, value);
+	free(tmp);
+	return (newvar);
+}
+
+static int	update_existing_var(t_shenv *cur, const char *key, const char *value)
+{
+	char	*newvar;
+
+	newvar = create_env_str(key, value);
 	if (!newvar)
 		return (1);
 	free(cur->var);
@@ -23,51 +37,43 @@ static int	get_var(const char *value, t_shenv *cur, char *newvar, char **tmp)
 	return (0);
 }
 
-static bool	set_var(const char *key, const char *value, t_shenv **cur)
+static int	add_new_var(t_shenv **ft_env, const char *key, const char *value)
 {
+	t_shenv	*new_node;
 	char	*newvar;
-	char	*tmp;
 
-	tmp = ft_strjoin(key, "=");
-	if (!tmp)
-		return (true);
-	newvar = ft_strjoin(tmp, value);
-	free(tmp);
-	if (!*newvar)
-		return (true);
-	*cur = malloc(sizeof(t_shenv));
-	if (!*cur)
+	newvar = create_env_str(key, value);
+	if (!newvar)
+		return (1);
+	new_node = malloc(sizeof(t_shenv));
+	if (!new_node)
 	{
 		free(newvar);
-		return (true);
+		return (1);
 	}
-	return (false);
+	new_node->var = newvar;
+	new_node->next = *ft_env;
+	*ft_env = new_node;
+	return (0);
 }
 
 int	set_env(t_shenv **ft_env, char *key, const char *value)
 {
 	t_shenv	*cur;
-	char	*newvar;
-	char	*tmp;
+	size_t	key_len;
 
 	if (!ft_env || !key)
 		return (1);
 	if (!value)
 		value = "";
-	tmp = nullptr;
-	newvar = nullptr;
+	key_len = ft_strlen(key);
 	cur = *ft_env;
 	while (cur)
 	{
-		if (cur->var && ft_strncmp(cur->var, key, ft_strlen(key)) == 0
-			&& cur->var[ft_strlen(key)] == '=')
-			return (get_var(value, cur, newvar, &tmp));
+		if (cur->var && ft_strncmp(cur->var, key, key_len) == 0
+			&& cur->var[key_len] == '=')
+			return (update_existing_var(cur, key, value));
 		cur = cur->next;
 	}
-	if (set_var(key, value, &cur))
-		return (1);
-	cur->var = newvar;
-	cur->next = *ft_env;
-	*ft_env = cur;
-	return (0);
+	return (add_new_var(ft_env, key, value));
 }
