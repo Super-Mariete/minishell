@@ -1,0 +1,2 @@
+Setting locale to en_US
+Error: '../minishell.c' no such file or directory

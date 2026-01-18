@@ -68,7 +68,6 @@ void	process_input(const char *line, t_cli *cli)
 		cli->last_status = 2;
 		return ;
 	}
-
 	cli->status = parse_input(tokens, cli, 1, 0);
 	ft_exec(cli);
 }

@@ -56,26 +56,27 @@ void	free_node(t_cli *cli)
 	free(cli);
 }
 
-static int	trim_s_len(const char *line)
+static size_t	trim_s_len(const char *line)
 {
-	int		i;
-	int		len;
+	size_t	i;
+	size_t	qlen;
+	size_t	len;
 
 	i = 0;
 	len = 0;
-	while (line && i < (int)ft_strlen(line))
+	while (line && i < ft_strlen(line))
 	{
-		if (ft_strchr(QUOTES,
-				line[i]) && (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		if (ft_strchr(QUOTES, line[i]))
 		{
-			if (quoted_len(line + i, line[i]) <= 0)
-				return (-1);
-			len += quoted_len(line + i, line[i]);
-			i += quoted_len(line + i, line[i]);
+			qlen = quoted_len(line + i);
+			if (!qlen)
+				return (0);
+			len += qlen;
+			i += qlen;
 			continue ;
 		}
 		while (ft_isspace(line[i]) && ((i + 1)
-				>= (int)ft_strlen(line) || ft_isspace(line[i + 1])))
+				>= ft_strlen(line) || ft_isspace(line[i + 1])))
 			i++;
 		i++;
 		len++;
@@ -98,11 +99,11 @@ char	*trim_spaces(const char *line)
 	char	*trimmed;
 
 	i = 0;
-	if (trim_s_len(line) < 0)
+	if (trim_s_len(line) == 0)
 		return (nullptr);
 	trimmed = ft_calloc(trim_s_len(line) + 1, sizeof(char));
 	j = 0;
-	while (trimmed && line && i < (int)ft_strlen(line))
+	while (trimmed && i < (int)ft_strlen(line))
 	{
 		skip_spaces(line, &i);
 		if (i < (int)ft_strlen(line) && ft_strchr(QUOTES,

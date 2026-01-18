@@ -14,6 +14,7 @@ SRC = minishell.c\
 	parsing/wc_utils.c\
 	parsing/readline.c\
 	parsing/heredoc2.c\
+	parsing/heredoc3.c\
 	parsing/lexing2.c\
 	parsing/parsing_utils.c\
 	parsing/utils2.c\

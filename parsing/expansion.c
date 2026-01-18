@@ -30,7 +30,7 @@ static size_t	var_len(const char *var)
 	return (i);
 }
 
-static char	*expand_var(char *token, const size_t start, const size_t end)
+static char	*expand_var(char *token, const size_t start, const size_t end, t_shenv **env)
 {
 	char		*s;
 	char		*t;
@@ -45,7 +45,7 @@ static char	*expand_var(char *token, const size_t start, const size_t end)
 	if (!s || !t)
 		return (free(s), free(t), nullptr);
 	free(s);
-	var = getenv(t);
+	var = ft_getenv(*env, t);
 	free(t);
 	s = ft_strndup(token, start);
 	t = ft_strjoin(s, var);
@@ -55,15 +55,15 @@ static char	*expand_var(char *token, const size_t start, const size_t end)
 	return (s);
 }
 
-static bool	expanding_line(char *token, size_t *i, char **value)
+static bool	expanding_line(char *token, size_t *i)
 {
-	if (token[(*i)] == '\'' && *i > 0 && token[*i - 1] != '\\')
-		*i += (quoted_len(token + *i, '\'') + 1);
+	if (token[(*i)] == '\'')
+		*i += (quoted_len(token + *i));
 	if (*i < ft_strlen(token) && token[(*i)] == '<' && token[*i + 1] == '<')
 	{
-		if (heredoc_len(token + *i) <= 0)
+		if (heredoc_len(token + *i) == 0)
 		{
-			*value = (free(token), nullptr);
+			free(token);
 			return (true);
 		}
 		*i += (heredoc_len(token + *i) - 1);
@@ -75,20 +75,19 @@ char	*expand_line(char *token, const t_cli *cli)
 {
 	size_t	i;
 	char	*t;
-	char	*value;
 
 	i = 0;
 	while (token && i < ft_strlen(token))
 	{
-		if (expanding_line(token, &i, &value))
-			return (value);
+		if (expanding_line(token, &i))
+			return (NULL);
 		if (i < ft_strlen(token) && token[i] == '$'
 			&& token[i + 1] && !ft_strchr(NO_VAL_VAR, token[i + 1]))
 		{
 			if (token[i + 1] == '?')
 				t = expand_exit_status(cli->last_status, token, i);
 			else
-				t = expand_var(token, i, var_len(token + i));
+				t = expand_var(token, i, var_len(token + i), cli->ft_env);
 			if (token != t)
 				free(token);
 			token = t;
@@ -109,18 +108,20 @@ char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i)
 	while (i < *len)
 	{
 		wc_len = 0;
-		if (ft_strchr(tokens[i], '*') && !ft_strchr(QUOTES, tokens[i][0]))
+		if (!ft_strchr(QUOTES, tokens[i][0]) && ft_strchr(tokens[i], '*'))
 		{
 			tokens = expand_wildcard(tokens, i, &wc_len);
 			i = i + wc_len;
 			*len = *len + wc_len - 1;
 			continue ;
 		}
+		if (tokens[i][0] && tokens[i][0] == '<' && tokens[i][1] == '<')
+		{
+			i += 2;
+			continue;
+		}
 		t = expand_line(tokens[i], cli);
-		if (t && t[0] == '<' && t[1] == '<')
-			tokens[i] = ft_strdup(t);
-		else
-			tokens[i] = escape_quotes(t);
+		tokens[i] = escape_quotes(t);
 		free(t);
 		i++;
 	}

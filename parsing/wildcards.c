@@ -62,21 +62,21 @@ static int	match_wildcard(const char *s, const char *wc)
 	return (wc[j] == '\0');
 }
 
-static void	get_wildcard(char ***token, const int pos,\
+static void	get_wildcard(char ***token, const size_t pos,\
 		int *wc_len, struct dirent *dir)
 {
 	char	**t;
 
 	if (*wc_len == 0)
-		t = (char **)ft_add_re_ptr((void **)*token, dir->d_name, pos);
+		t = (char **)ft_add_re_ptr((void **)*token, dir->d_name, (int)pos);
 	else
-		t = (char **)ft_add_ptr((void **)*token, dir->d_name, pos);
+		t = (char **)ft_add_ptr((void **)*token, dir->d_name, (int)pos);
 	ft_free_d(*token);
 	*token = t;
 	*wc_len = *wc_len + 1;
 }
 
-char	**expand_wildcard(char **token, int pos, int *wc_len)
+char	**expand_wildcard(char **token, const size_t pos, int *wc_len)
 {
 	DIR				*dir_stream;
 	struct dirent	*dir;

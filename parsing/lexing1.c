@@ -58,9 +58,9 @@ static int	token_len(const char *line)
 	{
 		if (ft_strchr(QUOTES, line[i]) && (i == 0 || (line[i - 1] != '\\')))
 		{
-			if (quoted_len(line + i, line[i]) <= 0)
+			if (quoted_len(line + i) == 0)
 				return (-1);
-			i = (quoted_len(line + i, line[i]) + i);
+			i = (quoted_len(line + i) + i);
 			continue ;
 		}
 		if (ft_strchr(SEP_STR, line[i]))
@@ -117,6 +117,8 @@ char	**token_sep(char *line)
 	{
 		while (ft_isspace(line[i]))
 			i++;
+		if (i >= ft_strlen(line))
+			break ;
 		if (token_len(line + i) <= 0)
 			return (tokens[len] = NULL, ft_free_d(tokens), free(line), NULL);
 		tokens[j++] = ft_strndup(line + i, token_len(line + i));

@@ -22,10 +22,9 @@ char	*trim_delim(const char *token, int *option)
 	i = 0;
 	while (token[i])
 	{
-		if (ft_strchr(QUOTES, token[i]))
+		if (token[i] == '\"')
 		{
-			if (token[i] == '\"')
-				*option = 1;
+			*option = 1;
 			delim = escape_quotes(token + i);
 			return (delim);
 		}
@@ -35,24 +34,23 @@ char	*trim_delim(const char *token, int *option)
 	return (delim);
 }
 
-int	heredoc_len(const char *line)
+size_t	heredoc_len(const char *line)
 {
-	int		i;
-	int		len;
+	size_t	i;
+	size_t	len;
 
 	i = 0;
-	while (i < (int)ft_strlen(line) && i < 2 && ft_strchr(REDIR_S, line[i]))
+	while (i < ft_strlen(line) && i < 2 && ft_strchr(REDIR_S, line[i]))
 		i++;
 	while (line[i] && ft_isspace(line[i]))
 		i++;
-	while (i < (int)ft_strlen(line) && line[i])
+	while (i < ft_strlen(line) && line[i])
 	{
-		if (i < (int)ft_strlen(line) && ft_strchr(QUOTES, line[i])
-			&& (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		if (i < ft_strlen(line) && ft_strchr(QUOTES, line[i]))
 		{
-			len = quoted_len(line + i, line[i]);
-			if (len <= 0)
-				return (-1);
+			len = quoted_len(line + i);
+			if (len == 0)
+				return (0);
 			i += (len + 1);
 			continue ;
 		}
@@ -63,12 +61,14 @@ int	heredoc_len(const char *line)
 	return (i);
 }
 
-static int	write_to_heredoc(const t_cli *cli, char file[10], const int fd)
+static int	write_to_heredoc(t_cli *cli, char file[10], const int fd)
 {
 	int	ret;
 
 	write(fd, cli->heredoc, ft_strlen(cli->heredoc));
 	close(fd);
+	free(cli->heredoc);
+	cli->heredoc = NULL;
 	ret = open(file, O_RDONLY, 0444);
 	if (ret == -1)
 	{
@@ -79,7 +79,7 @@ static int	write_to_heredoc(const t_cli *cli, char file[10], const int fd)
 	return (ret);
 }
 
-int	create_heredoc(const t_cli *cli)
+int	create_heredoc(t_cli *cli)
 {
 	int		fd;
 	ssize_t	i;

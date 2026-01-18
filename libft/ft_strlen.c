@@ -14,8 +14,7 @@
 
 /*
   The  strlen()  function calculates the len of the string
-  pointed to by s, excluding the termi‐
-       nating null byte ('\0').*/
+  pointed to by s, excluding the terminating null byte ('\0').*/
 
 size_t	ft_strlen(const char *str)
 {

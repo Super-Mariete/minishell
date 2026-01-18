@@ -122,7 +122,7 @@ int	set_cmd(char *token, t_cli *cli)
 	if (ft_strchr(token, '/'))
 		cli->cmd = ft_strdup(token);
 	else
-		cli->cmd = cmd_path(getenv("PATH"), token, nullptr);
+		cli->cmd = cmd_path(ft_getenv(*cli->ft_env, "PATH"), token, nullptr);
 	if (!cli->cmd)
 		cli->cmd = ft_strdup(token);
 	return (1);

@@ -16,21 +16,22 @@ volatile sig_atomic_t	g_signal = 0;
 
 int	check_prnts(const char *line)
 {
-	int		i;
+	size_t	i;
+	size_t	len;
 	int		prnts;
 
 	if (!line)
 		return (-1);
 	prnts = 0;
 	i = 0;
-	while (i < (int)ft_strlen(line))
+	while (i < ft_strlen(line))
 	{
-		if (ft_strchr(QUOTES, line[i])
-			&& (i == 0 || (i > 0 && line[i - 1] != '\\')))
+		if (ft_strchr(QUOTES, line[i]))
 		{
-			if (quoted_len(line + i, line[i]) < 0)
+			len = quoted_len(line + i);
+			if (!len)
 				return (-1);
-			i += (quoted_len(line + i, line[i]) - 1);
+			i += len;
 		}
 		if (line[i] == '(')
 			prnts++;
@@ -76,7 +77,5 @@ int	main(const int argc, char **argv, char **envp)
 	}
 	else
 		status = read_input_line(&env, cli);
-	free_list(&cli);
-	free_env(&env);
-	return (status);
+	return (free_list(&cli), free_env(&env), status);
 }

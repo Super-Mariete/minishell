@@ -111,6 +111,7 @@ char	**token_sep(char *line);
 int		num_s_tokens(const char *line);
 char	**tokenize(const char *line, t_cli *cli);
 int		check_errors(char **token, size_t len);
+size_t	quoted_len(const char *line);
 
 /* parsing/parsing.c */
 
@@ -136,7 +137,6 @@ void	free_tokens(char **tokens, size_t n);
 void	perror_token(const char *token, const char *msg);
 void	perror_msh(const char *problem, const char *mssg);
 char	*trim_spaces(const char *line);
-int		quoted_len(const char *line, char quote);
 
 /* parsing/expansion.c */
 
@@ -147,7 +147,7 @@ char	*trim_delim(const char *token, int *option);
 
 /* parsing/wildcards.c */
 
-char	**expand_wildcard(char **token, int pos, int *wc_len);
+char	**expand_wildcard(char **token, size_t pos, int *wc_len);
 int		init_var(size_t *i, size_t *j, size_t *i_a, size_t *j_after);
 int		equ(size_t *j, size_t *i);
 int		ft_js(const size_t *j_s, size_t *ia, size_t *i, size_t *j);
@@ -155,9 +155,11 @@ int		ft_js(const size_t *j_s, size_t *ia, size_t *i, size_t *j);
 /* parsing/heredoc*.c */
 
 int		get_heredoc(const char *token, t_cli *cli);
-int		create_heredoc(const t_cli *cli);
-int		heredoc_len(const char *line);
+int		create_heredoc(t_cli *cli);
+size_t	heredoc_len(const char *line);
 void	here_error(const char *delim);
+char	*convert_to_string(char **array);
+char	**expand_array(char **array, const t_cli *cli);
 
 /* parsing/shenv.c */
 

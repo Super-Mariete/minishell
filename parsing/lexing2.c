@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	quoted_len(const char *line, const char quote)
+size_t	quoted_len(const char *line)
 {
 	int	i;
 
@@ -21,22 +21,14 @@ int	quoted_len(const char *line, const char quote)
 	i = 1;
 	while (line[i])
 	{
-		if (line[i] == quote)
-		{
-			if (quote == '\'')
-				return (i + 1);
-			else if (quote == '\"')
-			{
-				if (line[i - 1] != '\\')
-					return (i + 1);
-			}
-		}
+		if (line[i] == line[0])
+			return (i + 1);
 		i++;
 	}
 	write(2, "minishell: expected another ", 28);
-	write(2, &quote, 1);
+	write(2, line, 1);
 	write(2, "\n", 1);
-	return (-1);
+	return (0);
 }
 
 static bool	check_each_error(char **token, const size_t i)

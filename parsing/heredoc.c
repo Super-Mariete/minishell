@@ -12,16 +12,25 @@
 
 #include "../minishell.h"
 
-static char	*expand_heredoc(int option, t_cli *cli)
+static char	*expand_heredoc(const int option, t_cli *cli)
 {
 	char	*t;
+	char	**herearray;
 
-	if (option)
+	if (!option)
 	{
-		t = expand_line(cli->heredoc, cli);
-		if (!t)
-			return (nullptr);
+		herearray = ft_split(cli->heredoc, '\n');
+		if (!herearray)
+			return  (NULL);
+		herearray = expand_array(herearray, cli);
+		if (!herearray)
+			return (NULL);
+		t = convert_to_string(herearray);
+		ft_free_d(herearray);
+		free(cli->heredoc);
 		cli->heredoc = t;
+		if (!t)
+			return (NULL);
 	}
 	return (cli->heredoc);
 }
@@ -89,10 +98,10 @@ int	get_heredoc(const char *token, t_cli *cli)
 	free_prev(cli);
 	if (!token)
 		return (perror_token("<<", SYN_ERR), 2);
+	option = 0;
 	delim = trim_delim(token, &option);
 	if (!delim)
 		return (cli->status = 2, 2);
-	option = 0;
 	status = read_heredoc(cli, &option, delim);
 	if (status == 130)
 	{

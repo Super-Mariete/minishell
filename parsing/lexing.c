@@ -36,7 +36,7 @@ static char	*ft_escape(char *line, const size_t start, const size_t end)
 	return (t);
 }
 
-static char	*esc_line(char *line, const size_t i, const int len)
+static char	*esc_line(char *line, const size_t i, const size_t len)
 {
 	char	*esc;
 	char	*t;
@@ -45,7 +45,7 @@ static char	*esc_line(char *line, const size_t i, const int len)
 	{
 		t = ft_strndup(line, i);
 		if (i > 0 && !t)
-			return (perror("malloc1 : "), nullptr);
+			return (perror("malloc : "), nullptr);
 		if (!line[i + 2])
 			return (t);
 		esc = ft_strjoin(t, line + i + 2);
@@ -61,15 +61,15 @@ static char	*esc_line(char *line, const size_t i, const int len)
 
 static char	*escape_q(size_t *i, char **str)
 {
-	int		len;
+	size_t	len;
 	char	*esc;
 	char	*s;
 
 	s = *str;
-	len = quoted_len(s + *i, s[(*i)]);
-	if (len < 0)
+	len = quoted_len(s + *i);
+	if (len == 0)
 		return (free(s), nullptr);
-	esc = esc_line(s, *i, (int)*i + len);
+	esc = esc_line(s, *i, *i + len);
 	if (!esc)
 		return (free(s), nullptr);
 	*i += (len - 3);
@@ -88,8 +88,7 @@ char	*escape_quotes(const char *line)
 	s = ft_strdup(line);
 	while (i < ft_strlen(s))
 	{
-		if (ft_strchr(QUOTES, s[i])
-			&& (i == 0 || line[i - 1] != '\\'))
+		if (ft_strchr(QUOTES, s[i]))
 		{
 			s = escape_q(&i, &s);
 			if (!s)
@@ -115,6 +114,7 @@ char	**tokenize(const char *line, t_cli *cli)
 	tokens = expand_tokens(tokens, &(cli->n_tokens), cli, 0);
 	if (!tokens)
 		return (free_tokens(tokens, cli->n_tokens), nullptr);
+	size_t i = 0;
 	if (check_errors(tokens, cli->n_tokens))
 		return (free_tokens(tokens, cli->n_tokens), nullptr);
 	return (tokens);

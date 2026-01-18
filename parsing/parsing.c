@@ -125,13 +125,13 @@ int	parse_input(char **tokens, t_cli *cli, size_t group, size_t i)
 		else if (tokens[i] && !ft_strncmp(tokens[i], "<<", 2))
 		{
 			if (get_heredoc(tokens[++i], cli) == 130)
-				return (130);
+				return (free_tokens(tokens, len), 130);
 		}
 		else if (tokens[i] && ft_strchr(OP_STR2, tokens[i][0]))
 		{
 			cli->next = parse_op(tokens[i], cli);
 			if (!cli->next)
-				return (2);
+				return (free_tokens(tokens, len), 2);
 			cli = cli->next;
 		}
 		else
