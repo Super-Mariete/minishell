@@ -77,6 +77,6 @@ int	main(const int argc, char **argv, char **envp)
 		status = cli->last_status;
 	}
 	else
-		status = read_input_line(&env, cli);
+		status = read_input_line(cli);
 	return (free_list(&cli), free_env(&env), status);
 }

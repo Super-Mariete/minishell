@@ -114,8 +114,8 @@ t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 		return (perror("malloc : "), nullptr);
 	cli->cmd = nullptr;
 	cli->args = nullptr;
-	cli->ft_env = env;
-	if (env && !cli->ft_env)
+	cli->env = env;
+	if (env && !cli->env)
 		perror("malloc : ");
 	cli->infile = nullptr;
 	cli->outfile = nullptr;

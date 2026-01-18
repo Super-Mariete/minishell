@@ -63,7 +63,7 @@ static char	*expand_token(char *token, const t_cli *cli, size_t i)
 	if (token[i + 1] == '?')
 		t = expand_exit_status(cli->last_status, token, i);
 	else
-		t = expand_var(token, i, var_len(token + i), cli->ft_env);
+		t = expand_var(token, i, var_len(token + i), cli->env);
 	return (t);
 }
 
@@ -103,6 +103,7 @@ char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i)
 
 	if (!tokens)
 		return (nullptr);
+	wc_len = 0;
 	while (i < *len)
 	{
 		if (expand_t(&tokens, len, &i, wc_len))

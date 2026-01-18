@@ -43,7 +43,7 @@ int	exec_child(t_cli *cli)
 	if (get_builtin(cli->cmd))
 		exit(exec_builtin_child(cli));
 	check_access(cli);
-	execve(cli->cmd, cli->args, getshenv(*cli->ft_env));
+	execve(cli->cmd, cli->args, getshenv(*cli->env));
 	perror("execve");
 	exit(126);
 }

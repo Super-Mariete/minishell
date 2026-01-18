@@ -60,7 +60,7 @@ int	exec_builtin_child(const t_cli *cli)
 	builtin = get_builtin(cli->cmd);
 	if (!builtin)
 		return (1);
-	return (builtin(cli->args, cli->ft_env));
+	return (builtin(cli->args, cli->env));
 }
 
 /* Busca si el comando es un builtin y devuelve su función si existe */

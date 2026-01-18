@@ -16,7 +16,7 @@ int	check_redirs(char **token, const int i)
 {
 	char	*s;
 
-	if (token[i] && ft_strchr(REDIR_S, token[i][0])
+	if (token[i] && token[i][0] && ft_strchr(REDIR_S, token[i][0])
 			&& (!token[i][1] || (token[i][1] == token[i][0] && !token[i][2])))
 	{
 		if (!token[i + 1])

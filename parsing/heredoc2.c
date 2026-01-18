@@ -61,7 +61,7 @@ size_t	heredoc_len(const char *line)
 	return (i);
 }
 
-static int	write_to_heredoc(t_cli *cli, char file[10], const int fd)
+static int	write_to_heredoc(t_cli *cli, char *file, const int fd)
 {
 	int	ret;
 
@@ -79,31 +79,46 @@ static int	write_to_heredoc(t_cli *cli, char file[10], const int fd)
 	return (ret);
 }
 
+static void	generate_random_filename(char *buffer)
+{
+	int		fd;
+	int		i;
+	char	rand_bytes[10];
+
+	ft_strlcpy(buffer, ".heredoc_", 30);
+	fd = open("/dev/urandom", O_RDONLY);
+	if (fd < 0 || read(fd, rand_bytes, 10) < 10)
+	{
+		i = 0;
+		while (i < 10)
+		{
+			rand_bytes[i] = (char)(i * 3);
+			i++;
+		}
+	}
+	if (fd >= 0)
+		close(fd);
+	i = 0;
+	while (i < 10)
+	{
+		buffer[9 + i] = "abcdefghijklmnopqrstuvwxyz0123456789"
+		[(unsigned char)rand_bytes[i] % 36];
+		i++;
+	}
+	buffer[9 + i] = '\0';
+}
+
 int	create_heredoc(t_cli *cli)
 {
 	int		fd;
-	ssize_t	i;
-	char	file[10];
+	char	file[30];
 
-	i = 0;
-	fd = open("/dev/urandom", O_RDWR | O_EXCL, 0644);
-	if (fd == -1)
-	{
-		while (i++ < 10)
-			file[i - 1] = (char)i;
-	}
-	else
-	{
-		if (read(fd, file, 9) <= 0)
-			while (i++ < 10)
-				file[i - 1] = (char)i;
-	}
-	fd = open(file, O_RDWR | O_CREAT, 0644);
+	generate_random_filename(file);
+	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
 	if (fd == -1)
 	{
 		perror_msh("open", nullptr);
 		return (perror(nullptr), -1);
 	}
-	write_to_heredoc(cli, file, fd);
-	return (fd);
+	return (write_to_heredoc(cli, file, fd));
 }

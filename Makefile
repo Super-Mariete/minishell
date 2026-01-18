@@ -37,7 +37,8 @@ SRC = minishell.c\
 	exec/exec_utils.c
 
 OBJ = $(SRC:.c=.o)
-CFLAGS += -pg -g3 -Ilibft #-Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3 -Ilibft
+SAN_FLAGS = -fsanitize=address,undefined
 
 all: $(NAME)
 
@@ -45,7 +46,10 @@ $(NAME): $(LIBFT_A) $(OBJ)
 	@cc $(CFLAGS) $(OBJ) $(LIBFT_A) -lreadline -o $(NAME)
 
 $(LIBFT_A):
-	@$(MAKE) -s bonus -C libft
+	@$(MAKE) -s bonus -C libft CFLAGS="$(CFLAGS)"
+
+san: fclean
+	@$(MAKE) CFLAGS="$(CFLAGS) $(SAN_FLAGS)" all
 
 %.o: %.c
 	@cc $(CFLAGS) -c $< -o $@

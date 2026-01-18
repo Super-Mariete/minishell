@@ -72,7 +72,7 @@ void	process_input(const char *line, t_cli *cli)
 	ft_exec(cli);
 }
 
-int	read_input_line(t_shenv **env, t_cli *cli)
+int	read_input_line(t_cli *cli)
 {
 	char	*cl;
 

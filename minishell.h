@@ -68,24 +68,24 @@ delimited by end-of-file (wanted `"
 #  define PATH_MAX 4096
 # endif
 
-extern volatile sig_atomic_t	 g_signal;
+extern volatile sig_atomic_t	g_signal;
 
 typedef struct s_shenv
 {
 	char			*var;
 	struct s_shenv	*next;
-}t_shenv;
+}	t_shenv;
 
 typedef struct s_builtin
 {
 	char	*name;
 	int		(*func)(char **args, t_shenv **);
-}t_builtin;
+}	t_builtin;
 
 typedef struct s_cli
 {
 	char			*cmd;
-	t_shenv			**ft_env;
+	t_shenv			**env;
 	char			**args;
 	char			*infile;
 	char			*outfile;
@@ -99,7 +99,7 @@ typedef struct s_cli
 	size_t			group;
 	int				op;
 	struct s_cli	*next;
-}t_cli;
+}	t_cli;
 
 /* minishell.c */
 
@@ -177,7 +177,7 @@ void	set_sig(int option);
 
 /* parsing/readline.c */
 
-int		read_input_line(t_shenv **env, t_cli *cli);
+int		read_input_line(t_cli *cli);
 void	process_input(const char *line, t_cli *cli);
 
 /* exec/ft_execute.c */
