@@ -48,15 +48,10 @@ int	execute_builtin(t_cli *cli)
 		close(stdout_save);
 		return (1);
 	}
-	status = exec_builtin(cli);
-	if (ft_strcmp(cli->cmd, "exit") != 0)
-	{
-		dup2(stdin_save, STDIN_FILENO);
-		dup2(stdout_save, STDOUT_FILENO);
-	}
+	status = exec_builtin(cli, stdin_save, stdout_save);
+	cli->last_status = status;
 	close(stdin_save);
 	close(stdout_save);
-	cli->last_status = status;
 	return (status);
 }
 

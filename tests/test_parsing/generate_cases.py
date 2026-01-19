@@ -3,9 +3,10 @@ import re
 import shlex
 
 # Configuration
-TEST_FILE = "test_parsing.txt"
-INPUT_DIR = "input"
-OUTPUT_DIR = "output"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_FILE = os.path.join(SCRIPT_DIR, "test_parsing.txt")
+INPUT_DIR = os.path.join(SCRIPT_DIR, "input")
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output")
 
 def ensure_dir(d):
     if not os.path.exists(d):

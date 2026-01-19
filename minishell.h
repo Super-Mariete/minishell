@@ -206,7 +206,7 @@ int		has_pipe(const t_cli *cli);
 
 /* exec/aux_exec/exec_builtin.c */
 
-int		exec_builtin(t_cli *cli);
+int		exec_builtin(t_cli *cli, int in, int out);
 
 /* exec/builtins/ *.c */
 
@@ -214,6 +214,7 @@ int		ft_pwd(char **args, t_shenv **ft_env);
 int		ft_echo(char **args, t_shenv **env);
 int		ft_env(char **args, t_shenv **env);
 int		ft_exit(char **args, t_shenv **env);
+bool	is_number_str(const char *s);
 int		ft_cd(char **args, t_shenv **env);
 int		ft_export(char **args, t_shenv **env);
 int		ft_unset(char **args, t_shenv **ft_env);

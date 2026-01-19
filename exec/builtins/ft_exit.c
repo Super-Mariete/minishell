@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-static bool	is_number_str(const char *s)
+bool	is_number_str(const char *s)
 {
 	int	i;
 
@@ -42,31 +42,31 @@ static int	ft_exit2(char **args)
 		ft_putstr_fd("minishell: exit: ", 2);
 		ft_putstr_fd(args[1], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
-		exit(2);
+		ft_free_d(args);
+		return (2);
 	}
 	status = ft_atol(args[1]);
 	exitcode = (int)(status % 256);
 	if (exitcode < 0)
 		exitcode = (exitcode + 256) % 256;
 	printf("exit\n");
+	ft_free_d(args);
 	exit(exitcode);
 }
 
 int	ft_exit(char **args, t_shenv **env)
 {
-	(void)env;
-	if (!args)
+	if (env)
+		(void)env;
+	if (!args || !args[1])
 	{
 		printf("exit\n");
-		exit(0);
-	}
-	if (!args[1])
-	{
-		printf("exit\n");
+		ft_free_d(args);
 		exit(0);
 	}
 	if (args[2])
 	{
+		ft_free_d(args);
 		ft_putstr_fd("minishell: exit too many arguments\n", 2);
 		return (1);
 	}
