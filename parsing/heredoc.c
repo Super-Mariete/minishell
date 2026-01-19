@@ -80,8 +80,10 @@ static int	read_heredoc(t_cli *cli, const int *option, char *delim)
 	if (!line)
 		here_error(delim);
 	cli->heredoc = expand_heredoc(*option, cli);
+	if (!cli->heredoc && errno == ENOMEM)
+		return (perror("minishell: malloc:"), free(delim), cli->status = 2, 2);
 	if (!cli->heredoc)
-		return (cli->status = 2, 2);
+		cli->heredoc = ft_strdup("\0");
 	return (free(line), free(delim), 0);
 }
 
@@ -95,7 +97,7 @@ int	get_heredoc(const char *token, t_cli *cli)
 		return (2);
 	free_prev(cli);
 	if (!token)
-		return (perror_token("<<", SYN_ERR), 2);
+		return (perror_token("newline'", SYN_ERR), 2);
 	option = 0;
 	delim = trim_delim(token, &option);
 	if (!delim)

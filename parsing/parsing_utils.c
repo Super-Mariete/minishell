@@ -77,3 +77,21 @@ void	reset_free(t_cli *cli)
 		node = next_node;
 	}
 }
+
+size_t	n_quotes(const char *line)
+{
+	size_t	i;
+	size_t	n;
+
+	if (!line)
+		return (SIZE_MAX);
+	i = 0;
+	n = 0;
+	while (line[i])
+	{
+		if (ft_strchr(QUOTES, line[i]))
+			n++;
+		i++;
+	}
+	return (n);
+}

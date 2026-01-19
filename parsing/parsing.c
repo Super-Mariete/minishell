@@ -115,6 +115,7 @@ static size_t	parse_input2(char **token, size_t i, t_cli *cli, size_t *group)
 int	parse_input(char **tokens, t_cli *cli, size_t group, size_t i)
 {
 	size_t	len;
+	int		status;
 
 	len = cli->n_tokens;
 	cli->n_tokens = 1;
@@ -124,8 +125,9 @@ int	parse_input(char **tokens, t_cli *cli, size_t group, size_t i)
 			append_file(tokens[++i], cli);
 		else if (tokens[i] && !ft_strncmp(tokens[i], "<<", 2))
 		{
-			if (get_heredoc(tokens[++i], cli) == 130)
-				return (free_tokens(tokens, len), 130);
+			status = get_heredoc(tokens[++i], cli);
+			if (status)
+				return (free_tokens(tokens, len), status);
 		}
 		else if (tokens[i] && tokens[i][0] && ft_strchr(OP_STR2, tokens[i][0]))
 		{

@@ -46,7 +46,7 @@ int	check_prnts(const char *line)
 		i++;
 	}
 	if (prnts)
-		write(2, "minishell : extra parenthesis\n", 30);
+		write(2, "minishell: extra parenthesis needed\n", 37);
 	return (prnts);
 }
 

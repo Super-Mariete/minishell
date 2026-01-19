@@ -163,6 +163,7 @@ size_t	heredoc_len(const char *line);
 void	here_error(const char *delim);
 char	*convert_to_string(char **array);
 char	**expand_array(char **array, const t_cli *cli);
+size_t	n_quotes(const char *line);
 
 /* parsing/shenv.c */
 

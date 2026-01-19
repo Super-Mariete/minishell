@@ -16,21 +16,27 @@ char	*trim_delim(const char *token, int *option)
 {
 	char	*delim;
 	int		i;
+	int		j;
+	size_t	quotes;
+	size_t	len;
 
-	if (!token)
-		return (nullptr);
+	quotes = n_quotes(token);
+	len = ft_strlen(token);
+	if (quotes == SIZE_MAX || len - quotes == 0)
+		return (ft_strdup("\0"));
+	if (ft_strchr(token, '\"') || ft_strchr(token, '\''))
+		*option = 1;
+	delim = (char *)ft_calloc(len - quotes + 1, sizeof(char));
+	if (!delim)
+		return (perror("minishell: malloc:"), NULL);
 	i = 0;
+	j = 0;
 	while (token[i])
 	{
-		if (token[i] == '\"')
-		{
-			*option = 1;
-			delim = escape_quotes(token + i);
-			return (delim);
-		}
+		if (!ft_strchr(QUOTES, token[i]))
+			delim[j++] = token[i];
 		i++;
 	}
-	delim = ft_strdup(token);
 	return (delim);
 }
 
