@@ -138,7 +138,7 @@ void	process_input(const char *line, t_cli *cli)
 	}
 	while (cli->prev)
 		cli = cli->prev;
-	print_parser(cli);
+	// print_parser(cli);
 	ft_exec(cli);
 }
 

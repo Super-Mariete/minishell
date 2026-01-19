@@ -62,9 +62,9 @@ int	exec_builtin(t_cli *cli, const int in, const int out)
 		return (cli->last_status);
 	if (ft_strcmp(cli->cmd, "exit") != 0)
 	{
+		ret = builtin(cli->args, cli->env);
 		dup2(in, STDIN_FILENO);
 		dup2(out, STDOUT_FILENO);
-		ret = builtin(cli->args, cli->env);
 	}
 	else
 		ret = do_exit(cli, in, out, builtin);
