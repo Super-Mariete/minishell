@@ -23,8 +23,8 @@ static char	*expand_heredoc(const int option, t_cli *cli)
 		if (!herearray)
 			return (NULL);
 		herearray = expand_array(herearray, cli);
-		if (!herearray)
-			return (NULL);
+		if (!herearray && errno == ENOMEM)
+			return (ft_free_d(herearray), NULL);
 		t = convert_to_string(herearray);
 		free(cli->heredoc);
 		cli->heredoc = t;
@@ -48,3 +48,4 @@ int	handle_heredoc(t_cli *cli, const int *option,\
 		cli->heredoc = ft_strdup("\0");
 	return (0);
 }
+

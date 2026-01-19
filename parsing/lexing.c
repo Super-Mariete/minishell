@@ -72,7 +72,7 @@ static char	*escape_q(size_t *i, char **str)
 	esc = esc_line(s, *i, *i + len);
 	if (!esc)
 		return (free(s), nullptr);
-	*i += (len - 3);
+	*i += (len - 2);
 	free(*str);
 	return (esc);
 }
@@ -94,7 +94,8 @@ char	*escape_quotes(const char *line)
 			if (!s)
 				return (nullptr);
 		}
-		i++;
+		else
+			i++;
 	}
 	return (s);
 }

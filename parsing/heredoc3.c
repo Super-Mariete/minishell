@@ -12,88 +12,103 @@
 
 #include "../minishell.h"
 
-static size_t	s_len(const char *str, const int n)
+static size_t key_len(const char *line)
 {
-	size_t	i;
+	size_t len;
 
-	i = 0;
-	if (n)
-	{
-		while (!ft_strchr(QUOTES, str[i]))
-			i++;
-		return (i);
-	}
-	while (ft_strchr(QUOTES, str[i]))
-		i++;
-	return (i);
+	len = 0;
+	while (!ft_strchr(SEP_STR2, line[len]))
+		len++;
+	return (len);
 }
 
-static char	*end_quotes(const char *quoted,
-		const char *str, const size_t len)
+static char *get_var(char *key, const t_shenv *env)
 {
-	char	*end;
-	char	*s;
-
-	end = ft_strdup(quoted + len);
-	s = ft_strjoin(str, end);
-	if (!end || !s)
-		return (free(end), NULL);
-	free(end);
-	return (s);
-}
-
-static char	*reapply_quotes(const char *quoted, const char *str)
-{
-	char	*begin;
-	char	*t;
-	char	*ret;
 	size_t	len;
 
-	len = s_len(quoted, 0);
-	ret = NULL;
-	if (len)
+	len = key_len(key);
+	while (env)
 	{
-		begin = ft_strndup(quoted, len);
-		ret = ft_strjoin(begin, str);
-		if (!begin || !ret)
-			return (free(begin), NULL);
-		free(begin);
+		if (!ft_strncmp(key, env->var, len) && *(env->var + len) == '=')
+			return (env->var + len + 1);
+		env = env->next;
 	}
-	if (s_len(quoted + len, 1))
+	return (NULL);
+}
+
+static char	*copy_to_buffer(char *line, char *buffer, const t_shenv *env)
+{
+	size_t	i;
+	size_t	j;
+	char	*var;
+
+	i = 0;
+	j = 0;
+	while (line[i])
 	{
-		if (ret)
-			t = end_quotes(quoted, ret, len + s_len(quoted + len, 1));
-		else
-			t = end_quotes(quoted, (char *)str, len + s_len(quoted + len, 1));
-		free(ret);
-		ret = t;
+		if (line[i] == '$')
+		{
+			var = get_var(line + i + 1, env);
+			if (var)
+				ft_strcpy(buffer + j, var);
+			j +=  ft_strlen(var);
+			i += key_len(line + i + 1) + 1;
+			continue ;
+		}
+		buffer[j] = line[i];
+		i++;
+		j++;
 	}
-	return (ret);
+	return (buffer);
+}
+
+static char *expanded_line(char *line, const t_shenv *env)
+{
+	size_t	i;
+	size_t	len;
+	char	*var;
+	char	*expanded;
+
+	i = 0;
+	len = 0;
+	while (line[i])
+	{
+		if (line[i] == '$')
+		{
+			var = get_var(line + i + 1, env);
+			len += ft_strlen(var);
+			i += key_len(line + i + 1) + 1;
+		}
+		i++;
+		len++;
+	}
+	expanded = (char *)ft_calloc(len + 1, sizeof(char));
+	if (!expanded)
+		return (perror("minishell: malloc:"), NULL);
+	copy_to_buffer(line, expanded, env);
+	return (expanded);
 }
 
 char	**expand_array(char **array, const t_cli *cli)
 {
 	size_t	i;
 	char	*expanded;
-	char	*t;
 
 	i = 0;
 	while (array[i])
 	{
-		t = ft_strtrim(array[i], QUOTES);
-		if (t && t[0] == '$')
+		if (ft_strchr(array[i], '$'))
 		{
-			expanded = expand_line(t, cli);
-			free(t);
-			t = reapply_quotes(array[i], expanded);
-			if (!t)
-				return (NULL);
+			expanded = expanded_line(array[i], *(cli->env));
+			if (!expanded && errno == ENOMEM)
+				return (ft_free_d(array), NULL);
+			if (!expanded)
+				expanded = ft_strdup("\0");
+			if (!expanded)
+				return (ft_free_d(array), NULL);
 			free(array[i]);
-			free(expanded);
-			array[i] = t;
+			array[i] = expanded;
 		}
-		else
-			free(t);
 		i++;
 	}
 	return (array);
@@ -108,12 +123,18 @@ char	*convert_to_string(char **array)
 
 	i = 0;
 	str = NULL;
+	if (!array)
+		return (NULL);
 	while (array[i])
 	{
 		s = ft_strjoin(str, array[i]);
+		if ((str || array[i]) && !s)
+			return (free(str), free(array[i]), perror("msh: malloc:"), NULL);
 		nl = ft_strjoin(s, "\n");
 		free(str);
 		free(s);
+		if (!nl)
+			return (perror("minishell : malloc:"), NULL);
 		str = nl;
 		free(array[i]);
 		i++;
