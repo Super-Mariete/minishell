@@ -121,12 +121,14 @@ t_cli	*parse_op(const char *token, t_cli *cli);
 int		set_cmd(char *token, t_cli *cli);
 int		add_args(char *token, t_cli *cli, int pos);
 
-/* parsing/parsing_utils.c */
+/* parsing/parsing_utils*.c */
 
 void	ft_exec(t_cli *cli);
 char	*expand_exit_status(int status, const char *line, size_t i);
 bool	expand_t(char ***tokens, size_t *len, size_t *i, int wc_len);
 void	reset_free(t_cli *cli);
+int handle_heredoc(t_cli *cli, const int *option,\
+		const char *delim, const char *line);
 
 /* parsing/utils*.c */
 
@@ -219,5 +221,7 @@ bool	is_number_str(const char *s);
 int		ft_cd(char **args, t_shenv **env);
 int		ft_export(char **args, t_shenv **env);
 int		ft_unset(char **args, t_shenv **ft_env);
+
+void    print_parser(t_cli *cli);
 
 #endif

@@ -1,0 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_utils2.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/19 13:12:50 by rafael-m          #+#    #+#             */
+/*   Updated: 2026/01/19 13:20:17 by rafael-m         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minishell.h"
+
+static char	*expand_heredoc(const int option, t_cli *cli)
+{
+	char	*t;
+	char	**herearray;
+
+	if (!option)
+	{
+		herearray = ft_split(cli->heredoc, '\n');
+		if (!herearray)
+			return (NULL);
+		herearray = expand_array(herearray, cli);
+		if (!herearray)
+			return (NULL);
+		t = convert_to_string(herearray);
+		free(cli->heredoc);
+		cli->heredoc = t;
+	}
+	return (cli->heredoc);
+}
+
+int	handle_heredoc(t_cli *cli, const int *option,\
+		const char *delim, const char *line)
+{
+	if (!line)
+		here_error(delim);
+	cli->heredoc = expand_heredoc(*option, cli);
+	if (!cli->heredoc && errno == ENOMEM)
+	{
+		perror("minishell: malloc:");
+		cli->status = 2;
+		return (2);
+	}
+	if (!cli->heredoc)
+		cli->heredoc = ft_strdup("\0");
+	return (0);
+}

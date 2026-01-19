@@ -64,6 +64,7 @@ void	free_first_node(t_cli *cli)
 	cli->r_mode = 0;
 	cli->group = 0;
 	cli->op = 0;
+	cli->next = NULL;
 }
 
 t_cli	*init_node(const size_t len, t_shenv **env, const int op)

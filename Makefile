@@ -17,6 +17,7 @@ SRC = minishell.c\
 	parsing/heredoc3.c\
 	parsing/lexing2.c\
 	parsing/parsing_utils.c\
+	parsing/parse_utils2.c\
 	parsing/utils2.c\
 	exec/ft_execute.c\
 	exec/builtins/ft_echo.c\

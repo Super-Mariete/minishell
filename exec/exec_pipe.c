@@ -99,6 +99,5 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 			last_pid = pid;
 		cli = cli->next;
 	}
-	reset_list(cli);
 	return (wait_children(&pid, last_pid));
 }

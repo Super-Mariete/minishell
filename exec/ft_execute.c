@@ -44,13 +44,13 @@ int	exec_child(t_cli *cli)
 	set_sig(CHILD);
 	if (apply_redirs(cli))
 	{
-		reset_free(cli);
+		reset_list(cli);
 		free_env(cli->env);
 		exit(1);
 	}
 	if (!cli->cmd)
 	{
-		reset_free(cli);
+		reset_list(cli);
 		free_env(cli->env);
 		exit(0);
 	}
@@ -60,7 +60,7 @@ int	exec_child(t_cli *cli)
 	execve(cli->cmd, cli->args, getshenv(*cli->env));
 	perror("execve");
 	free_env(cli->env);
-	reset_free(cli);
+	reset_list(cli);
 	exit(126);
 }
 
@@ -83,6 +83,7 @@ static int	execute_command(t_cli *cli)
 {
 	pid_t	pid;
 	int		status;
+	int		ret;
 
 	pid = fork();
 	if (pid < 0)
@@ -95,7 +96,9 @@ static int	execute_command(t_cli *cli)
 	set_sig(IGNORE);
 	waitpid(pid, &status, 0);
 	set_sig(PARENT);
-	return (manage_status(cli, status));
+	ret = manage_status(cli, status);
+	reset_list(cli);
+	return (ret);
 }
 
 int	execute(t_cli *cli)
@@ -119,6 +122,9 @@ int	execute(t_cli *cli)
 		return (reset_list(cli), ret);
 	}
 	if (piped)
-		return (execute_pipeline(cli, -1, -1));
+	{
+		ret = execute_pipeline(cli, -1, -1);
+		return (reset_list(cli), ret);
+	}
 	return (execute_command(cli));
 }
