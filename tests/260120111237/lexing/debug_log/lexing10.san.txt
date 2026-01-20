@@ -1,3 +1,0 @@
-No ASan errors
-exit
-aaaaaaaaaaaaaaa
