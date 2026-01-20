@@ -1,0 +1,23 @@
+==8593== Memcheck, a memory error detector
+==8593== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==8593== Using Valgrind-3.25.1 and LibVEX; rerun with -h for copyright info
+==8593== Command: ./val_msh
+==8593== Parent PID: 8591
+==8593== 
+==8593== 
+==8593== HEAP SUMMARY:
+==8593==     in use at exit: 4,056 bytes in 4 blocks
+==8593==   total heap usage: 167 allocs, 163 frees, 17,083 bytes allocated
+==8593== 
+==8593== LEAK SUMMARY:
+==8593==    definitely lost: 0 bytes in 0 blocks
+==8593==    indirectly lost: 0 bytes in 0 blocks
+==8593==      possibly lost: 0 bytes in 0 blocks
+==8593==    still reachable: 0 bytes in 0 blocks
+==8593==         suppressed: 4,056 bytes in 4 blocks
+==8593== 
+==8593== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+--8593-- 
+--8593-- used_suppression:      4 ignore_readline_history_leaks ../../readline.supp:14 suppressed: 4,056 bytes in 4 blocks
+==8593== 
+==8593== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

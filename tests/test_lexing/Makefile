@@ -46,6 +46,7 @@ SRC         = $(ROOT_DIR)/minishell.c \
               $(ROOT_DIR)/parsing/heredoc.c \
               $(ROOT_DIR)/parsing/heredoc2.c \
               $(ROOT_DIR)/parsing/heredoc3.c \
+              $(ROOT_DIR)/parsing/heredoc4.c \
               $(ROOT_DIR)/parsing/signals.c \
               $(ROOT_DIR)/parsing/shenv.c \
               $(ROOT_DIR)/parsing/wildcards.c \

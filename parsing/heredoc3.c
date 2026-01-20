@@ -113,32 +113,3 @@ char	**expand_array(char **array, const t_cli *cli)
 	}
 	return (array);
 }
-
-char	*convert_to_string(char **array)
-{
-	char	*s;
-	char	*str;
-	char	*nl;
-	size_t	i;
-
-	i = 0;
-	str = NULL;
-	if (!array)
-		return (NULL);
-	while (array[i])
-	{
-		s = ft_strjoin(str, array[i]);
-		if ((str || array[i]) && !s)
-			return (free(str), free(array[i]), perror("msh: malloc:"), NULL);
-		nl = ft_strjoin(s, "\n");
-		free(str);
-		free(s);
-		if (!nl)
-			return (perror("minishell : malloc:"), NULL);
-		str = nl;
-		free(array[i]);
-		i++;
-	}
-	free(array);
-	return (str);
-}

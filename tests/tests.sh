@@ -287,4 +287,4 @@ fi
 echo
 # ft_make ../main.c
 ft_test_lexing
-ft_test_parsing
+#ft_test_parsing

@@ -3,22 +3,22 @@ LIBFT_A = libft/libft.a
 SRC = minishell.c\
 	parsing/lexing.c\
 	parsing/lexing1.c\
+	parsing/lexing2.c\
 	parsing/utils.c\
+	parsing/utils2.c\
 	parsing/parsing.c\
 	parsing/parsing1.c\
+	parsing/parsing_utils.c\
 	parsing/expansion.c\
 	parsing/heredoc.c\
+	parsing/heredoc2.c\
+    parsing/heredoc3.c\
+    parsing/heredoc4.c\
 	parsing/signals.c\
 	parsing/shenv.c\
 	parsing/wildcards.c\
 	parsing/wc_utils.c\
 	parsing/readline.c\
-	parsing/heredoc2.c\
-	parsing/heredoc3.c\
-	parsing/lexing2.c\
-	parsing/parsing_utils.c\
-	parsing/parse_utils2.c\
-	parsing/utils2.c\
 	exec/ft_execute.c\
 	exec/builtins/ft_echo.c\
 	exec/builtins/ft_cd.c\
