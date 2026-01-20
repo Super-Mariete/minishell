@@ -58,13 +58,13 @@ int	add_args(char *token, t_cli *cli, const int pos)
 	return (1);
 }
 
-t_cli	*parse_op(const char *token, t_cli *cli)
+t_cli	*parse_op(const char *token, t_cli **cli)
 {
 	t_cli	*next_cli;
 	int		op;
 
 	op = 0;
-	if (!token || !cli)
+	if (!token || !cli || !*cli)
 		return (perror("parse op !token || !cli"), nullptr);
 	if (token[0] == '|' && token[1] == '|')
 		op = OR;
@@ -74,11 +74,13 @@ t_cli	*parse_op(const char *token, t_cli *cli)
 		op = AND;
 	else
 		return (perror_token(token, SYN_ERR), nullptr);
-	cli->op = op;
-	next_cli = init_node(cli->n_tokens, cli->env, 0);
+	(*cli)->op = op;
+	next_cli = init_node((*cli)->n_tokens, (*cli)->env, 0);
 	if (!next_cli)
-		return (perror("malloc : "), cli->status = 2, nullptr);
-	next_cli->prev = cli;
+		return (perror("malloc : "), (*cli)->status = 2, nullptr);
+	next_cli->prev = (*cli);
+	(*cli)->next = next_cli;
+	(*cli) = (*cli)->next;
 	return (next_cli);
 }
 

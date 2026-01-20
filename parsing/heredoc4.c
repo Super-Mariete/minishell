@@ -77,4 +77,3 @@ int	handle_heredoc(t_cli *cli, const int *option,\
 		cli->heredoc = ft_strdup("\0");
 	return (0);
 }
-

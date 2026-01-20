@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	sig_int_parent(int signal)
+void	sig_int_parent(const int signal)
 {
 	char	nl;
 

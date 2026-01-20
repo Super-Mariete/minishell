@@ -131,10 +131,8 @@ int	parse_input(char **tokens, t_cli *cli, size_t group, size_t i)
 		}
 		else if (tokens[i] && tokens[i][0] && ft_strchr(OP_STR2, tokens[i][0]))
 		{
-			cli->next = parse_op(tokens[i], cli);
-			if (!cli->next)
+			if (!parse_op(tokens[i], &cli))
 				return (free_tokens(tokens, len), 2);
-			cli = cli->next;
 		}
 		else
 			i = parse_input2(tokens, i, cli, &group);

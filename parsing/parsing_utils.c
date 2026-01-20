@@ -37,6 +37,7 @@ void	ft_exec(t_cli *cli)
 	{
 		cli->status = execute(cli);
 		cli->last_status = cli->status;
+		cli->status = 0;
 	}
 }
 

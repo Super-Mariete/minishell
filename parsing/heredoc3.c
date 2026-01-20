@@ -12,9 +12,9 @@
 
 #include "../minishell.h"
 
-static size_t key_len(const char *line)
+static size_t	key_len(const char *line)
 {
-	size_t len;
+	size_t	len;
 
 	len = 0;
 	while (!ft_strchr(SEP_STR2, line[len]))
@@ -22,7 +22,7 @@ static size_t key_len(const char *line)
 	return (len);
 }
 
-static char *get_var(char *key, const t_shenv *env)
+static char	*get_var(char *key, const t_shenv *env)
 {
 	size_t	len;
 
@@ -51,7 +51,7 @@ static char	*copy_to_buffer(char *line, char *buffer, const t_shenv *env)
 			var = get_var(line + i + 1, env);
 			if (var)
 				ft_strcpy(buffer + j, var);
-			j +=  ft_strlen(var);
+			j += ft_strlen(var);
 			i += key_len(line + i + 1) + 1;
 			continue ;
 		}
@@ -62,7 +62,7 @@ static char	*copy_to_buffer(char *line, char *buffer, const t_shenv *env)
 	return (buffer);
 }
 
-static char *expanded_line(char *line, const t_shenv *env)
+static char	*expanded_line(char *line, const t_shenv *env)
 {
 	size_t	i;
 	size_t	len;

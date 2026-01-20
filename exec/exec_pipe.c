@@ -32,7 +32,7 @@ static int	wait_children(pid_t *pid, const pid_t last_pid)
 	}
 	set_sig(PARENT);
 	if (WIFSIGNALED(last_status))
-		return (128 + WTERMSIG(last_status));
+		return (printf("HLA\n"), 128 + WTERMSIG(last_status));
 	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));
 	return (1);
