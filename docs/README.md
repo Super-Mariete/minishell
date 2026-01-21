@@ -1,105 +1,135 @@
-# Minishell – Arquitectura
+# Minishell - A Simple Bash Implementation
 
-## 1. Análisis arquitectónico
+![Language](https://img.shields.io/badge/Language-C-blue)
+![School](https://img.shields.io/badge/School-42-black)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-- `minishell.c` implementa el ciclo principal `ft_read_line`: configura señales (`ft_set_sig`), carga el entorno con `ft_load_env`, obtiene líneas con `readline`, almacena histórico y, tras cada iteración, reutiliza la lista `t_cli`.
-- La fase de **lexing/expansión** (`parsing/lexing.c`, `parsing/expansion.c`) tokeniza la línea, expande variables/estado de salida y resuelve wildcards (`parsing/wildcards.c`), manteniendo compatibilidad con heredocs y comillas.
-- El **parser** (`parsing/parsing.c`, `parsing/parsing1.c`) transforma los tokens en una lista enlazada de `t_cli`, configurando redirecciones, heredocs y operadores lógicos/pipes.
-- El **ejecutor** (`exec/ft_execute.c`) orquesta la ejecución decidiendo entre builtins (`exec/aux_exec/exec_builtin.c`), pipelines (`execute_pipeline`) y procesos externos (`execute_command`) usando `fork/execve`.
-- Las redirecciones se aplican en `exec/aux_exec/apply_redirs.c` antes de la ejecución del comando.
-- La **gestión del entorno** (`parsing/shenv.c`, `exec/builtins/ft_*.c`) mantiene un `t_shenv` enlazado y sincroniza variables especiales (`PWD`, `OLDPWD`, etc.).
-- Utilidades y memoria recaen en `libft/` (funciones `ft_*` de cadenas, listas y arrays), que actúa como capa de servicios compartidos.
+**Minishell** is a custom implementation of a minimal Unix shell, inspired by Bash. This project was built as part of the 42 School curriculum to explore the internal workings of command-line interpreters, process management, and file descriptor manipulation in C.
 
-## 2. Tecnologías utilizadas
+---
 
-- Lenguaje C con estándar POSIX (`fork`, `execve`, `pipe`, `dup2`, `waitpid`, `ioctl`, señales).
-- GNU Readline (`-lreadline`) para prompt interactivo y gestión del histórico.
-- Biblioteca propia `libft` como soporte de utilidades generales.
-- `Makefile` que enlaza `libft` y `readline` y compila los módulos del proyecto.
+## 📖 Table of Contents
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Built-in Commands](#-built-in-commands)
+- [Testing](#-testing)
 
-## 3. Estructura de carpetas y archivos
+---
 
-```text
-.
-├── minishell.c            # Bucle principal, configuración de señales y entrada
-├── minishell.h            # Definiciones de structs, macros y prototipos
-├── exec/                  # Motor de ejecución
-│   ├── ft_execute.c       # Orquestador (ft_execute, execute_pipeline, execute_command)
-│   ├── mac_stub.c         # Stub para compatibilidad (si aplica)
-│   ├── exec.h             # Cabeceras de ejecución
-│   ├── builtins/          # Comandos internos (builtins)
-│   │   ├── ft_cd.c
-│   │   ├── ft_echo.c
-│   │   ├── ft_env.c
-│   │   ├── ft_exit.c
-│   │   ├── ft_export.c
-│   │   ├── ft_pwd.c
-│   │   ├── ft_unset.c
-│   │   └── ...
-│   └── aux_exec/          # Funciones auxiliares de ejecución
-│       ├── apply_redirs.c # Aplicación de redirecciones (<, >, >>)
-│       ├── exec_builtin.c # Wrapper para llamar builtins
-│       └── has_pipe.c     # Detección de pipes
-├── parsing/               # Lexing, parsing, expansiones, env interno, señales
-│   ├── lexing.c           # Tokenización
-│   ├── parsing.c          # Construcción del AST / lista de comandos
-│   ├── expansion.c        # Expansión de variables $VAR
-│   ├── heredoc.c          # Gestión de HereDocs
-│   ├── wildcards.c        # Expansión de wildcards (*)
-│   ├── shenv.c            # Gestión de variables de entorno
-│   └── signals.c          # Manejo de señales (Ctrl+C, Ctrl+\)
-├── libft/                 # Biblioteca auxiliar con funciones reutilizables
-│   ├── libft.h
-│   ├── Makefile
-│   └── ft_*.c
-├── Makefile               # Objetivo `minishell`, vínculo con `libft` y readline
-├── test_fds.sh            # Script para pruebas de file descriptors
-├── readline.supp          # Supresiones de valgrind para readline
-└── README.md              # Informe arquitectónico del proyecto
+## ✨ Features
+
+Minishell supports a robust set of features found in modern shells:
+
+### Core Functionality
+- **Prompt:** Displays a custom prompt waiting for user input using `readline`.
+- **History:** Maintains a history of commands (up arrow access).
+- **Executable Search:** Finds and executes binaries from system `PATH` or absolute/relative paths.
+- **Signal Handling:** Replicates Bash behavior for `Ctrl-C` (SIGINT), `Ctrl-\` (SIGQUIT), and `Ctrl-D` (EOF).
+
+### Parsing & Expansion
+- **Quotes:** Handles single (`'`) and double (`"`) quotes, managing meta-characters appropriately.
+- **Environment Variables:** Expands variables (e.g., `$USER`, `$HOME`) and exit status (`$?`).
+- **Wildcards:** Supports `*` wildcard expansion in the current working directory.
+
+### Redirections & Pipes
+- **Pipes (`|`):** Connects the output of one command to the input of the next.
+- **Input (`<`):** Redirects input from a file.
+- **Output (`>`):** Redirects output to a file (overwrite).
+- **Append (`>>`):** Redirects output to a file (append).
+- **Heredoc (`<<`):** Reads input until a delimiter is seen.
+
+### Advanced Logic
+- **Logical Operators:** Support for `&&` (AND) and `||` (OR) for conditional execution.
+- **Parenthesis:** Priority grouping `(cmd1 && cmd2)` to control execution flow.
+
+---
+
+## 🏗 Architecture
+
+The shell operates in a Read-Eval-Print Loop (REPL):
+
+1.  **Lexer:** Tokenizes the raw input string, handling separators, operators, and quotes.
+2.  **Parser:** Constructs a command list (`t_cli` linked list) and validates syntax (e.g., unclosed quotes or unexpected tokens).
+3.  **Expander:** Processes environment variables, handles quote removal, and performs wildcard expansion.
+4.  **Executor:** Traverses the command list, managing pipes via `pipe` and `fork`, applying redirections with `dup2`, and executing either built-ins or system binaries.
+
+---
+
+## 🛠 Installation
+
+### Prerequisites
+- **OS:** Linux or macOS.
+- **Compiler:** `gcc` or `clang`.
+- **Libraries:** `readline` (required for interactive input).
+
+### Build
+Clone the repository and compile:
+
+```bash
+git clone https://github.com/yourusername/minishell.git
+cd minishell
+make
 ```
 
-## 4. Diagrama de arquitectura
+*Other make targets:*
+- `make re`: Rebuild from scratch.
+- `make clean`: Remove object files.
+- `make fclean`: Remove object files and binary.
+- `make san`: Build with AddressSanitizer (`-fsanitize=address`) for debugging.
 
-```mermaid
-flowchart LR
-    subgraph CLI
-        A[ft_read_line\nminishell.c]
-        B[readline/history]
-    end
-    subgraph Parser
-        C[ft_tokens]
-        D[ft_expand_tokens]
-        E[ft_parse]
-    end
-    subgraph Executor
-        F[ft_execute]
-        G[execute_pipeline]
-        H[execute_builtin]
-        I[execute_command]
-    end
-    subgraph Builtins
-        H1[echo/cd/pwd/export\nunset/env/exit]
-    end
-    subgraph Env
-        J[ft_load_env / t_shenv]
-        K[ft_getshenv / ft_setenv]
-    end
-    subgraph Libft
-        L[libft utilities]
-    end
-    subgraph Signals
-        S[ft_set_sig\ng_sig_rec]
-    end
+---
 
-    A --> C --> D --> E --> F
-    F --> G --> Env
-    F --> H --> H1
-    F --> I --> Env
-    Parser --> Env
-    CLI --> S
-    Executor --> S
-    Env --> Executor
-    Libft --> Parser
-    Libft --> Executor
-    Libft --> Env
+## 🚀 Usage
+
+Start the shell:
+```bash
+./minishell
+```
+
+### Examples
+**Basic Commands:**
+```bash
+minishell$ ls -la
+minishell$ pwd
+minishell$ echo "Hello World"
+```
+
+**Pipes and Redirections:**
+```bash
+minishell$ grep "int" < minishell.h | cat -e > types.txt
+```
+
+**Logic and Grouping:**
+```bash
+minishell$ ls non_existent_file || echo "File not found"
+minishell$ (cd libft && make) && echo "Libft built successfully"
+```
+
+---
+
+## 💻 Built-in Commands
+
+Minishell includes its own implementation of the following built-ins:
+
+| Command | Description |
+| :--- | :--- |
+| `echo` | Prints arguments to stdout (supports `-n`). |
+| `cd` | Changes the current working directory. |
+| `pwd` | Prints the current working directory. |
+| `export` | Sets environment variables. |
+| `unset` | Unsets environment variables. |
+| `env` | Displays the current environment. |
+| `exit` | Exits the shell with an optional status code. |
+
+---
+
+## 🧪 Testing
+
+The project includes an automated test script to verify lexing, parsing, and execution.
+
+Run the tests:
+```bash
+./tests/tests.sh
 ```
