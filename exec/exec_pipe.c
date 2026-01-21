@@ -85,10 +85,10 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 	while (cli)
 	{
 		if (manage_fds_at_start(cli, fd, prev_fd))
-			return (free_env(cli->env), reset_free(cli), 1);
+			return (free_env(cli->env), reset_list(cli), 1);
 		pid = fork();
 		if (pid < 0)
-			return (free_env(cli->env), reset_free(cli), perror("fork"), 1);
+			return (free_env(cli->env), reset_list(cli), perror("fork"), 1);
 		if (pid == 0)
 		{
 			manage_child_fds(cli, fd, prev_fd);

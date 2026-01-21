@@ -21,7 +21,6 @@ int	ft_cd(char **args, t_shenv **env)
 		path = ft_getenv(*env, "HOME");
 	else
 		path = args[1];
-	ft_bzero(cwd, 1024);
 	if (chdir(path) != 0)
 	{
 		perror("cd");

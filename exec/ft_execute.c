@@ -79,7 +79,7 @@ static int	manage_status(t_cli *cli, const int status)
 	return (cli->last_status);
 }
 
-static int	execute_command(t_cli *cli)
+int	execute_command(t_cli *cli)
 {
 	pid_t	pid;
 	int		status;
@@ -97,13 +97,11 @@ static int	execute_command(t_cli *cli)
 	waitpid(pid, &status, 0);
 	set_sig(PARENT);
 	ret = manage_status(cli, status);
-	reset_list(cli);
 	return (ret);
 }
 
 int	execute(t_cli *cli)
 {
-	int	piped;
 	int	ret;
 
 	if (!cli)
@@ -115,16 +113,17 @@ int	execute(t_cli *cli)
 		reset_list(cli);
 		return (perror_msh(NULL, "command not found\n"), 2);
 	}
-	piped = has_pipe(cli);
-	if (get_builtin(cli->cmd) && !piped)
-	{
-		ret = execute_builtin(cli);
-		return (reset_list(cli), ret);
-	}
-	if (piped)
+	if (cli->next != NULL && cli->op == PIPE)
 	{
 		ret = execute_pipeline(cli, -1, -1);
-		return (reset_list(cli), ret);
+		return (ret);
+	}
+	if (cli->op == OR || cli->op == AND)
+		return (exec_ops(cli));
+	if (get_builtin(cli->cmd))
+	{
+		ret = execute_builtin(cli);
+		return (ret);
 	}
 	return (execute_command(cli));
 }

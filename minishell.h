@@ -191,6 +191,7 @@ int		execute(t_cli *cli);
 int		execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid);
 int		exec_child(t_cli *cli);
 int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
+int		execute_command(t_cli *cli);
 
 /* exec/exec_utils.c */
 
@@ -199,13 +200,13 @@ int		handle_redirs(const t_cli *cli);
 int		exec_builtin_child(t_cli *cli);
 int		execute_builtin(t_cli *cli);
 
+/* exec_ops.c */
+
+int		exec_ops(t_cli *cli);
+
 /* exec/aux_exec/apply_redirs.c */
 
 int		apply_redirs(const t_cli *cli);
-
-/* exec/aux_exec/has_pipe.c */
-
-int		has_pipe(const t_cli *cli);
 
 /* exec/aux_exec/exec_builtin.c */
 
