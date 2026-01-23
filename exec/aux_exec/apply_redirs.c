@@ -16,7 +16,7 @@ static bool	redir_heredoc(const t_cli *cli)
 {
 	if (dup2(cli->heredoc_fd, STDIN_FILENO) < 0)
 	{
-		perror("dup2 heredoc");
+		perror("minishell: dup2 heredoc");
 		close(cli->heredoc_fd);
 		return (true);
 	}
@@ -34,7 +34,7 @@ static bool	redir_infile(const t_cli *cli, int *fd)
 	}
 	if (dup2(*fd, STDIN_FILENO) < 0)
 	{
-		perror("dup2 infile");
+		perror("minishell: dup2 infile");
 		close(*fd);
 		return (true);
 	}
@@ -59,7 +59,7 @@ static bool	redir_outfile(const t_cli *cli, int *fd)
 	}
 	if (dup2(*fd, STDOUT_FILENO) < 0)
 	{
-		perror("dup2 outfile");
+		perror("minishel: dup2 outfile");
 		close(*fd);
 		return (true);
 	}

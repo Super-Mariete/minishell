@@ -45,9 +45,15 @@
 # define OP_STR "&|()"
 # define OP_STR2 "&|"
 # define PRNTS "()"
+
+/* Tipos de Operadores */
+
 # define PIPE 1
 # define AND 2
 # define OR 3
+# define OP_PRNTS 4
+# define CL_PRNTS 5
+
 # define IFS " \t\n"
 # define REDIR_S "< >"
 # define QUOTES "\"'"
@@ -133,7 +139,7 @@ int		handle_heredoc(t_cli *cli, const int *option,\
 /* parsing/utils*.c */
 
 t_cli	*init_node(size_t len, t_shenv **env, int op);
-void	free_list(t_cli **cli);
+void	free_list(t_cli *cli);
 void	free_node(t_cli *cli);
 void	free_first_node(t_cli *cli);
 void	reset_list(t_cli *cli);

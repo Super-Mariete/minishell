@@ -44,8 +44,7 @@ int	exec_child(t_cli *cli)
 	set_sig(CHILD);
 	if (apply_redirs(cli))
 	{
-		reset_list(cli);
-		free_env(cli->env);
+		free_list(cli);
 		exit(1);
 	}
 	if (!cli->cmd)
@@ -58,9 +57,8 @@ int	exec_child(t_cli *cli)
 		exit(exec_builtin_child(cli));
 	check_access(cli);
 	execve(cli->cmd, cli->args, getshenv(*cli->env));
-	perror("execve");
-	free_env(cli->env);
-	reset_list(cli);
+	perror("minishell: execve");
+	free_list(cli);
 	exit(126);
 }
 
@@ -88,7 +86,7 @@ int	execute_command(t_cli *cli)
 	pid = fork();
 	if (pid < 0)
 	{
-		perror("fork");
+		perror("minishell: fork");
 		return (1);
 	}
 	if (pid == CHILD)

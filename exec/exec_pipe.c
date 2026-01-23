@@ -32,7 +32,7 @@ static int	wait_children(pid_t *pid, const pid_t last_pid)
 	}
 	set_sig(PARENT);
 	if (WIFSIGNALED(last_status))
-		return (printf("HLA\n"), 128 + WTERMSIG(last_status));
+		return (128 + WTERMSIG(last_status));
 	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));
 	return (1);
@@ -70,7 +70,7 @@ static bool	manage_fds_at_start(const t_cli *cli, int fd[2], const int prev_fd)
 	{
 		if (prev_fd != -1)
 			close(prev_fd);
-		perror("pipe");
+		perror("minishell: pipe");
 		return (true);
 	}
 	return (false);
@@ -88,7 +88,7 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 			return (free_env(cli->env), reset_list(cli), 1);
 		pid = fork();
 		if (pid < 0)
-			return (free_env(cli->env), reset_list(cli), perror("fork"), 1);
+			return (perror("minishell: fork"), 1);
 		if (pid == 0)
 		{
 			manage_child_fds(cli, fd, prev_fd);

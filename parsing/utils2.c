@@ -12,21 +12,22 @@
 
 #include "../minishell.h"
 
-void	free_list(t_cli **cli)
+void	free_list(t_cli *cli)
 {
 	t_cli		*node;
 	t_cli		*next_node;
 
-	if (!cli || !*cli)
+	if (!cli)
 		return ;
-	node = *cli;
+	node = cli;
+	while (node && node->prev)
+		node = node->prev;
 	while (node)
 	{
 		next_node = node->next;
 		free_node(node);
 		node = next_node;
 	}
-	*cli = nullptr;
 }
 
 void	free_node(t_cli *cli)
