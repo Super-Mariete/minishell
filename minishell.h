@@ -55,7 +55,7 @@
 # define CL_PRNTS 5
 
 # define IFS " \t\n"
-# define REDIR_S "< >"
+# define REDIR_S "<>"
 # define QUOTES "\"'"
 # define NO_VAL_VAR " !\"#$%&'()*+,-./:;<=>@[]^`{|}~ "
 # define ERR_OPEN_Q "minishell: syntax error: quotes not closed\n"

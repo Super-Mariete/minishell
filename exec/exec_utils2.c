@@ -26,7 +26,7 @@ void	exec_node(t_cli **cli, int *status)
 		else
 		{
 			perror_msh(NULL, "command not found\n");
-			(*cli)->status = 2;
+			(*cli)->status = 127;
 		}
 	}
 	else if ((*cli)->next != NULL && (*cli)->next->op == PIPE)

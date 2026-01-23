@@ -71,7 +71,7 @@ t_cli	*parse_op(const char *token, t_cli **cli)
 	if (token[0] == '|' && token[1] == '|')
 		op = OR;
 	else if (token[0] == '|' )
-		(*cli)->op = PIPE;
+		op = PIPE;
 	else if (token[0] == '&' && token[1] == '&')
 		op = AND;
 	else

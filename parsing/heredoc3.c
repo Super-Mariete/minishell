@@ -17,7 +17,7 @@ static size_t	key_len(const char *line)
 	size_t	len;
 
 	len = 0;
-	while (!ft_strchr(SEP_STR2, line[len]))
+	while (!ft_strchr(NO_VAL_VAR, line[len]))
 		len++;
 	return (len);
 }
