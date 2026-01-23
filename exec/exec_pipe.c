@@ -35,7 +35,7 @@ static int	wait_children(pid_t *pid, const pid_t last_pid)
 		return (128 + WTERMSIG(last_status));
 	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));
-	return (1);
+	return (last_status);
 }
 
 static void	manage_fds(const t_cli *cli, int fd[2], int *prev_fd)
@@ -46,7 +46,7 @@ static void	manage_fds(const t_cli *cli, int fd[2], int *prev_fd)
 			&& *prev_fd != STDERR_FILENO)
 			close(*prev_fd);
 	}
-	if (cli->next)
+	if (cli->next && cli->next->op == PIPE)
 	{
 		if (fd[PIPE_WRITE] != STDIN_FILENO && fd[PIPE_WRITE] != STDOUT_FILENO
 			&& fd[PIPE_WRITE] != STDERR_FILENO)
@@ -64,7 +64,7 @@ static void	manage_child_fds(const t_cli *cli, const int *fd, const int prev_fd)
 			&& prev_fd != STDERR_FILENO)
 			close(prev_fd);
 	}
-	if (cli->next)
+	if (cli->next && cli->next->op == PIPE)
 	{
 		dup2(fd[PIPE_WRITE], STDOUT_FILENO);
 		if (fd[PIPE_READ] != STDIN_FILENO && fd[PIPE_READ] != STDOUT_FILENO
@@ -108,7 +108,7 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 			return (exec_child(cli));
 		}
 		manage_fds(cli, fd, &prev_fd);
-		if (!cli->next)
+		if (!cli->next || cli->next->op != PIPE)
 			last_pid = pid;
 		cli = cli->next;
 	}

@@ -53,7 +53,7 @@ int	exec_child(t_cli *cli)
 		free_env(cli->env);
 		exit(0);
 	}
-	if (get_builtin(cli->cmd))
+	if (cli->is_builtin)
 		exit(exec_builtin_child(cli));
 	check_access(cli);
 	execve(cli->cmd, cli->args, getshenv(*cli->env));
@@ -66,22 +66,26 @@ int	manage_status(t_cli *cli, const int status)
 {
 	if (WCOREDUMP(status))
 	{
+		if (status == 134)
+			write(2, "Aborted                    ", 27);
+		if (status == 136)
+			write(2, "Floating point exception   ", 27);
 		write(2, "(core dumped) ", 14);
 		write(2, cli->cmd, ft_strlen(cli->cmd));
 		write(2, "\n", 1);
-		cli->last_status = 136;
+		cli->status = 136;
 	}
 	if (WIFSIGNALED(status))
 	{
 		if (status == 2)
 			write(1, "\n", 1);
-		cli->last_status = 128 + WTERMSIG(status);
+		cli->status = 128 + WTERMSIG(status);
 	}
 	else if (WIFEXITED(status))
-		cli->last_status = WEXITSTATUS(status);
+		cli->status = WEXITSTATUS(status);
 	else
-		cli->last_status = 1;
-	return (cli->last_status);
+		cli->status = 1;
+	return (cli->status);
 }
 
 int	execute_command(t_cli *cli)
@@ -94,7 +98,7 @@ int	execute_command(t_cli *cli)
 	if (pid < 0)
 	{
 		perror("minishell: fork");
-		return (1);
+		return (cli->status = 2, 1);
 	}
 	if (pid == CHILD)
 		return (exec_child(cli));
@@ -102,7 +106,7 @@ int	execute_command(t_cli *cli)
 	waitpid(pid, &status, 0);
 	set_sig(PARENT);
 	ret = manage_status(cli, status);
-	return (ret);
+	return (cli->status = ret, ret);
 }
 
 int	execute(t_cli *cli)
@@ -112,7 +116,9 @@ int	execute(t_cli *cli)
 	status = 2;
 	while (cli)
 	{
-		if (checks_logic(cli))
+		if (!checks_logic(cli) && cli->op == OP_PRNTS && printf("HEY!\n"))
+			cli = close_prnts_node(cli);
+		else if (checks_logic(cli))
 		{
 			if (cli->op == OP_PRNTS || cli->op == CL_PRNTS)
 			{
@@ -122,27 +128,28 @@ int	execute(t_cli *cli)
 			else if (!cli->cmd)
 			{
 				if (cli->heredoc || cli->infile || cli->outfile)
-					cli->last_status = handle_redirs(cli);
+					cli->status = handle_redirs(cli);
 				else
 				{
 					perror_msh(NULL, "command not found\n");
-					cli->last_status = 2;
+					cli->status = 2;
 				}
 			}
 			else if (cli->next != NULL && cli->next->op == PIPE)
 			{
-				execute_pipeline(cli, -1, -1);
+				status = execute_pipeline(cli, -1, -1);
 				cli = next_node_pipe(cli);
+				cli->status = status;
 			}
 			else if (cli->is_builtin)
 				execute_builtin(cli);
 			else
 				execute_command(cli);
-			status = cli->last_status;
+			status = cli->status;
 		}
 		cli = cli->next;
 		if (cli)
-			cli->last_status = cli->prev->last_status;
+			cli->status = cli->prev->status;
 	}
 	return (status);
 }

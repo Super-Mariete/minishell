@@ -99,9 +99,7 @@ typedef struct s_cli
 	struct s_cli	*next;
 	struct s_cli	*prev;
 	size_t			n_tokens;
-	size_t			group;
 	int				status;
-	int				last_status;
 	int				op;
 	int				heredoc_fd;
 	bool			is_builtin;
@@ -122,14 +120,13 @@ size_t	quoted_len(const char *line);
 
 /* parsing/parsing.c */
 
-int		parse_input(char **tokens, t_cli *cli, size_t group, size_t i);
+int		parse_input(char **tokens, t_cli *cli, size_t i);
 t_cli	*parse_op(const char *token, t_cli **cli);
 int		set_cmd(char *token, t_cli *cli);
 int		add_args(char *token, t_cli *cli, int pos);
 
 /* parsing/parsing_utils*.c */
 
-void	ft_exec(t_cli *cli);
 char	*expand_exit_status(int status, const char *line, size_t i);
 bool	expand_t(char ***tokens, size_t *len, size_t *i, int wc_len);
 void	reset_free(t_cli *cli);
@@ -148,6 +145,7 @@ void	free_tokens(char **tokens, size_t n);
 void	perror_token(const char *token, const char *msg);
 void	perror_msh(const char *problem, const char *mssg);
 char	*trim_spaces(const char *line);
+t_cli	*parse_prnts(t_cli **cli, char token);
 
 /* parsing/expansion.c */
 

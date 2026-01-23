@@ -66,17 +66,19 @@ t_cli	*parse_op(const char *token, t_cli **cli)
 	op = 0;
 	if (!token || !cli || !*cli)
 		return (nullptr);
+	if ((token[0] == '(' || token[0] == ')') && !token[1])
+		return (parse_prnts(cli, token[0]));
 	if (token[0] == '|' && token[1] == '|')
 		op = OR;
 	else if (token[0] == '|' )
-		op = PIPE;
+		(*cli)->op = PIPE;
 	else if (token[0] == '&' && token[1] == '&')
 		op = AND;
 	else
 		return (perror_token(token, SYN_ERR), nullptr);
 	next_cli = init_node((*cli)->n_tokens, (*cli)->env, op);
 	if (!next_cli)
-		return (perror("malloc : "), (*cli)->status = 2, nullptr);
+		return (perror("minishell: malloc :"), (*cli)->status = 2, nullptr);
 	next_cli->prev = (*cli);
 	(*cli)->next = next_cli;
 	(*cli) = (*cli)->next;

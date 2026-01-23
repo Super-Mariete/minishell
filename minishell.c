@@ -79,7 +79,7 @@ int	main(const int argc, char **argv, char **envp)
 			process_input(argv[i], cli);
 			i++;
 		}
-		status = cli->last_status;
+		status = cli->status;
 	}
 	else
 		status = read_input_line(cli);

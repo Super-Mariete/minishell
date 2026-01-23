@@ -6,6 +6,7 @@ SRC = minishell.c\
 	parsing/lexing2.c\
 	parsing/utils.c\
 	parsing/utils2.c\
+	parsing/utils3.c\
 	parsing/parsing.c\
 	parsing/parsing1.c\
 	parsing/parsing_utils.c\

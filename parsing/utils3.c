@@ -1,5 +1,6 @@
 #include "../minishell.h"
 
+
 t_cli	*parse_prnts(t_cli **cli, const char token)
 {
 	if (token == '(')

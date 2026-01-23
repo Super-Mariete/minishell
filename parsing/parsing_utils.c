@@ -31,17 +31,6 @@ bool	expand_t(char ***tokens, size_t *len, size_t *i, int wc_len)
 	return (false);
 }
 
-void	ft_exec(t_cli *cli)
-{
-	if (cli->status != 130)
-	{
-		execute(cli);
-		cli->last_status = cli->status;
-		cli->status = 0;
-	}
-	reset_list(cli);
-}
-
 char	*expand_exit_status(const int status, const char *line, const size_t i)
 {
 	char	*before;

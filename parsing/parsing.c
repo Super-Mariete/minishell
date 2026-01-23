@@ -88,31 +88,23 @@ static int	infile(char *token, t_cli *cli)
 	return (1);
 }
 
-static size_t	parse_input2(char **token, size_t i, t_cli *cli, size_t *group)
+static size_t	parse_input2(char **token, size_t i, t_cli *cli)
 {
 	if (token[i] && token[i][0] == '<')
 		infile(token[++i], cli);
 	else if (token[i] && token[i][0] == '>')
 		outfile(token[++i], cli);
-	else if (token[i] && token[i][0] == '(')
-		(*group)++;
-	else if (token[i] && token[i][0] == ')')
-	{
-		(*group)--;
-		cli->op = 0;
-	}
 	else if (token[i] && !cli->cmd)
 	{
 		set_cmd(token[i], cli);
 		add_args(token[i], cli, ft_doubleptr_len((void **)cli->args));
-		cli->group = *group;
 	}
 	else
 		add_args(token[i], cli, ft_doubleptr_len((void **)cli->args));
 	return (i);
 }
 
-int	parse_input(char **tokens, t_cli *cli, size_t group, size_t i)
+int	parse_input(char **tokens, t_cli *cli, size_t i)
 {
 	size_t	len;
 	int		status;
@@ -129,13 +121,13 @@ int	parse_input(char **tokens, t_cli *cli, size_t group, size_t i)
 			if (status)
 				return (free_tokens(tokens, len), status);
 		}
-		else if (tokens[i] && tokens[i][0] && ft_strchr(OP_STR2, tokens[i][0]))
+		else if (tokens[i] && tokens[i][0] && ft_strchr(OP_STR, tokens[i][0]))
 		{
 			if (!parse_op(tokens[i], &cli))
 				return (free_tokens(tokens, len), 2);
 		}
 		else
-			i = parse_input2(tokens, i, cli, &group);
+			i = parse_input2(tokens, i, cli);
 		i++;
 	}
 	return (free_tokens(tokens, len), 0);

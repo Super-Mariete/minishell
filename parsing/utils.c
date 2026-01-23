@@ -62,7 +62,6 @@ void	free_first_node(t_cli *cli)
 	cli->args = nullptr;
 	cli->is_builtin = 0;
 	cli->r_mode = 0;
-	cli->group = 0;
 	cli->op = 0;
 	cli->next = NULL;
 }
@@ -89,9 +88,7 @@ t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 	cli->next = nullptr;
 	cli->r_mode = WRITE;
 	cli->n_tokens = len;
-	cli->group = 1;
 	cli->op = op;
 	cli->status = 0;
-	cli->last_status = 0;
 	return (cli->prev = NULL, cli);
 }

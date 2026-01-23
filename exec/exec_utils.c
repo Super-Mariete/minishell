@@ -49,10 +49,9 @@ int	execute_builtin(t_cli *cli)
 		return (1);
 	}
 	status = exec_builtin(cli, stdin_save, stdout_save);
-	// cli->last_status = status;
 	close(stdin_save);
 	close(stdout_save);
-	cli->last_status = status; // Probando
+	cli->status = status;
 	return (status);
 }
 

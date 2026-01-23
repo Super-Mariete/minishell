@@ -20,6 +20,7 @@ void	free_list(t_cli *cli)
 	if (!cli)
 		return ;
 	node = cli;
+	free_env(node->env);
 	while (node && node->prev)
 		node = node->prev;
 	while (node)

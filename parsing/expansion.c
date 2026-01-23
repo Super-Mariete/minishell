@@ -61,7 +61,7 @@ static char	*expand_token(char *token, const t_cli *cli, size_t i)
 	char	*t;
 
 	if (token[i + 1] == '?')
-		t = expand_exit_status(cli->last_status, token, i);
+		t = expand_exit_status(cli->status, token, i);
 	else
 		t = expand_var(token, i, var_len(token + i), cli->env);
 	return (t);

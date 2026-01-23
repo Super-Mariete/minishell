@@ -27,7 +27,7 @@ static char	**exit_args(const t_cli *cli)
 	{
 		ret[i] = ft_strdup(cli->args[i]);
 		if (!ret[i])
-			return (free_tokens(cli->args, i), perror("malloc"), NULL);
+			return (free_tokens(cli->args, i), perror("minishell: malloc"), NULL);
 		i++;
 	}
 	ret[i] = NULL;
@@ -59,7 +59,7 @@ int	exec_builtin(t_cli *cli, const int in, const int out)
 		return (1);
 	builtin = get_builtin(cli->cmd);
 	if (!builtin)
-		return (cli->last_status);
+		return (cli->status);
 	if (ft_strcmp(cli->cmd, "exit") != 0)
 	{
 		ret = builtin(cli->args, cli->env);
