@@ -37,21 +37,21 @@ static bool	check_each_error(char **token, const size_t i)
 			&& (token[i + 1] && ft_strchr(OP_STR2, token[i + 1][0])))
 		return (printf("1\n"), perror_token(token[i + 1], SYN_ERR), true);
 	if (token[i] && token[i][0] == ')' && (token[i + 1]
-			&& !ft_strchr(OP_STR, token[i + 1][0])))
-		return (printf("1\n"), perror_token(token[i + 1], SYN_ERR), true);
+			&& !ft_strchr(SEP_STR, token[i + 1][0])))
+		return (printf("2\n"), perror_token(token[i + 1], SYN_ERR), true);
 	if (token[i] && token[i][0] == '(' && i > 0
 			&& (!ft_strchr(OP_STR, token[i - 1][0])))
-		return (printf("1\n"), perror_token(token[i + 1], SYN_ERR), true);
+		return (printf("3\n"), perror_token(token[i + 1], SYN_ERR), true);
 	if (token[i] && token[i][0] == '(' && token[i + 1]
 			&& token[i + 1][0] == ')')
-		return (printf("1\n"), perror_token(token[i + 1], SYN_ERR), true);
-	if (token[i] && token[i][0] != 0 && ft_strchr(OP_STR, token[i][0])
+		return (printf("4\n"), perror_token(token[i + 1], SYN_ERR), true);
+	if (token[i] && token[i][0] != 0 && ft_strchr(OP_STR2, token[i][0])
 			&& !token[i + 1])
-		return (printf("1\n"), perror_token(token[i], SYN_ERR), true);
-	if (token[i] && token[i][0] != 0 && !ft_strchr(IFS, token[i][0])
-			&& ft_strchr(SEP_STR, token[i][0]) && token[i + 1]
-			&& token[i + 1][0] != 0 && ft_strchr(SEP_STR, token[i + 1][0]))
-		return (printf("1\n"), perror_token(token[i + 1], SYN_ERR), true);
+		return (printf("5\n"), perror_token(token[i], SYN_ERR), true);
+	if (token[i] && token[i][0] != 0 && ft_strchr(REDIR_S, token[i][0])
+		&& token[i + 1] && token[i + 1][0] != 0
+		&& (ft_strchr(REDIR_S, token[i + 1][0]) || ft_strchr(OP_STR, token[i + 1][0])))
+		return (printf("6\n"), perror_token(token[i + 1], SYN_ERR), true);
 	return (false);
 }
 

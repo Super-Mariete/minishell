@@ -198,6 +198,7 @@ int		execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid);
 int		exec_child(t_cli *cli);
 int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
 int		execute_command(t_cli *cli);
+int		manage_status(t_cli *cli, int status);
 
 /* exec/exec_utils.c */
 
@@ -210,6 +211,8 @@ int		execute_builtin(t_cli *cli);
 
 t_cli	*next_node_pipe(t_cli *cli);
 bool	checks_logic(const t_cli *cli);
+t_cli	*close_prnts_node(const t_cli *cli);
+pid_t	handle_prnts(t_cli *cli);
 
 /* exec/aux_exec/apply_redirs.c */
 

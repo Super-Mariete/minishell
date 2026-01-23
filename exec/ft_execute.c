@@ -62,8 +62,15 @@ int	exec_child(t_cli *cli)
 	exit(126);
 }
 
-static int	manage_status(t_cli *cli, const int status)
+int	manage_status(t_cli *cli, const int status)
 {
+	if (WCOREDUMP(status))
+	{
+		write(2, "(core dumped) ", 14);
+		write(2, cli->cmd, ft_strlen(cli->cmd));
+		write(2, "\n", 1);
+		cli->last_status = 136;
+	}
 	if (WIFSIGNALED(status))
 	{
 		if (status == 2)
@@ -107,7 +114,12 @@ int	execute(t_cli *cli)
 	{
 		if (checks_logic(cli))
 		{
-			if (!cli->cmd && cli->op != CL_PRNTS && cli->op != OP_PRNTS)
+			if (cli->op == OP_PRNTS || cli->op == CL_PRNTS)
+			{
+				if (handle_prnts(cli))
+					cli = close_prnts_node(cli);
+			}
+			else if (!cli->cmd)
 			{
 				if (cli->heredoc || cli->infile || cli->outfile)
 					cli->last_status = handle_redirs(cli);

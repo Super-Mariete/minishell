@@ -12,6 +12,36 @@
 
 #include "../minishell.h"
 
+t_cli	*close_prnts_node(const t_cli *cli)
+{
+	while (cli && cli->op != CL_PRNTS)
+		cli = cli->next;
+	if (cli)
+		return (cli->next);
+	return (NULL);
+}
+
+pid_t	handle_prnts(t_cli *cli)
+{
+	pid_t	pid;
+	int		status;
+
+	if (cli->op == CL_PRNTS)
+	{
+		status = cli->last_status;
+		free_list(cli);
+		exit(status);
+	}
+	pid = fork();
+	if (pid < 0)
+		return (perror("minishell: fork"), pid);
+	waitpid(pid, &status, 0);
+	manage_status(cli, status);
+	cli = close_prnts_node(cli);
+	cli->last_status = status;
+	return (pid);
+}
+
 t_cli	*next_node_pipe(t_cli *cli)
 {
 	while (cli && cli->op == PIPE && cli->next)
