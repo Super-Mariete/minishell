@@ -35,7 +35,7 @@ SRC = minishell.c\
 	exec/aux_exec/exec_builtin.c\
 	exec/exec_pipe.c\
 	exec/exec_utils.c\
-	exec/exec_ops.c
+	exec/exec_utils2.c
 
 OBJ = $(SRC:.c=.o)
 CFLAGS = -Wall -Wextra -Werror -g3 -Ilibft

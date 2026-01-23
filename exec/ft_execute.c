@@ -100,28 +100,38 @@ int	execute_command(t_cli *cli)
 
 int	execute(t_cli *cli)
 {
-	int	ret;
+	int	status;
 
-	if (!cli)
-		return (2);
-	if (!cli->cmd)
+	status = 2;
+	while (cli)
 	{
-		if (cli->heredoc || cli->infile || cli->outfile)
-			return (handle_redirs(cli));
-		reset_list(cli);
-		return (perror_msh(NULL, "command not found\n"), 2);
+		if (checks_logic(cli))
+		{
+			if (!cli->cmd && cli->op != CL_PRNTS && cli->op != OP_PRNTS)
+			{
+				if (cli->heredoc || cli->infile || cli->outfile)
+					cli->last_status = handle_redirs(cli);
+				else
+				{
+					perror_msh(NULL, "command not found\n");
+					cli->last_status = 2;
+				}
+			}
+			else if (cli->next != NULL && cli->next->op == PIPE)
+			{
+				execute_pipeline(cli, -1, -1);
+				cli = next_node_pipe(cli);
+			}
+			else if (cli->is_builtin)
+				execute_builtin(cli);
+			else
+				execute_command(cli);
+			status = cli->last_status;
+		}
+		cli = cli->next;
+		if (cli)
+			cli->last_status = cli->prev->last_status;
 	}
-	if (cli->next != NULL && cli->op == PIPE)
-	{
-		ret = execute_pipeline(cli, -1, -1);
-		return (ret);
-	}
-	if (cli->op == OR || cli->op == AND)
-		return (exec_ops(cli));
-	if (get_builtin(cli->cmd))
-	{
-		ret = execute_builtin(cli);
-		return (ret);
-	}
-	return (execute_command(cli));
+	return (status);
 }
+

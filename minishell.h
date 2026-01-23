@@ -206,9 +206,10 @@ int		handle_redirs(const t_cli *cli);
 int		exec_builtin_child(t_cli *cli);
 int		execute_builtin(t_cli *cli);
 
-/* exec_ops.c */
+/* exec_utils2.c */
 
-int		exec_ops(t_cli *cli);
+t_cli	*next_node_pipe(t_cli *cli);
+bool	checks_logic(const t_cli *cli);
 
 /* exec/aux_exec/apply_redirs.c */
 

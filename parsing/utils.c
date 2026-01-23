@@ -28,7 +28,7 @@ void	perror_token(const char *token, const char *msg)
 		write(2, msg, ft_strlen(msg));
 	if (token)
 		write(2, token, ft_strlen(token));
-	write(2, "\n", 1);
+	write(2, "'\n", 2);
 }
 
 void	free_tokens(char **tokens, const size_t n)

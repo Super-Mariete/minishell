@@ -41,10 +41,16 @@ static int	wait_children(pid_t *pid, const pid_t last_pid)
 static void	manage_fds(const t_cli *cli, int fd[2], int *prev_fd)
 {
 	if (*prev_fd != -1)
-		close(*prev_fd);
+	{
+		if (*prev_fd != STDIN_FILENO && *prev_fd != STDOUT_FILENO
+			&& *prev_fd != STDERR_FILENO)
+			close(*prev_fd);
+	}
 	if (cli->next)
 	{
-		close(fd[PIPE_WRITE]);
+		if (fd[PIPE_WRITE] != STDIN_FILENO && fd[PIPE_WRITE] != STDOUT_FILENO
+			&& fd[PIPE_WRITE] != STDERR_FILENO)
+			close(fd[PIPE_WRITE]);
 		*prev_fd = fd[PIPE_READ];
 	}
 }
@@ -54,21 +60,28 @@ static void	manage_child_fds(const t_cli *cli, const int *fd, const int prev_fd)
 	if (prev_fd != -1)
 	{
 		dup2(prev_fd, STDIN_FILENO);
-		close(prev_fd);
+		if (prev_fd != STDIN_FILENO && prev_fd != STDOUT_FILENO
+			&& prev_fd != STDERR_FILENO)
+			close(prev_fd);
 	}
 	if (cli->next)
 	{
 		dup2(fd[PIPE_WRITE], STDOUT_FILENO);
-		close(fd[PIPE_READ]);
-		close(fd[PIPE_WRITE]);
+		if (fd[PIPE_READ] != STDIN_FILENO && fd[PIPE_READ] != STDOUT_FILENO
+			&& fd[PIPE_READ] != STDERR_FILENO)
+			close(fd[PIPE_READ]);
+		if (fd[PIPE_WRITE] != STDOUT_FILENO && fd[PIPE_WRITE] != STDIN_FILENO
+			&& fd[PIPE_WRITE] != STDERR_FILENO)
+			close(fd[PIPE_WRITE]);
 	}
 }
 
 static bool	manage_fds_at_start(const t_cli *cli, int fd[2], const int prev_fd)
 {
-	if (cli->next && pipe(fd) < 0)
+	if (cli->next && cli->next->op == PIPE && pipe(fd) < 0)
 	{
-		if (prev_fd != -1)
+		if (prev_fd != -1 && prev_fd != STDIN_FILENO && prev_fd != STDOUT_FILENO
+			&& prev_fd != STDERR_FILENO)
 			close(prev_fd);
 		perror("minishell: pipe");
 		return (true);
@@ -82,7 +95,7 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 	int		prev_fd;
 
 	prev_fd = -1;
-	while (cli)
+	while (cli && (cli->op != AND && cli->op != OR))
 	{
 		if (manage_fds_at_start(cli, fd, prev_fd))
 			return (free_env(cli->env), reset_list(cli), 1);
