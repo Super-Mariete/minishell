@@ -27,7 +27,8 @@ static char	**exit_args(const t_cli *cli)
 	{
 		ret[i] = ft_strdup(cli->args[i]);
 		if (!ret[i])
-			return (free_tokens(cli->args, i), perror("minishell: malloc"), NULL);
+			return (free_tokens(cli->args, i),
+				perror("minishell: malloc"), NULL);
 		i++;
 	}
 	ret[i] = NULL;

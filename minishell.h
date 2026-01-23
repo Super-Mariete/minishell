@@ -198,14 +198,15 @@ int		(*get_builtin(char *cmd))(char **args, t_shenv **env);
 int		execute_command(t_cli *cli);
 int		manage_status(t_cli *cli, int status);
 
-/* exec/exec_utils.c */
+/* exec/exec_utils*.c */
 
 bool	create_file(const t_cli *cli);
 int		handle_redirs(const t_cli *cli);
 int		exec_builtin_child(t_cli *cli);
 int		execute_builtin(t_cli *cli);
+void	exec_node(t_cli **cli, int *status);
 
-/* exec_utils2.c */
+/* exec_prnts.c */
 
 t_cli	*next_node_pipe(t_cli *cli);
 bool	checks_logic(const t_cli *cli);
