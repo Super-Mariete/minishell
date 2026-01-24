@@ -26,15 +26,14 @@ t_cli	*close_prnts_node(t_cli *cli)
 	return (cli);
 }
 
-static void	handle_aux(t_cli *cli, int *fds, const int mode)
+static int	handle_aux(t_cli *cli, int *fds, const int mode)
 {
 	int	status;
 
 	if (mode == 0)
 	{
 		fds[0] = dup(STDIN_FILENO);
-		fds[1] = dup(STDOUT_FILENO);
-		return ;
+		return (fds[1] = dup(STDOUT_FILENO), 0);
 	}
 	if (mode == 1)
 	{
@@ -42,11 +41,7 @@ static void	handle_aux(t_cli *cli, int *fds, const int mode)
 		dup2(fds[1], STDOUT_FILENO);
 	}
 	if (mode == 1 || mode == 2)
-	{
-		close(fds[0]);
-		close(fds[1]);
-		return ;
-	}
+		return (close(fds[0]), close(fds[1]), 0);
 	if (mode == 4)
 	{
 		close(fds[0]);
