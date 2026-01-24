@@ -14,10 +14,10 @@
 
 void	reset_list(t_cli *cli)
 {
-	t_cli	*next;
-	t_cli	*t;
-	t_cli	*last;
-	t_cli	*first;
+	t_cli		*next;
+	t_cli		*t;
+	const t_cli	*last;
+	t_cli		*first;
 
 	if (!cli)
 		return ;

@@ -64,10 +64,10 @@ static char	*copy_to_buffer(char *line, char *buffer, const t_shenv *env)
 
 static char	*expanded_line(char *line, const t_shenv *env)
 {
-	size_t	i;
-	size_t	len;
-	char	*var;
-	char	*expanded;
+	size_t		i;
+	size_t		len;
+	const char	*var;
+	char		*expanded;
 
 	i = 0;
 	len = 0;

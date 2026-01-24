@@ -55,10 +55,10 @@ static int	handle_aux(t_cli *cli, int *fds, const int mode)
 
 pid_t	handle_prnts(t_cli *cli)
 {
-	pid_t	pid;
-	int		status;
-	t_cli	*close_cli;
-	int		fds[2];
+	pid_t		pid;
+	int			status;
+	const t_cli	*close_cli;
+	int			fds[2];
 
 	if (cli->op == CL_PRNTS)
 		handle_aux(cli, NULL, 3);
@@ -86,10 +86,13 @@ t_cli	*next_node_pipe(t_cli *cli)
 {
 	int	status;
 
+	if (!cli)
+		return (NULL);
 	status = cli->status;
 	while (cli && cli->next && cli->next->op == PIPE)
 		cli = cli->next;
-	cli->status = status;
+	if (cli)
+		cli->status = status;
 	return (cli);
 }
 
