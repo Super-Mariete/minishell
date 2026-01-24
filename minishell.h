@@ -101,6 +101,7 @@ typedef struct s_cli
 	size_t			n_tokens;
 	int				status;
 	int				op;
+	int				group;
 	int				heredoc_fd;
 	bool			is_builtin;
 	bool			r_mode;
@@ -210,7 +211,7 @@ void	exec_node(t_cli **cli, int *status);
 
 t_cli	*next_node_pipe(t_cli *cli);
 bool	checks_logic(const t_cli *cli);
-t_cli	*close_prnts_node(const t_cli *cli);
+t_cli	*close_prnts_node(t_cli *cli);
 pid_t	handle_prnts(t_cli *cli);
 
 /* exec/aux_exec/apply_redirs.c */

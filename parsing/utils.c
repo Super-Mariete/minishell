@@ -74,12 +74,12 @@ t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 		return (nullptr);
 	cli = (t_cli *)ft_calloc(1, sizeof(t_cli));
 	if (!cli)
-		return (perror("malloc : "), nullptr);
+		return (perror("minishell: malloc"), nullptr);
 	cli->cmd = nullptr;
 	cli->args = nullptr;
 	cli->env = env;
 	if (env && !cli->env)
-		perror("malloc : ");
+		perror("minishell: malloc");
 	cli->infile = nullptr;
 	cli->outfile = nullptr;
 	cli->heredoc = nullptr;
@@ -89,6 +89,8 @@ t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 	cli->r_mode = WRITE;
 	cli->n_tokens = len;
 	cli->op = op;
-	cli->status = 0;
-	return (cli->prev = NULL, cli);
+	cli->group = 0;
+	if (cli->prev)
+		cli->group = cli->prev->group;
+	return (cli->status = 0, cli->prev = NULL, cli);
 }

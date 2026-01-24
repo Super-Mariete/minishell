@@ -12,15 +12,24 @@
 
 #include "../minishell.h"
 
-t_cli	*close_prnts_node(const t_cli *cli)
+t_cli	*close_prnts_node(t_cli *cli)
 {
-	while (cli && cli->next && cli->next->op != CL_PRNTS)
+	int	group;
+
+	group = cli->group;
+	while (cli)
+	{
+		if (cli->group == group && cli->op == CL_PRNTS)
+			return (cli);
 		cli = cli->next;
-	return (cli->next);
+	}
+	return (cli);
 }
 
 static void	handle_aux(t_cli *cli, int *fds, const int mode)
 {
+	int	status;
+
 	if (mode == 0)
 	{
 		fds[0] = dup(STDIN_FILENO);
@@ -40,12 +49,13 @@ static void	handle_aux(t_cli *cli, int *fds, const int mode)
 	}
 	if (mode == 4)
 	{
-		free_list(cli);
 		close(fds[0]);
 		close(fds[1]);
 		exit(2);
 	}
-	exit(cli->status);
+	status = cli->status;
+	free_list(cli);
+	exit(status);
 }
 
 pid_t	handle_prnts(t_cli *cli)

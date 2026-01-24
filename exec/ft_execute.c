@@ -19,28 +19,27 @@ static void	check_access(t_cli *cli)
 	if (access(cli->cmd, F_OK) != 0)
 	{
 		perror_msh(cli->cmd, "command not found\n");
-		free_env(cli->env);
-		reset_free(cli);
+		free_list(cli);
 		exit(127);
 	}
 	if (stat(cli->cmd, &st) == 0 && S_ISDIR(st.st_mode))
 	{
-		free_env(cli->env);
 		perror_msh(cli->cmd, "Is a directory\n");
-		reset_free(cli);
+		free_list(cli);
 		exit(126);
 	}
 	if (access(cli->cmd, X_OK) != 0)
 	{
-		free_env(cli->env);
 		perror_msh(cli->cmd, "Permission denied\n");
-		reset_free(cli);
+		free_list(cli);
 		exit(126);
 	}
 }
 
 int	exec_child(t_cli *cli)
 {
+	int	status;
+
 	set_sig(CHILD);
 	if (apply_redirs(cli))
 	{
@@ -49,12 +48,15 @@ int	exec_child(t_cli *cli)
 	}
 	if (!cli->cmd)
 	{
-		reset_list(cli);
-		free_env(cli->env);
+		free_list(cli);
 		exit(0);
 	}
 	if (cli->is_builtin)
-		exit(exec_builtin_child(cli));
+	{
+		status = exec_builtin_child(cli);
+		free_list(cli);
+		exit(status);
+	}
 	check_access(cli);
 	execve(cli->cmd, cli->args, getshenv(*cli->env));
 	perror("minishell: execve");

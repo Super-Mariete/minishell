@@ -12,6 +12,8 @@
 
 #include "../minishell.h"
 
+// TODO: properly expand filenames
+
 static int	append_file(char *token, t_cli *cli)
 {
 	int	i;
