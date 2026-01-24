@@ -96,7 +96,7 @@ int	read_input_line(t_cli *cli)
 	while (1)
 	{
 		free(cl);
-		cl = readline("\033[1;32mminishell\033[0m$ ");
+		cl = readline("\001\033[1;32m\002minishell\001\033[0m\002$ ");
 		if (!cl)
 			return (rl_clear_history(), write(1, "exit\n", 5), 2);
 		if ((g_signal && reset_signal(cli)) || is_empty(cl))
