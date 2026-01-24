@@ -14,12 +14,20 @@
 
 volatile sig_atomic_t	g_signal = 0;
 
-static void	add_sub_prnts(const char *line, size_t i, int *prnts)
+static int	add_sub_prnts(const char *line, size_t i, int *prnts)
 {
 	if (line[i] == '(')
+	{
 		(*prnts)++;
+		if (line[i + 1] == '(')
+		{
+			write(2, "minishell: arithmetic expressions not supported\n", 49);
+			return (1);
+		}
+	}
 	if (line[i] == ')')
 		(*prnts)--;
+	return (0);
 }
 
 int	check_prnts(const char *line)
@@ -42,7 +50,8 @@ int	check_prnts(const char *line)
 			i += len;
 			continue ;
 		}
-		add_sub_prnts(line, i, &prnts);
+		if (add_sub_prnts(line, i, &prnts))
+			return (1);
 		i++;
 	}
 	if (prnts)
