@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 13:19:18 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/16 13:20:01 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/25 19:38:02 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 	int		status;
 
 	prev_fd = -1;
-	while (cli && (cli->op != AND && cli->op != OR))
+	while (cli && (cli->op != AND && cli->op != OR && cli->op != CL_PRNTS))
 	{
 		if (manage_fds_at_start(cli, fd, prev_fd))
 			return (1);

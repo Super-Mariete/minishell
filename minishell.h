@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/07 19:08:26 by made-ped         ###   ########.fr       */
+/*   Updated: 2026/01/25 19:43:20 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,8 @@ int		add_args(char *token, t_cli *cli, int pos);
 char	*expand_exit_status(int status, const char *line, size_t i);
 bool	expand_t(char ***tokens, size_t *len, size_t *i, int wc_len);
 void	reset_free(t_cli *cli);
-int		handle_heredoc(t_cli *cli, const int *option,\
-		const char *delim, const char *line);
+int		handle_heredoc(t_cli *cli, const int *option,
+			const char *delim, const char *line);
 
 /* parsing/utils*.c */
 

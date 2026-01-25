@@ -31,7 +31,6 @@ SRC = minishell.c\
 	exec/builtins/ft_export.c\
 	exec/builtins/ft_unset.c\
 	exec/builtins/ft_exit.c\
-	exec/mac_stub.c\
 	exec/aux_exec/apply_redirs.c\
 	exec/aux_exec/exec_builtin.c\
 	exec/exec_pipe.c\
@@ -40,7 +39,7 @@ SRC = minishell.c\
 	exec/exec_prnts.c
 
 OBJ = $(SRC:.c=.o)
-CFLAGS = -Wall -Wextra -Werror -g3 -Ilibft
+CFLAGS = -Wall -Wextra -Werror -Ilibft
 SAN_FLAGS = -fsanitize=address,undefined
 
 all: $(NAME)

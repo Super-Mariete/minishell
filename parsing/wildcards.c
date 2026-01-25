@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 21:51:50 by rms35             #+#    #+#             */
-/*   Updated: 2025/09/15 21:51:51 by rms35            ###   ########.fr       */
+/*   Updated: 2026/01/25 19:41:13 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static int	match_wildcard(const char *s, const char *wc)
 	return (wc[j] == '\0');
 }
 
-static void	get_wildcard(char ***token, const size_t pos,\
+static void	get_wildcard(char ***token, const size_t pos,
 		int *wc_len, struct dirent *dir)
 {
 	char	**t;

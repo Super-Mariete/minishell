@@ -81,6 +81,7 @@ int	manage_status(t_cli *cli, const int status)
 	{
 		if (status == 2)
 			write(1, "\n", 1);
+		printf("st = %d\n", cli->status = 128 + WTERMSIG(status));
 		cli->status = 128 + WTERMSIG(status);
 	}
 	else if (WIFEXITED(status))

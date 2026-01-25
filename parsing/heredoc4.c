@@ -61,7 +61,7 @@ static char	*expand_heredoc(const int option, t_cli *cli)
 	return (cli->heredoc);
 }
 
-int	handle_heredoc(t_cli *cli, const int *option,\
+int	handle_heredoc(t_cli *cli, const int *option,
 		const char *delim, const char *line)
 {
 	if (!line)
