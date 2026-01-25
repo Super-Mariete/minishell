@@ -92,5 +92,5 @@ int	main(const int argc, char **argv, char **envp)
 	}
 	else
 		status = read_input_line(cli);
-	return (free_node(cli), free_env(&env), status);
+	return (free_list(cli), status);
 }

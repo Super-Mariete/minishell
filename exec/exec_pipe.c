@@ -45,6 +45,7 @@ static void	manage_fds(const t_cli *cli, int fd[2], int *prev_fd)
 		if (*prev_fd != STDIN_FILENO && *prev_fd != STDOUT_FILENO
 			&& *prev_fd != STDERR_FILENO)
 			close(*prev_fd);
+		*prev_fd = -1;
 	}
 	if (cli->next && cli->next->op == PIPE)
 	{
@@ -55,7 +56,7 @@ static void	manage_fds(const t_cli *cli, int fd[2], int *prev_fd)
 	}
 }
 
-static void	manage_child_fds(const t_cli *cli, const int *fd, const int prev_fd)
+static void	manage_child_fds(const t_cli *cli, const int *fd, int prev_fd)
 {
 	if (prev_fd != -1)
 	{
@@ -63,6 +64,7 @@ static void	manage_child_fds(const t_cli *cli, const int *fd, const int prev_fd)
 		if (prev_fd != STDIN_FILENO && prev_fd != STDOUT_FILENO
 			&& prev_fd != STDERR_FILENO)
 			close(prev_fd);
+		prev_fd = -1;
 	}
 	if (cli->next && cli->next->op == PIPE)
 	{
@@ -93,19 +95,22 @@ int	execute_pipeline(t_cli *cli, pid_t pid, pid_t last_pid)
 {
 	int		fd[2];
 	int		prev_fd;
+	int		status;
 
 	prev_fd = -1;
 	while (cli && (cli->op != AND && cli->op != OR))
 	{
 		if (manage_fds_at_start(cli, fd, prev_fd))
-			return (free_env(cli->env), reset_list(cli), 1);
+			return (1);
 		pid = fork();
 		if (pid < 0)
 			return (perror("minishell: fork"), 1);
 		if (pid == 0)
 		{
 			manage_child_fds(cli, fd, prev_fd);
-			return (exec_child(cli));
+			status = exec_child(cli);
+			free_list(cli);
+			exit(status);
 		}
 		manage_fds(cli, fd, &prev_fd);
 		if (!cli->next || cli->next->op != PIPE)

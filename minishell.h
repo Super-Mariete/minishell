@@ -203,7 +203,7 @@ int		manage_status(t_cli *cli, int status);
 
 bool	create_file(const t_cli *cli);
 int		handle_redirs(const t_cli *cli);
-int		exec_builtin_child(t_cli *cli);
+int		exec_builtin_child(const t_cli *cli);
 int		execute_builtin(t_cli *cli);
 void	exec_node(t_cli **cli, int *status);
 

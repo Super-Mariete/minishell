@@ -55,7 +55,7 @@ int	execute_builtin(t_cli *cli)
 	return (status);
 }
 
-int	exec_builtin_child(t_cli *cli)
+int	exec_builtin_child(const t_cli *cli)
 {
 	int	ret;
 	int	(*builtin)(char **, t_shenv **);
@@ -64,8 +64,6 @@ int	exec_builtin_child(t_cli *cli)
 	if (!builtin)
 		return (1);
 	ret = builtin(cli->args, cli->env);
-	free_env(cli->env);
-	reset_free(cli);
 	return (ret);
 }
 
