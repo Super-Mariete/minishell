@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/13 10:09:47 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ void	free_node(t_cli *cli)
 	if (!cli)
 		return ;
 	free(cli->cmd);
-	cli->cmd = nullptr;
+	cli->cmd = NULL;
 	free(cli->heredoc);
-	cli->heredoc = nullptr;
+	cli->heredoc = NULL;
 	free(cli->infile);
-	cli->infile = nullptr;
+	cli->infile = NULL;
 	free(cli->outfile);
-	cli->outfile = nullptr;
+	cli->outfile = NULL;
 	ft_free_d(cli->args);
-	cli->args = nullptr;
+	cli->args = NULL;
 	if (cli->heredoc_fd != -1)
 		close(cli->heredoc_fd);
 	cli->heredoc_fd = -1;
@@ -95,7 +95,7 @@ char	*trim_spaces(const char *line)
 
 	i = 0;
 	if (trim_s_len(line) == 0)
-		return (nullptr);
+		return (NULL);
 	trimmed = ft_calloc(trim_s_len(line) + 1, sizeof(char));
 	j = 0;
 	while (trimmed && i < (int)ft_strlen(line))

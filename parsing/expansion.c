@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rms35 <rms35@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:18:24 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/18 12:00:00 by gemini           ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,13 @@ static char	*expand_var(char *token,
 	const char	*var;
 
 	if (!token)
-		return (nullptr);
+		return (NULL);
 	if (end > ft_strlen(token))
 		return (ft_strndup(token, end));
 	s = ft_strndup(token + start, end);
 	t = ft_strtrim(s, NO_VAL_VAR);
 	if (!s || !t)
-		return (free(s), free(t), nullptr);
+		return (free(s), free(t), NULL);
 	free(s);
 	var = ft_getenv(*env, t);
 	free(t);
@@ -102,7 +102,7 @@ char	**expand_tokens(char **tokens, size_t *len, const t_cli *cli, size_t i)
 	int		wc_len;
 
 	if (!tokens)
-		return (nullptr);
+		return (NULL);
 	wc_len = 0;
 	while (i < *len)
 	{

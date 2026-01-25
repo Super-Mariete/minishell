@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:42 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/04 18:46:40 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static int	infile(char *token, t_cli *cli)
 		free(cli->infile);
 	}
 	free(cli->heredoc);
-	cli->heredoc = nullptr;
+	cli->heredoc = NULL;
 	if (ft_strchr(QUOTES, token[i]))
 		cli->infile = ft_strndup(token + i + 1, ft_strlen(token) - i - 2);
 	else

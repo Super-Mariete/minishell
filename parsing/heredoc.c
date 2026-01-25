@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 12:19:26 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/25 20:33:56 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ static void	free_prev(t_cli *cli)
 {
 	free(cli->heredoc);
 	free(cli->infile);
-	cli->infile = nullptr;
-	cli->heredoc = nullptr;
+	cli->infile = NULL;
+	cli->heredoc = NULL;
 }
 
 static int	read_heredoc(t_cli *cli, const int *option, char *delim)
@@ -43,7 +43,7 @@ static int	read_heredoc(t_cli *cli, const int *option, char *delim)
 	char	*t;
 	int		ret;
 
-	line = nullptr;
+	line = NULL;
 	while (1)
 	{
 		free(line);

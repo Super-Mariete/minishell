@@ -49,6 +49,7 @@ static int	handle_aux(t_cli *cli, int *fds, const int mode)
 		exit(2);
 	}
 	status = cli->status;
+	printf("status = %d\n", cli->status);
 	free_list(cli);
 	exit(status);
 }
@@ -75,6 +76,7 @@ pid_t	handle_prnts(t_cli *cli)
 	if (pid == 0)
 		return (handle_aux(NULL, fds, 2), pid);
 	waitpid(pid, &status, 0);
+	printf("status in hanndle = %d\n", status);
 	handle_aux(NULL, fds, 1);
 	manage_status(cli, status);
 	cli = close_prnts_node(cli);

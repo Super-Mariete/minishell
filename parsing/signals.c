@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/13 11:16:13 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,20 +33,20 @@ void	set_sig(int option)
 	if (option == PARENT)
 	{
 		sa.sa_handler = sig_int_parent;
-		sigaction(SIGINT, &sa, nullptr);
+		sigaction(SIGINT, &sa, NULL);
 		sa.sa_handler = SIG_IGN;
-		sigaction(SIGQUIT, &sa, nullptr);
+		sigaction(SIGQUIT, &sa, NULL);
 	}
 	if (option == CHILD)
 	{
 		sa.sa_handler = SIG_DFL;
-		sigaction(SIGINT, &sa, nullptr);
-		sigaction(SIGQUIT, &sa, nullptr);
+		sigaction(SIGINT, &sa, NULL);
+		sigaction(SIGQUIT, &sa, NULL);
 	}
 	if (option == IGNORE)
 	{
 		sa.sa_handler = SIG_IGN;
-		sigaction(SIGINT, &sa, nullptr);
-		sigaction(SIGQUIT, &sa, nullptr);
+		sigaction(SIGINT, &sa, NULL);
+		sigaction(SIGQUIT, &sa, NULL);
 	}
 }

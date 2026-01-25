@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:19:54 by rafael-m          #+#    #+#             */
-/*   Updated: 2025/12/25 20:38:37 by rafael           ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,18 @@ void	free_tokens(char **tokens, const size_t n)
 void	free_first_node(t_cli *cli)
 {
 	free(cli->cmd);
-	cli->cmd = nullptr;
+	cli->cmd = NULL;
 	free(cli->heredoc);
-	cli->heredoc = nullptr;
+	cli->heredoc = NULL;
 	if (cli->heredoc_fd != -1)
 		close(cli->heredoc_fd);
 	cli->heredoc_fd = -1;
 	free(cli->infile);
-	cli->infile = nullptr;
+	cli->infile = NULL;
 	free(cli->outfile);
-	cli->outfile = nullptr;
+	cli->outfile = NULL;
 	ft_free_d(cli->args);
-	cli->args = nullptr;
+	cli->args = NULL;
 	cli->is_builtin = 0;
 	cli->r_mode = 0;
 	cli->op = 0;
@@ -71,21 +71,21 @@ t_cli	*init_node(const size_t len, t_shenv **env, const int op)
 	t_cli	*cli;
 
 	if (len == 0)
-		return (nullptr);
+		return (NULL);
 	cli = (t_cli *)ft_calloc(1, sizeof(t_cli));
 	if (!cli)
-		return (perror("minishell: malloc"), nullptr);
-	cli->cmd = nullptr;
-	cli->args = nullptr;
+		return (perror("minishell: malloc"), NULL);
+	cli->cmd = NULL;
+	cli->args = NULL;
 	cli->env = env;
 	if (env && !cli->env)
 		perror("minishell: malloc");
-	cli->infile = nullptr;
-	cli->outfile = nullptr;
-	cli->heredoc = nullptr;
+	cli->infile = NULL;
+	cli->outfile = NULL;
+	cli->heredoc = NULL;
 	cli->heredoc_fd = -1;
 	cli->is_builtin = 0;
-	cli->next = nullptr;
+	cli->next = NULL;
 	cli->r_mode = WRITE;
 	cli->n_tokens = len;
 	cli->op = op;

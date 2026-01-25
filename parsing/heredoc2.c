@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:46:52 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/12 11:56:37 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ static int	write_to_heredoc(t_cli *cli, const char *file, const int fd)
 	ret = open(file, O_RDONLY, 0444);
 	if (ret == -1)
 	{
-		perror_msh("open", nullptr);
-		perror(nullptr);
+		perror_msh("open", NULL);
+		perror(NULL);
 	}
 	unlink(file);
 	return (ret);
@@ -125,8 +125,8 @@ int	create_heredoc(t_cli *cli)
 	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
 	if (fd == -1)
 	{
-		perror_msh("open", nullptr);
-		return (perror(nullptr), -1);
+		perror_msh("open", NULL);
+		return (perror(NULL), -1);
 	}
 	return (write_to_heredoc(cli, file, fd));
 }

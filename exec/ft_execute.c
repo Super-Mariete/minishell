@@ -118,7 +118,7 @@ int	execute(t_cli *cli)
 	status = 2;
 	while (cli)
 	{
-		if (!checks_logic(cli) && cli->op == OP_PRNTS && printf("HEY!\n"))
+		if (!checks_logic(cli) && cli->op == OP_PRNTS)
 			cli = close_prnts_node(cli);
 		else if (checks_logic(cli))
 		{

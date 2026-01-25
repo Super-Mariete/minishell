@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael <rafael@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:18:55 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/13 12:55:01 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,13 +102,13 @@ char	**token_sep(char *line, size_t j, size_t i)
 	char	**tokens;
 
 	if (!line)
-		return (nullptr);
+		return (NULL);
 	len = num_s_tokens(line);
 	if (len <= 0)
-		return (free(line), nullptr);
+		return (free(line), NULL);
 	tokens = (char **)ft_calloc(len + 1, sizeof(char *));
 	if (!tokens)
-		return (free(line), perror("minishell: malloc : "), nullptr);
+		return (free(line), perror("minishell: malloc : "), NULL);
 	i = 0;
 	j = 0;
 	while (i < ft_strlen(line))
@@ -122,5 +122,5 @@ char	**token_sep(char *line, size_t j, size_t i)
 		tokens[j++] = ft_strndup(line + i, token_len(line + i));
 		i += token_len(line + i);
 	}
-	return (free(line), tokens[len] = nullptr, tokens);
+	return (free(line), tokens[len] = NULL, tokens);
 }

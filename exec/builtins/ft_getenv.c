@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_getenv.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: made-ped <made-ped@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 15:37:14 by made-ped          #+#    #+#             */
-/*   Updated: 2025/11/02 15:55:43 by made-ped         ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*ft_getenv(const t_shenv *ft_env, char *key)
 	size_t	len;
 
 	if (!key)
-		return (nullptr);
+		return (NULL);
 	len = ft_strlen(key);
 	while (ft_env)
 	{
@@ -26,5 +26,5 @@ char	*ft_getenv(const t_shenv *ft_env, char *key)
 			return (ft_env->var + len + 1);
 		ft_env = ft_env->next;
 	}
-	return (nullptr);
+	return (NULL);
 }

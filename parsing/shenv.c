@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shenv.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rafael-m <rafael-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/13 10:09:47 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/25 18:08:43 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_env(t_shenv **ft_env)
 		free(node);
 		node = next;
 	}
-	*ft_env = nullptr;
+	*ft_env = NULL;
 }
 
 static int	shenv_len(const t_shenv *env)
@@ -53,22 +53,22 @@ char	**getshenv(const t_shenv *env)
 	int				i;
 
 	if (!env)
-		return (nullptr);
+		return (NULL);
 	len = shenv_len(env);
 	r = (char **)ft_calloc(len + 1, sizeof(char *));
 	if (!r)
-		return (perror("minishell : malloc : "), nullptr);
+		return (perror("minishell : malloc : "), NULL);
 	i = 0;
 	node = env;
 	while (node)
 	{
 		r[i] = ft_strdup(node->var);
 		if (node->var && !r[i])
-			return (perror("minishell : malloc : "), nullptr);
+			return (perror("minishell : malloc : "), NULL);
 		i++;
 		node = node->next;
 	}
-	r[i] = nullptr;
+	r[i] = NULL;
 	return (r);
 }
 
@@ -79,23 +79,23 @@ t_shenv	*load_env(char **envp)
 	t_shenv	*node;
 
 	if (!envp)
-		return (nullptr);
+		return (NULL);
 	env = (t_shenv *)ft_calloc(1, sizeof(t_shenv));
 	if (!env)
-		return (perror("minishell : malloc : "), nullptr);
+		return (perror("minishell : malloc : "), NULL);
 	i = 0;
 	node = env;
 	while (envp[i])
 	{
 		node->var = ft_strdup(envp[i]);
 		if (!node->var && envp[i] && envp[i][0])
-			return (free_env(&env), perror("minishell : malloc : "), nullptr);
+			return (free_env(&env), perror("minishell : malloc : "), NULL);
 		if (!envp[++i])
 			break ;
 		node->next = (t_shenv *)ft_calloc(1, sizeof(t_shenv));
 		if (!node->next)
-			return (free_env(&env), perror("minishell : malloc : "), nullptr);
+			return (free_env(&env), perror("minishell : malloc : "), NULL);
 		node = node->next;
 	}
-	return (node->next = nullptr, env);
+	return (node->next = NULL, env);
 }
