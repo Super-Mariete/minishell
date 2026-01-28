@@ -85,6 +85,7 @@ int	get_heredoc(const char *token, t_cli *cli)
 		set_sig(PARENT);
 		g_signal = 0;
 		cli->status = 130;
+		return (status);
 	}
 	cli->heredoc_fd = create_heredoc(cli);
 	return (status);
