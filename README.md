@@ -27,6 +27,11 @@ The interpretation of input is divided into distinct phases:
 Variable expansion is performed globally after the lexing phase instead of within each command's individual execution environment.
 *   **Reasoning:** This decision was made to better divide the development work between the two project members. By decoupling expansion from execution, one member could focus on the lexical analysis and variable resolution while the other focused on process management and execution.
 
+### Decision Making
+
+To implement built-in commands, the project uses a function pointer table instead of multiple if-else statements.
+This approach improves code readability, maintainability, and follows structured and clean programming principles by centralizing decision logic and reducing conditional complexity.
+
 ## Instructions
 
 ### Compilation
