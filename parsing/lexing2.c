@@ -6,7 +6,7 @@
 /*   By: rafael-m <rafael-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 10:09:47 by rafael-m          #+#    #+#             */
-/*   Updated: 2026/01/25 18:19:28 by rafael-m         ###   ########.fr       */
+/*   Updated: 2026/01/31 13:27:53 by rafael-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static bool	check_each_error(char **token, const size_t i)
 			&& ft_strchr(OP_STR2, token[i + 1][0])))
 		return (perror_token(token[i + 1], SYN_ERR), true);
 	if (token[i] && token[i][0] == ')' && (token[i + 1]
-		&& (token[i + 1][0] == '(' || !ft_strchr(OP_STR, token[i + 1][0]))))
+		&& (token[i + 1][0] == '(' || (!ft_strchr(OP_STR, token[i + 1][0])
+		&& !ft_strchr(REDIR_S, token[i + 1][0])))))
 		return (perror_token(token[i + 1], SYN_ERR), true);
 	if (token[i] && token[i][0] == '(' && token[i + 1]
 			&& token[i + 1][0] == ')')
